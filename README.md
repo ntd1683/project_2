@@ -6,7 +6,6 @@
 
 ### Đối tượng sử dụng
 - Khách hàng không có tài khoản
-- Khách hàng có tài khoản
 - Nhân viên
 - Quản lý
 
@@ -22,13 +21,9 @@ A. Khách hàng không có tài khoản
 - Đặt vé vận chuyển hàng hoá
 - Kiểm tra đơn hàng
 - Hoàn vé
-
-B. Khách hàng có tài khoản
-- Quản lý ,đăng xuất tài khoản
-- Đầy đủ của khách hàng không có tài khoản
 - Lịch sử đặt vé
 
-C. Nhân viên
+B. Nhân viên
 - Đăng xuất
 - Tìm kiếm các chuyến xe
 - Xem thông tin chuyến xe
