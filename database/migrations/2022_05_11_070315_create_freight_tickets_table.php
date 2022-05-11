@@ -14,7 +14,7 @@ class CreateFreightTicketsTable extends Migration
     public function up()
     {
         Schema::create('freight_tickets', function (Blueprint $table) {
-            $table->id();
+            $table->bigInteger('id')->unsigned();
             $table->foreignId('bill_detail_goods_id')->constrained();
             $table->foreignId('from_address2_id')->constrained('address2s');
             $table->foreignId('recipient_address2_id')->constrained('address2s');
@@ -25,6 +25,7 @@ class CreateFreightTicketsTable extends Migration
             $table->string('recipient_name', 50);
             $table->string('recipient_phone', 20);
             $table->timestamps();
+            $table->primary(['id', 'bill_detail_goods_id']);
         });
     }
 

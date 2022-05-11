@@ -14,10 +14,11 @@ class CreateRouteDriversTable extends Migration
     public function up()
     {
         Schema::create('route_drivers', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('route_buses_id')->constrained('route_buses');
-            $table->foreignId('driver_id')->constrained('drivers');
-            // $table->primary(['id', 'route_buses_id', 'driver_id']);
+            $table->bigInteger('id')->unsigned();
+            // foreign key constraints
+            $table->foreignId('route_buses_id')->unsigned()->constrained();
+            $table->foreignId('driver_id')->unsigned()->constrained();
+            $table->primary(['id', 'route_buses_id', 'driver_id']);
         });
     }
 

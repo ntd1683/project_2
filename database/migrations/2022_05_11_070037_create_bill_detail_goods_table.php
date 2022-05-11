@@ -14,12 +14,12 @@ class CreateBillDetailGoodsTable extends Migration
     public function up()
     {
         Schema::create('bill_detail_goods', function (Blueprint $table) {
-            $table->id();
+            $table->bigInteger('id')->unsigned();
             $table->foreignId('bill_id')->constrained();
             $table->foreignId('buses_id')->constrained();
             $table->foreignId('goods_id')->constrained();
             $table->integer('price');
-            // $table->primary(['bill_id', 'buses_id', 'goods_id']);
+            $table->primary(['id', 'bill_id', 'buses_id', 'goods_id']);
         });
     }
 

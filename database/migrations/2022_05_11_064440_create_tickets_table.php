@@ -14,13 +14,14 @@ class CreateTicketsTable extends Migration
     public function up()
     {
         Schema::create('tickets', function (Blueprint $table) {
-            $table->id();
+            $table->bigInteger('id')->unsigned();
             $table->foreignId('bill_detail_id')->constrained();
             $table->foreignId('from_address2_id')->constrained('address2s');
             $table->foreignId('to_address2_id')->constrained('address2s');
             $table->string('name', 100);
             $table->string('phone', 20);
             $table->timestamps();
+            $table->primary(['id', 'bill_detail_id']);
         });
     }
 
