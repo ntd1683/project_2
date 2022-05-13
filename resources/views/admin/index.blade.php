@@ -32,7 +32,7 @@
                                     </span>
                                 <div class="dash-widget-info">
                                     <h3>148</h3>
-                                    <h6 class="text-muted">Providers</h6>
+                                    <h6 class="text-muted">Xe</h6>
                                 </div>
                             </div>
                         </div>
