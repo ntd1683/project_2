@@ -28,10 +28,26 @@
                         <div class="card-body">
                             <div class="dash-widget-header">
                                     <span class="dash-widget-icon bg-primary">
-                                        <i class="fas fa-user-shield"></i>
+{{--                                        <i class="fas fa-user-shield"></i>--}}
+                                        <i class="fas fa-user-circle"></i>
                                     </span>
                                 <div class="dash-widget-info">
                                     <h3>148</h3>
+                                    <h6 class="text-muted">Tài xế</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="dash-widget-header">
+                                    <span class="dash-widget-icon bg-primary">
+                                        <i class="fas fa-car"></i>
+                                    </span>
+                                <div class="dash-widget-info">
+                                    <h3>124</h3>
                                     <h6 class="text-muted">Xe</h6>
                                 </div>
                             </div>
@@ -43,26 +59,11 @@
                         <div class="card-body">
                             <div class="dash-widget-header">
                                     <span class="dash-widget-icon bg-primary">
-                                        <i class="fas fa-qrcode"></i>
-                                    </span>
-                                <div class="dash-widget-info">
-                                    <h3>124</h3>
-                                    <h6 class="text-muted">Services</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-sm-6 col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="dash-widget-header">
-                                    <span class="dash-widget-icon bg-primary">
-                                        <i class="far fa-credit-card"></i>
+                                        <i class="fas fa-dollar-sign"></i>
                                     </span>
                                 <div class="dash-widget-info">
                                     <h3>$11378</h3>
-                                    <h6 class="text-muted">Subscription</h6>
+                                    <h6 class="text-muted">Doanh Thu</h6>
                                 </div>
                             </div>
                         </div>
