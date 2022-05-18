@@ -3301,7 +3301,7 @@ img.mfp-img {
 }
 
 [class^="flaticon-"]:before, [class*=" flaticon-"]:before,
-[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {
   font-family: Flaticon;
   font-style: normal;
   font-weight: normal;
@@ -4896,7 +4896,7 @@ button.bg-dark:focus {
   .pt-md-5,
   .py-md-5 {
     padding-top: 3rem !important; }
-  
+
   .py-md-5 {
     padding-bottom: 3rem !important; }
   .pl-md-5 {
@@ -5408,6 +5408,9 @@ h1, h2, h3,
       -webkit-transition: all 0.3s ease;
       -ms-transition: all 0.3s ease;
       transition: all 0.3s ease; }
+    .project-wrap .text .price:hover{
+        cursor:pointer;
+    }
     .project-wrap .text h3 {
       font-size: 24px; }
       .project-wrap .text h3 a {
@@ -5438,8 +5441,10 @@ h1, h2, h3,
     line-height: 1.3;
     position: relative; }
     .services .icon span {
-      font-size: 60px;
-      color: #f9ab30; }
+      font-size: 55px;
+      color: #f9ab30;
+      margin-bottom:1rem;
+    }
   .services .media-body h3 {
     font-size: 18px;
     font-weight: 500; }

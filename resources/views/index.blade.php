@@ -1,4 +1,9 @@
 @extends('layout.master')
+@push('css')
+    <style>
+
+    </style>
+@endpush
 @section('content')
 <div class="hero-wrap js-fullheight" style="background-image:url(images/background_thu_duc.jpg)"
      data-stellar-background-ratio="0.5">
@@ -11,11 +16,12 @@
                    class="icon-video popup-vimeo d-flex align-items-center justify-content-center mb-4">
                     <span class="ion-ios-play"></span>
                 </a>
-                <h1 data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">Tôi sẽ cho bạn một chuyến đi an toàn</h1>
+                <h1 data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">Tôi sẽ cho bạn một chuyến đi thoải mái và san toàn</h1>
             </div>
         </div>
     </div>
 </div>
+<!-- Ảnh bìa -->
 <section class="ftco-section ftco-no-pb ftco-no-pt">
     <div class="container">
         <div class="row">
@@ -91,54 +97,53 @@
         </div>
     </div>
 </section>
+<!-- end Ảnh bìa -->
+<!-- Tiện tích -->
 <section class="ftco-section services-section bg-light">
     <div class="container">
         <div class="row d-flex">
             <div class="col-md-6 order-md-last heading-section pl-md-5 ftco-animate">
-                <h2 class="mb-4">Tiện Ích Xe Thu Đức</h2>
-                <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a
-                    paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
-                <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the
-                    blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language
-                    ocean.
-                    A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
-                <p><a href="#" class="btn btn-primary py-3 px-4">Search Destination</a></p>
+                <h2 class="mb-4">Tiện Ích Nhà Xe</h2>
+                <p>Chúng Tôi luôn muốn cho quý khách những cảm giác thoải mái nhất khi đi xe !!!</p>
+                <p>Vì vậy chúng tôi luôn mang cho quý khách những tiện ích tốt nhất ở trên xe !!!</p>
+{{--                <p><a href="#" class="btn btn-primary py-3 px-4">Search Destination</a></p>--}}
             </div>
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-6 d-flex align-self-stretch ftco-animate">
                         <div class="media block-6 services d-block">
-                            <div class="icon"><span class="flaticon-paragliding"></span></div>
+{{--                            <div class="icon"><span class="flaticon-paragliding"></span></div>--}}
+                            <div class="icon"><span class="fas fa-wifi" ></span></div>
                             <div class="media-body">
-                                <h3 class="heading mb-3">Activities</h3>
-                                <p>A small river named Duden flows by their place and supplies it with the necessary</p>
+                                <h3 class="heading mb-3">Free Wifi</h3>
+                                <p>Tất cả các xe của Thu Đức đều được trang bị wifi miễn phí tốc độ cao. Bạn có thể thư giãn bằng cách lướt web, mạng xã hội, kiểm tra email hoặc chat chit với bạn bè.</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6 d-flex align-self-stretch ftco-animate">
                         <div class="media block-6 services d-block">
-                            <div class="icon"><span class="flaticon-route"></span></div>
+                            <div class="icon"><span class="fas fa-battery-empty"></span></div>
                             <div class="media-body">
-                                <h3 class="heading mb-3">Travel Arrangements</h3>
-                                <p>A small river named Duden flows by their place and supplies it with the necessary</p>
+                                <h3 class="heading mb-3">Cổng Sạc Điện Thoại</h3>
+                                <p>Chúng tôi hiểu rằng hành trình của những hành khách hiện đại ngày nay không thể thiếu điện thoại thông minh. Hãy an tâm vì trên xe luôn có cổng sạc điện thoại ở vị trí thuận tiện nhất cho bạn.</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6 d-flex align-self-stretch ftco-animate">
                         <div class="media block-6 services d-block">
-                            <div class="icon"><span class="flaticon-tour-guide"></span></div>
+                            <div class="icon"><span class="fas fa-toilet"></span></div>
                             <div class="media-body">
-                                <h3 class="heading mb-3">Private Guide</h3>
-                                <p>A small river named Duden flows by their place and supplies it with the necessary</p>
+                                <h3 class="heading mb-3">Toilet Trên Xe</h3>
+                                <p>Thấu hiểu được những “nỗi niềm” của hành khách khi trải nghiệm trên những chuyến xe đường dài, hiện các dòng xe Limousine của Tiến Oanh đều được trang bị WC trên xe giúp hành khách yên tâm ” Giải quyết nỗi buồn ” cho các chuyến đi xa.</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6 d-flex align-self-stretch ftco-animate">
                         <div class="media block-6 services d-block">
-                            <div class="icon"><span class="flaticon-map"></span></div>
+                            <div class="icon"><span class="fas fa-chair"></span></div>
                             <div class="media-body">
-                                <h3 class="heading mb-3">Location Manager</h3>
-                                <p>A small river named Duden flows by their place and supplies it with the necessary</p>
+                                <h3 class="heading mb-3">Ghế massage</h3>
+                                <p>Tương tự với những “nỗi niềm” trên xe là sự mệt mỏi khi đi trên những cung đường dài, giờ đây các dòng xe VIP của Thu Đức còn trang bị hệ thống massage với đa chế độ , giúp cho hành trình của bạn thêm trọn vẹn. </p>
                             </div>
                         </div>
                     </div>
@@ -147,124 +152,28 @@
         </div>
     </div>
 </section>
-<section class="ftco-counter img" id="section-counter">
-    <div class="container">
-        <div class="row d-flex">
-            <div class="col-md-6 d-flex">
-                <div class="img d-flex align-self-stretch"
-                     style="background-image:url(images/xabout.jpg.pagespeed.ic.nDtulIjrIF.jpg)"></div>
-            </div>
-            <div class="col-md-6 pl-md-5 py-5">
-                <div class="row justify-content-start pb-3">
-                    <div class="col-md-12 heading-section ftco-animate">
-                        <h2 class="mb-4">Make Your Tour Memorable and Safe With Us</h2>
-                        <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the
-                            blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language
-                            ocean.</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 justify-content-center counter-wrap ftco-animate">
-                        <div class="block-18 text-center mb-4">
-                            <div class="text">
-                                <strong class="number" data-number="300">0</strong>
-                                <span>Successful Tours</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 justify-content-center counter-wrap ftco-animate">
-                        <div class="block-18 text-center mb-4">
-                            <div class="text">
-                                <strong class="number" data-number="24000">0</strong>
-                                <span>Happy Tourist</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 justify-content-center counter-wrap ftco-animate">
-                        <div class="block-18 text-center mb-4">
-                            <div class="text">
-                                <strong class="number" data-number="200">0</strong>
-                                <span>Place Explored</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<section class="ftco-section">
-    <div class="container">
-        <div class="row justify-content-center pb-4">
-            <div class="col-md-12 heading-section text-center ftco-animate">
-                <h2 class="mb-4">Best Place Destination</h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3 ftco-animate">
-                <div class="project-destination">
-                    <a href="#" class="img" style="background-image:url(images/xplace-1.jpg.pagespeed.ic.0IZokSzB_d.jpg)">
-                        <div class="text">
-                            <h3>Singapore</h3>
-                            <span>8 Tours</span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-3 ftco-animate">
-                <div class="project-destination">
-                    <a href="#" class="img" style="background-image:url(images/xplace-2.jpg.pagespeed.ic.GEmhdFGa17.jpg)">
-                        <div class="text">
-                            <h3>Canada</h3>
-                            <span>2 Tours</span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-3 ftco-animate">
-                <div class="project-destination">
-                    <a href="#" class="img" style="background-image:url(images/xplace-3.jpg.pagespeed.ic.zUIxeeUImR.jpg)">
-                        <div class="text">
-                            <h3>Thailand</h3>
-                            <span>5 Tours</span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-3 ftco-animate">
-                <div class="project-destination">
-                    <a href="#" class="img" style="background-image:url(images/xplace-4.jpg.pagespeed.ic.9XzobDbnif.jpg)">
-                        <div class="text">
-                            <h3>Autralia</h3>
-                            <span>5 Tours</span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- end tiện ích -->
 <section class="ftco-section ftco-no-pt">
     <div class="container">
         <div class="row justify-content-center pb-4">
             <div class="col-md-12 heading-section text-center ftco-animate">
-                <h2 class="mb-4">Tour Destination</h2>
+                <h2 class="mb-4">Lộ Trình Phổ Biến</h2>
             </div>
         </div>
         <div class="row">
             <div class="col-md-4 ftco-animate">
                 <div class="project-wrap">
                     <a href="#" class="img"
-                       style="background-image:url(images/xdestination-1.jpg.pagespeed.ic.6x2A7ZnnYX.jpg)"></a>
+                       style="background-image:url({{asset('images/DakLak_NTD.jpg')}})"></a>
                     <div class="text p-4">
-                        <span class="price">$300/person</span>
-                        <span class="days">8 Days Tour</span>
-                        <h3><a href="#">Bali, Indonesia</a></h3>
-                        <p class="location"><span class="ion-ios-map"></span> Bali, Indonesia</p>
+                        <span class="price" style="text-align:center">Từ 250.000đ/Vé</span>
+                        <span class="days">Ngày Thường</span>
+                        <h3><a href="#">Sài Gòn - Đắk Lắk</a></h3>
+                        <p class="location"><span class="fas fa-location-arrow"></span> 345km</p>
                         <ul>
-                            <li><span class="flaticon-shower"></span>2</li>
-                            <li><span class="flaticon-king-size"></span>3</li>
-                            <li><span class="flaticon-mountains"></span>Near Mountain</li>
+                            <li><span class="fas fa-wifi"></span></li>
+                            <li><span class="fas fa-fan"></span></li>
+                            <li><span class="fas fa-prescription-bottle"></span></li>
                         </ul>
                     </div>
                 </div>
@@ -272,16 +181,16 @@
             <div class="col-md-4 ftco-animate">
                 <div class="project-wrap">
                     <a href="#" class="img"
-                       style="background-image:url(images/xdestination-2.jpg.pagespeed.ic.t4vZP3QwdR.jpg)"></a>
+                       style="background-image:url({{asset('images/Dalat.jpg')}})"></a>
                     <div class="text p-4">
-                        <span class="price">$300/person</span>
-                        <span class="days">10 Days Tour</span>
-                        <h3><a href="#">Bali, Indonesia</a></h3>
-                        <p class="location"><span class="ion-ios-map"></span> Bali, Indonesia</p>
+                        <span class="price" style="text-align:center">Từ 420.000đ/Vé</span>
+                        <span class="days">Ngày Thường</span>
+                        <h3><a href="#">Sài Gòn - Đà Lạt</a></h3>
+                        <p class="location"><span class="fas fa-location-arrow"></span> 310km</p>
                         <ul>
-                            <li><span class="flaticon-shower"></span>2</li>
-                            <li><span class="flaticon-king-size"></span>3</li>
-                            <li><span class="flaticon-sun-umbrella"></span>Near Beach</li>
+                            <li><span class="fas fa-wifi"></span></li>
+                            <li><span class="fas fa-fan"></span></li>
+                            <li><span class="fas fa-prescription-bottle"></span></li>
                         </ul>
                     </div>
                 </div>
@@ -289,16 +198,16 @@
             <div class="col-md-4 ftco-animate">
                 <div class="project-wrap">
                     <a href="#" class="img"
-                       style="background-image:url(images/xdestination-3.jpg.pagespeed.ic.aiz3_FRu5W.jpg)"></a>
+                       style="background-image:url({{asset('images/vungtau.jpg')}})"></a>
                     <div class="text p-4">
-                        <span class="price">$300/person</span>
-                        <span class="days">7 Days Tour</span>
-                        <h3><a href="#">Bali, Indonesia</a></h3>
-                        <p class="location"><span class="ion-ios-map"></span> Bali, Indonesia</p>
+                        <span class="price" style="text-align:center">Từ 200.000đ/Vé</span>
+                        <span class="days">Ngày Thường</span>
+                        <h3><a href="#">Sài Gòn - Vũng Tàu</a></h3>
+                        <p class="location"><span class="fas fa-location-arrow"></span> 110km</p>
                         <ul>
-                            <li><span class="flaticon-shower"></span>2</li>
-                            <li><span class="flaticon-king-size"></span>3</li>
-                            <li><span class="flaticon-sun-umbrella"></span>Near Beach</li>
+                            <li><span class="fas fa-wifi"></span></li>
+                            <li><span class="fas fa-fan"></span></li>
+                            <li><span class="fas fa-prescription-bottle"></span></li>
                         </ul>
                     </div>
                 </div>
@@ -306,16 +215,16 @@
             <div class="col-md-4 ftco-animate">
                 <div class="project-wrap">
                     <a href="#" class="img"
-                       style="background-image:url(images/xdestination-4.jpg.pagespeed.ic.A_n-WiKeVt.jpg)"></a>
+                       style="background-image:url({{asset('images/Saigon.jpeg')}})"></a>
                     <div class="text p-4">
-                        <span class="price">$300/person</span>
-                        <span class="days">8 Days Tour</span>
-                        <h3><a href="#">Bali, Indonesia</a></h3>
-                        <p class="location"><span class="ion-ios-map"></span> Bali, Indonesia</p>
+                        <span class="price" style="text-align:center">Từ 250.000đ/Vé</span>
+                        <span class="days">Ngày Thường</span>
+                        <h3><a href="#">Đắk Lắk - Sài Gòn</a></h3>
+                        <p class="location"><span class="fas fa-location-arrow"></span> 345km</p>
                         <ul>
-                            <li><span class="flaticon-shower"></span>2</li>
-                            <li><span class="flaticon-king-size"></span>3</li>
-                            <li><span class="flaticon-sun-umbrella"></span>Near Beach</li>
+                            <li><span class="fas fa-wifi"></span></li>
+                            <li><span class="fas fa-fan"></span></li>
+                            <li><span class="fas fa-prescription-bottle"></span></li>
                         </ul>
                     </div>
                 </div>
@@ -323,16 +232,16 @@
             <div class="col-md-4 ftco-animate">
                 <div class="project-wrap">
                     <a href="#" class="img"
-                       style="background-image:url(images/xdestination-5.jpg.pagespeed.ic.1R5kjlV8bj.jpg)"></a>
+                       style="background-image:url({{asset('images/Saigon2.jpg')}})"></a>
                     <div class="text p-4">
-                        <span class="price">$300/person</span>
-                        <span class="days">10 Days Tour</span>
-                        <h3><a href="#">Bali, Indonesia</a></h3>
-                        <p class="location"><span class="ion-ios-map"></span> Bali, Indonesia</p>
+                        <span class="price" style="text-align:center">Từ 420.000đ/Vé</span>
+                        <span class="days">Ngày Thường</span>
+                        <h3><a href="#">Đà Lạt - Sài Gòn</a></h3>
+                        <p class="location"><span class="fas fa-location-arrow"></span> 345km</p>
                         <ul>
-                            <li><span class="flaticon-shower"></span>2</li>
-                            <li><span class="flaticon-king-size"></span>3</li>
-                            <li><span class="flaticon-sun-umbrella"></span>Near Beach</li>
+                            <li><span class="fas fa-wifi"></span></li>
+                            <li><span class="fas fa-fan"></span></li>
+                            <li><span class="fas fa-prescription-bottle"></span></li>
                         </ul>
                     </div>
                 </div>
@@ -340,16 +249,16 @@
             <div class="col-md-4 ftco-animate">
                 <div class="project-wrap">
                     <a href="#" class="img"
-                       style="background-image:url(images/xdestination-6.jpg.pagespeed.ic.183HoLLAf2.jpg)"></a>
+                       style="background-image:url({{asset('images/binhduong.jpg')}})"></a>
                     <div class="text p-4">
-                        <span class="price">$300/person</span>
-                        <span class="days">7 Days Tour</span>
-                        <h3><a href="#">Bali, Indonesia</a></h3>
-                        <p class="location"><span class="ion-ios-map"></span> Bali, Indonesia</p>
+                        <span class="price" style="text-align:center">Từ 250.000đ/Vé</span>
+                        <span class="days">Ngày Thường</span>
+                        <h3><a href="#">Bình Dương - Đắk Lắk</a></h3>
+                        <p class="location"><span class="fas fa-location-arrow"></span> 300km</p>
                         <ul>
-                            <li><span class="flaticon-shower"></span>2</li>
-                            <li><span class="flaticon-king-size"></span>3</li>
-                            <li><span class="flaticon-sun-umbrella"></span>Near Beach</li>
+                            <li><span class="fas fa-wifi"></span></li>
+                            <li><span class="fas fa-fan"></span></li>
+                            <li><span class="fas fa-prescription-bottle"></span></li>
                         </ul>
                     </div>
                 </div>
@@ -362,7 +271,7 @@
     <div class="container">
         <div class="row justify-content-center pb-4">
             <div class="col-md-7 text-center heading-section ftco-animate">
-                <h2 class="mb-4">Tourist Feedback</h2>
+                <h2 class="mb-4">Nhận Xét Khách Hàng</h2>
             </div>
         </div>
         <div class="row ftco-animate">
@@ -456,7 +365,7 @@
     <div class="container">
         <div class="row justify-content-center pb-4">
             <div class="col-md-12 heading-section text-center ftco-animate">
-                <h2 class="mb-4">Recent Post</h2>
+                <h2 class="mb-4">Tin Tức</h2>
             </div>
         </div>
         <div class="row d-flex">
