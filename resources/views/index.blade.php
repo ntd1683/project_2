@@ -5,7 +5,7 @@
     </style>
 @endpush
 @section('content')
-<div class="hero-wrap js-fullheight" style="background-image:url(images/background_thu_duc.jpg)"
+<div class="hero-wrap js-fullheight" style="background-image:url({{asset('images/background_thu_duc.jpg')}})"
      data-stellar-background-ratio="0.5">
     <div class="overlay"></div>
     <div class="container" id="book_ticket">
@@ -47,6 +47,7 @@
                                         <div class="select-wrap">
                                             <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                                             <select name="" id="" class="form-control">
+                                                <option value="">Chọn nơi đi</option>
                                                 <option value="">Đắk Lắk</option>
                                                 <option value="">Nha Trang</option>
                                                 <option value="">Đà Lạt</option>
@@ -64,6 +65,7 @@
                                         <div class="select-wrap">
                                             <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                                             <select name="" id="" class="form-control">
+                                                <option value="">Chọn nơi đến</option>
                                                 <option value="">Đắk Lắk</option>
                                                 <option value="">Nha Trang</option>
                                                 <option value="">Đà Lạt</option>
