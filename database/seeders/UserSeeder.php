@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Enums\UserLevelEnum;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -25,7 +26,8 @@ class UserSeeder extends Seeder
                 'gender'=> $faker->boolean,
                 'birthdate'=> $faker->date,
                 'email'=> $faker->email,
-                'password'=> $faker->password,
+                'password'=>'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+                'remember_token'=>null,
                 'level'=> $faker->randomElement(UserLevelEnum::getValues()),
             ];
         }

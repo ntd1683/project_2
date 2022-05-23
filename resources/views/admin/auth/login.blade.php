@@ -31,7 +31,16 @@
                         <h3><span>Đăng Nhập</span></h3>
                         <p class="text-muted">Để vào trang tổng quan</p>
                     </div>
-                    <form action="https://truelysell-admin.dreamguystech.com/template/index.html">
+                    @if (session()->has('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Lỗi ! </strong> {{session()->get('error')}}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="border:0">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                    @endif
+                    <form action="{{route('admin.process_login')}}" method="post">
+                        @csrf
                         <div class="form-group">
                             <label class="control-label">Email</label>
                             <input class="form-control" type="email" placeholder="Vui lòng nhập email" name="email">
@@ -41,6 +50,20 @@
                             <input class="form-control" type="password" placeholder="Vui lòng nhập mật khẩu" name="password" id="password">
                             <i class="ti-eye" onclick="show_password()"></i>
                         </div>
+
+                        <div class="form-group row">
+                            <div class="col-lg-10">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <input type="checkbox" name="remember">
+                                        </span>
+                                    </div>
+                                    <label class="col-form-label" style="margin-left:10px;">Ghi nhớ đăng nhập</label>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="text-center">
                             <button class="btn btn-primary btn-block account-btn" type="submit">Đăng Nhập</button>
                         </div>
