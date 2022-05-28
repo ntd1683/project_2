@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\SeatType;
 use App\Models\Diagram;
 use Illuminate\Database\Seeder;
 
@@ -20,8 +21,8 @@ class DiagramSeeder extends Seeder
             $arr[] = [
                 'name' => $faker->boolean ? ($faker->firstName . ' ' . $faker->lastName) : null,
                 'diagram' => $faker->imageUrl,
-                'seat_type' => $faker->boolean,
-                'seat_number' => $faker->numberBetween(30, 60),
+                'seat_type' => $faker->randomElement(SeatType::getValues()),
+                'seat_number' => $faker->randomElement(['25', '30', '35', '45', '50', '55', '60']),
             ];
         }
         Diagram::insert($arr);
