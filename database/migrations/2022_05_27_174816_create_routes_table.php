@@ -23,8 +23,7 @@ class CreateRoutesTable extends Migration
             $table->integer('distance')->nullable();
 
             //set unique 2 columns 'location_start_id' and 'location_end_id'
-
-            // $table->unique(['location_start_id', 'location_end_id']); // 2 cột này là unique nhưng éo phải cách này:(
+            $table->unique(['location_start_id', 'location_end_id']);
         });
     }
 
