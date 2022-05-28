@@ -19,6 +19,7 @@ class CreateBillDetailsTable extends Migration
             $table->foreignId('buses_id')->constrained('buses');
             $table->foreignId('bill_id')->constrained('bills');
             $table->float('price');
+            $table->timestamps();
             $table->unique(['seat_id', 'buses_id', 'bill_id']);
         });
     }
