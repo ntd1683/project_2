@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{asset('plugins/fontawesome/css/fontawesome.min.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/fontawesome/css/all.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/admin.css')}}">
+    <link rel="stylesheet" href="{{asset('plugins/themify-icons/themify-icons.css')}}">
 </head>
 
 <body>
@@ -25,8 +26,8 @@
                         </div>
                     </div>
                     <div class="login-header">
-                        <h3><span>Quên Mật Khẩu?</span></h3>
-                        <p class="text-muted">Nhập email của bạn để nhận liên kết đặt lại mật khẩu</p>
+                        <h3><span>Đổi Mật Khẩu</span></h3>
+                        <p class="text-muted">Đặt mật khẩu mới</p>
                         @if (session()->has('error'))
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <strong>Lỗi ! </strong> {{session()->get('error')}}
@@ -48,10 +49,18 @@
                             </div>
                         @endif
                     </div>
-                    <form method="post" action="{{route('admin.process_forgot_password')}}">
-                        <div class="form-group mb-4">
-                            <label class="control-label">Email</label>
-                            <input class="form-control" type="email" placeholder="Nhập email của bạn" name="email" required>
+                    <form method="post" action="{{route('admin.process_reset_password')}}">
+                        @csrf
+                        <input type="hidden" name="token" value="{{$token}}">
+                        <div class="form-group mb-4" style="position:relative">
+                            <label class="control-label">Mật khẩu mới</label>
+                            <input id="password" class="form-control" type="password" name="password" placeholder="Nhập mật khẩu của bạn">
+                            <i class="ti-eye" onclick="show_password()"></i>
+                        </div>
+                        <div class="form-group mb-4" style="position:relative">
+                            <label class="control-label">Nhập lại mật khẩu</label>
+                            <input id="password1" class="form-control" type="password" name="confirm_password" placeholder="Nhập lại mật khẩu của bạn">
+                            <i class="ti-eye" onclick="show_password1()"></i>
                         </div>
                         <div class="text-center">
                             <button class="btn btn-primary btn-block account-btn" type="submit">Khôi phục mật khẩu</button>
@@ -69,4 +78,23 @@
 <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 <script src="{{asset('js/admin.js')}}"></script>
 </body>
+<script>
+    function show_password() {
+        let password = $("#password");
+        if (password.attr("type") === "password") {
+            password.attr("type", "text");
+        } else {
+            password.attr("type", "password");
+        }
+    }
+    function show_password1(){
+        let password1 = $("#password1");
+        if(password1.attr("type") === "password"){
+            password1.attr("type","text");
+        }
+        else{
+            password1.attr("type","password");
+        }
+    }
+</script>
 </html>

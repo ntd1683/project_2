@@ -160,9 +160,8 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="admin-profile.html">Profile</a>
-                <a class="dropdown-item" href="login.html">Logout</a>
+                <a class="dropdown-item" href="{{route('admin.logout')}}">Logout</a>
             </div>
         </li>
-
     </ul>
 </div>

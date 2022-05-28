@@ -39,6 +39,25 @@
                             </button>
                         </div>
                     @endif
+                    @if (session()->has('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Lưu ý : </strong> {{session()->get('success')}}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="border:0">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                    @endif
+                    @if ($errors->any())
+                        <div class="card-header">
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    @endif
                     <form action="{{route('admin.process_login')}}" method="post">
                         @csrf
                         <div class="form-group">
