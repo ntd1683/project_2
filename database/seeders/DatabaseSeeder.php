@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Carriage;
+use App\Models\Seat;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -20,5 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RouteSeeder::class);
         $this->call(DiagramSeeder::class);
         $this->call(CarriageSeeder::class);
+        $this->call(SeatSeeder::class);
     }
 }
