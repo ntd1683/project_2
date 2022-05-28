@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DiagramSeeder::class);
         $this->call(CarriageSeeder::class);
         $this->call(SeatSeeder::class);
+        $this->call(BillSeeder::class);
     }
 }
