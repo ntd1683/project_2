@@ -2,15 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserLevelEnum;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
+
+    private object $model;
+    private string $table;
+
+    public function __construct(){
+        $this->model = User::query();
+        $this->table = (New User())->getTable();
+        $route = Str::afterLast(Route::getFacadeRoot()->current()->uri(), '/');
+        View::share([
+            'title'=> ucwords($this->table),
+            'route'=>$route,
+        ]);
+    }
+
     public function index()
     {
-        return view('admin.index');
+        $level_user = Auth::user()->level;
+        $user = UserLevelEnum::getKeyByValue($level_user);
+        $title ='Chào ' . $user .', chúc bạn một ngày tốt lành !!!';
+        return view('admin.index',[
+            'title' =>$title,
+        ]);
+    }
+
+    public function show_user()
+    {
+        $data = $this->model->paginate(15);
+        return view('admin.user',[
+            'data' => $data,
+        ]);
     }
 
     /**

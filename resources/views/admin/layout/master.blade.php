@@ -10,9 +10,12 @@
     <link rel="stylesheet" href="{{asset('plugins/fontawesome/css/all.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/animate.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/admin.css')}}">
+    <link rel="stylesheet" href="{{asset('css/jquery.toast.min.css')}}">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,700;1,100&display=swap');
     </style>
+
+    @stack('css')
 </head>
 <body>
 <div class="main-wrapper">
@@ -26,6 +29,13 @@
     <div class="page-wrapper">
         <div class="content container-fluid">
             <!-- start content -->
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-12">
+                        <h3 class="page-title">{{$title}}</h3>
+                    </div>
+                </div>
+            </div>
                 @yield('content')
             <!-- end content -->
         </div>
@@ -42,9 +52,35 @@
 <script src="{{asset('js/moment.min.js')}}"></script>
 <script src="{{asset('js/bootstrap-datetimepicker.min.js')}}"></script>
 <script src="{{asset('plugins/slimscroll/jquery.slimscroll.min.js')}}"></script>
-<script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-<script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
+
+@stack('js')
+{{--<script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>--}}
+{{--<script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>--}}
+
 <script src="{{asset('js/select2.min.js')}}"></script>
 <script src="{{asset('js/admin.js')}}"></script>
+<script src="{{asset('js/jquery.toast.min.js')}}"></script>
+<script>
+    $(function() {
+        @if (session()->has('success'))
+        $.toast({
+            heading: 'Import Success',
+            text: '{{session()->get('success')}}',
+            icon: 'success',
+            position: 'top-right',
+            showHideTransition: 'slide',
+        });
+        @endif
+        @if (session()->has('error'))
+        $.toast({
+            heading: 'Error',
+            text: '{{session()->get('error')}}',
+            icon: 'error',
+            position: 'top-right',
+            showHideTransition: 'slide',
+        });
+        @endif
+    });
+</script>
 </body>
 </html>

@@ -1,12 +1,5 @@
 @extends('admin.layout.master')
 @section('content')
-            <div class="page-header">
-                <div class="row">
-                    <div class="col-12">
-                        <h3 class="page-title">Welcome Admin!</h3>
-                    </div>
-                </div>
-            </div>
             <div class="row">
                 <div class="col-xl-3 col-sm-6 col-12">
                     <div class="card">
