@@ -17,6 +17,10 @@ class CheckAdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        if(!Auth::user()->level){
+            return redirect()->route('admin.login')->with('error','Bạn chưa đăng nhập !!!');
+        }
+
         if(Auth::user()->level==2){
             return $next($request);
         }

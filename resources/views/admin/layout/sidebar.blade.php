@@ -15,7 +15,7 @@
                 <li @if($route === 'users')
                     class="active"
                     @endif>
-                    <a href="{{route('admin.users.show_user')}}"><i class="fas fa-user-tie"></i> <span> Quản Lý Nhân Viên</span></a>
+                    <a href="{{route('admin.users.show_users')}}"><i class="fas fa-user-tie"></i> <span> Quản Lý Nhân Viên</span></a>
                 </li>
             </ul>
         </div>

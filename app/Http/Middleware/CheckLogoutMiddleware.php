@@ -18,7 +18,7 @@ class CheckLogoutMiddleware
     public function handle(Request $request, Closure $next)
     {
         if(Auth::check()){
-            return redirect()->route('admin.index');
+            return redirect()->route('admin.index')->with('error','Bạn đang đăng nhập !!!');
         }
         return $next($request);
     }

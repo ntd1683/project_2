@@ -18,7 +18,7 @@ class CheckLoginMiddleware
     public function handle(Request $request, Closure $next)
     {
         if(Auth::guest()){
-            return redirect()->route('admin.login');
+            return redirect()->route('admin.login')->with('error','Bạn chưa đăng nhập !!!');
         }
         return $next($request);
     }

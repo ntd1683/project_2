@@ -9,12 +9,14 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Model implements AuthenticatableContract
 {
     use Authenticatable;
     use Notifiable;
     use HasFactory;
+    use SoftDeletes;
 
     public $timestamps = false;
 

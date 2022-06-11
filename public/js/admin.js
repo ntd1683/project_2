@@ -12,7 +12,6 @@
 	var Sidemenu = function() {
 		this.$menuItem = $('#sidebar-menu a');
 	};
-
 	function init() {
 		var $this = Sidemenu;
 		$('#sidebar-menu a').on('click', function(e) {
@@ -93,7 +92,6 @@
             "bFilter": false,
         });
     }
-
     // Owl Carousel
 
     if ($('.images-carousel').length > 0) {
@@ -157,7 +155,6 @@
 		}, 300);
 		return false;
 	});
-
 	$(document).on('mouseover', function(e) {
 		e.stopPropagation();
 		if($('body').hasClass('mini-sidebar') && $('#toggle_btn').is(':visible')) {

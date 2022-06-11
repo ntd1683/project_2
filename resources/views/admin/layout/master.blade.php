@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <title>Xe Thu Đức</title>
+    <title>Xe Thu Đức {{  $title ? '- '. $title : '' }}</title>
     <link rel="shortcut icon" href="{{asset('img/favicon.png')}}">
     <link rel="stylesheet" href="{{asset('plugins/bootstrap/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/fontawesome/css/fontawesome.min.css')}}">
@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{asset('css/animate.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/admin.css')}}">
     <link rel="stylesheet" href="{{asset('css/jquery.toast.min.css')}}">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,700;1,100&display=swap');
     </style>
@@ -32,7 +33,7 @@
             <div class="page-header">
                 <div class="row">
                     <div class="col-12">
-                        <h3 class="page-title">{{$title}}</h3>
+                        <h3 class="page-title">{{$title ?? ''}}{{$title_index ?? ''}}</h3>
                     </div>
                 </div>
             </div>
@@ -54,8 +55,6 @@
 <script src="{{asset('plugins/slimscroll/jquery.slimscroll.min.js')}}"></script>
 
 @stack('js')
-{{--<script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>--}}
-{{--<script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>--}}
 
 <script src="{{asset('js/select2.min.js')}}"></script>
 <script src="{{asset('js/admin.js')}}"></script>
