@@ -17,7 +17,6 @@
 
 A. Khách hàng không có tài khoản
 
--   Đăng ký tài khoản
 -   Tìm kiếm các chuyến xe
 -   Xem thông tin chuyến xe
 -   Đặt vé xe
