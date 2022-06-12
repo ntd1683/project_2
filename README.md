@@ -27,11 +27,6 @@ A. Khách hàng không có tài khoản
 -   Đặt vé vận chuyển hàng hoá
 -   Kiểm tra đơn hàng
 -   Hoàn vé
-
-B. Khách hàng có tài khoản
-
--   Quản lý ,đăng xuất tài khoản
--   Đầy đủ của khách hàng không có tài khoản
 -   Lịch sử đặt vé
 
 C. Nhân viên
