@@ -16,11 +16,12 @@ class RouteSeeder extends Seeder
     public function run()
     {
         $arr = [];
+        $location = Location::query()->pluck('id')->toArray();
         $faker = \Faker\Factory::create('vi_VN');
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 500; $i++) {
             $arr[] = [
-                'location_start_id' => Location::query()->inRandomOrder()->value('id'),
-                'location_end_id' => Location::query()->inRandomOrder()->value('id'),
+                'location_start_id' => $faker->randomElement($location),
+                'location_end_id' => $faker->randomElement($location),
                 'name' => $faker->boolean ? ($faker->firstName . ' ' . $faker->lastName . ' - ' . $faker->firstName . ' ' . $faker->lastName) : null,
                 'time' => $faker->boolean ? ($faker->numberBetween(1, 48)) : null,
                 'distance' => $faker->boolean ? ($faker->numberBetween(15, 200)) : null,

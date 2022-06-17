@@ -19,6 +19,7 @@ class CreateRouteDriverCarsTable extends Migration
             $table->foreignId('driver_id')->constrained('users');
             $table->foreignId('car_id')->constrained('carriages');
             $table->float('price');
+            $table->softDeletes();
             $table->unique(['route_id', 'driver_id', 'car_id']);
         });
     }

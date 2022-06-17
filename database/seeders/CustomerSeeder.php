@@ -16,17 +16,19 @@ class CustomerSeeder extends Seeder
     {
         $arr = [];
         $faker = \Faker\Factory::create('vi_VN');
-        for ($i = 1; $i <= 1000; $i++) {
+        for ($i = 1; $i <= 10000; $i++) {
             $arr[] = [
                 'name' => $faker->firstName . ' ' . $faker->lastName,
                 'email' => $faker->email,
                 'phone' => $faker->phoneNumber,
                 'address' => $faker->boolean ? ($faker->streetAddress . ', ' . $faker->hamletName . ', ' . $faker->districtName . ', ' . $faker->province) : null,
                 'gender' => $faker->boolean,
-
                 'birthday' => $faker->boolean ? ($faker->date) : null
             ];
+            if ($i % 1000 === 0) {
+                Customer::insert($arr);
+                $arr = [];
+            }
         }
-        Customer::insert($arr);
     }
 }

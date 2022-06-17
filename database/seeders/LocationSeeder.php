@@ -16,7 +16,7 @@ class LocationSeeder extends Seeder
     {
         $arr = [];
         $faker = \Faker\Factory::create('vi_VN');
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 500; $i++) {
             $arr[] = [
                 'name' => $faker->boolean ? ($faker->firstName . ' ' . $faker->lastName) : null,
                 'address' => $faker->streetAddress . ', ' . $faker->hamletName,

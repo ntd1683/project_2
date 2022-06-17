@@ -21,6 +21,7 @@ class CreateCustomersTable extends Migration
             $table->string('address')->nullable();
             $table->boolean('gender')->default(1);
             $table->date('birthday')->nullable();
+            $table->softDeletes();
         });
     }
 

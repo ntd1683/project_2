@@ -17,7 +17,7 @@ class TicketSeeder extends Seeder
     {
         $arr = [];
         $faker = \Faker\Factory::create('vi_VN');
-        for ($i = 1; $i <= 500; $i++) {
+        for ($i = 1; $i <= 1000; $i++) {
             $arr[] = [
                 'bill_detail_id' => Bill_detail::query()->where('id', $i)->value('id'),
                 'code' => $faker->regexify('[A-Z0-9]{10}'),

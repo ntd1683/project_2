@@ -19,6 +19,7 @@ class CreateLocationsTable extends Migration
             $table->string('address');
             $table->string('district');
             $table->string('city');
+            $table->softDeletes();
         });
     }
 

@@ -18,6 +18,7 @@ class CreateCarriagesTable extends Migration
             $table->string('license_plate')->unique();
             $table->string('category')->nullable();
             $table->foreignId('diagram_id')->constrained('diagrams');
+            $table->softDeletes();
         });
     }
 

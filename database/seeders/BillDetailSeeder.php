@@ -18,12 +18,15 @@ class BillDetailSeeder extends Seeder
     public function run()
     {
         $arr = [];
+        $seat = Seat::query()->pluck('id')->toArray();
+        $buses = Buses::query()->pluck('id')->toArray();
+        $bill = Bill::query()->pluck('id')->toArray();
         $faker = \Faker\Factory::create('vi_VN');
-        for ($i = 1; $i <= 500; $i++) {
+        for ($i = 1; $i <= 1000; $i++) {
             $arr[] = [
-                'seat_id' => Seat::query()->inRandomOrder()->value('id'),
-                'buses_id' => Buses::query()->inRandomOrder()->value('id'),
-                'bill_id' => Bill::query()->inRandomOrder()->value('id'),
+                'seat_id' => $faker->randomElement($seat),
+                'buses_id' => $faker->randomElement($buses),
+                'bill_id' => $faker->randomElement($bill),
                 'price' => $faker->numberBetween(80000, 1000000),
             ];
         }

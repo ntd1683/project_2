@@ -20,7 +20,8 @@ class CreateTicketsTable extends Migration
             $table->string('name_passenger', 50)->nullable();
             $table->string('phone_passenger', 20)->nullable();
             $table->string('email_passenger', 50)->nullable();
-            // $table->timestamps();
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 

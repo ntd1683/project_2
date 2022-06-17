@@ -16,10 +16,11 @@ class BillSeeder extends Seeder
     public function run()
     {
         $arr = [];
+        $customer = Customer::query()->pluck('id')->toArray();
         $faker = \Faker\Factory::create('vi_VN');
         for ($i = 1; $i <= 1000; $i++) {
             $arr[] = [
-                'customer_id' => Customer::query()->inRandomOrder()->value('id'),
+                'customer_id' => $faker->randomElement($customer),
                 'code' => $faker->unique()->regexify('[A-Z0-9]{8}'),
                 'price' => $faker->numberBetween(80000, 1000000),
                 'payment_method' => $faker->boolean ? ($faker->randomElement([1, 2, 3])) : null,
