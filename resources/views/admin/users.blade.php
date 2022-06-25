@@ -216,15 +216,21 @@
                             data: form.serialize(),
                             dataType: "json",
                             success: function (response) {
-                                if(response.status == 'true'){
-                                    let reponse_heading = 'Success';
-                                    let reponse_text = 'Chúc mừng !!! Bạn đã xoá thành công!';
-                                    let reponse_icon = 'success';
+                                var reponse_heading;
+                                var reponse_text;
+                                var reponse_icon;
+                                if(response.status){
+                                    console.log(response.status);
+                                    reponse_heading = 'Success';
+                                    reponse_text = 'Chúc mừng !!! Bạn đã xoá thành công!';
+                                    reponse_icon = 'success';
                                 }
-                                else{
-                                    var reponse_heading = 'Error';
-                                    var reponse_text = 'Bạn không thể xoá quản lý';
-                                    var reponse_icon = 'error';
+                                else if(!response.status){
+                                    console.log(response.status);
+                                    console.log('1');
+                                    reponse_heading = 'Error';
+                                    reponse_text = 'Bạn không thể xoá quản lý';
+                                    reponse_icon = 'error';
                                 }
                                 $.toast({
                                     heading: reponse_heading,
@@ -235,15 +241,6 @@
                                 });
                                 table.draw();
                             },
-                            // error: function (response) {
-                            //     $.toast({
-                            //         heading: 'Error',
-                            //         text: 'Xoá không thành công , vui lòng thử lại !!!',
-                            //         icon: 'error',
-                            //         position: 'top-right',
-                            //         showHideTransition: 'slide',
-                            //     });
-                            // },
                         });
                     }
                 });
