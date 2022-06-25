@@ -3,7 +3,6 @@
 ## _Dự án 2_
 
 [![Sơ đồ thực thể](https://app.diagrams.net/images/favicon-32x32.png)](https://drive.google.com/file/d/1qfVDzcZ-0YrhXZj2plWPastpKTbFDVBz/view?usp=sharing)
-[![Cơ sở dữ liệu](https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico)](https://docs.google.com/spreadsheets/d/1O1bjqukDQQ1wWXSLpd1Bd9HEHkw5kdPF8rcpVJTib2A/edit?usp=sharing)
 [![words](https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico)](https://docs.google.com/document/d/1Oir34B5DKQnxl5S3Xs-2KE8W63NdEBRrGMP61WMaMYo/edit?usp=sharing)
 
 ### Đối tượng sử dụng
