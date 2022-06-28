@@ -22,7 +22,7 @@ class RouteDriverCarSeeder extends Seeder
         $user = User::query()->pluck('id')->toArray();
         $carriage = Carriage::query()->pluck('id')->toArray();
         $faker = \Faker\Factory::create('vi_VN');
-        for ($i = 1; $i <= 10000; $i++) {
+        for ($i = 1; $i <= 1000; $i++) {
             $driver_id = $faker->randomElement($user);
             $driver_level = User::query()->where('id', $driver_id)->value('level');
             if ($driver_level == 0) {

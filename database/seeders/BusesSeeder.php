@@ -24,7 +24,10 @@ class BusesSeeder extends Seeder
                 'departure_time' => $faker->dateTimeBetween('-1 years', '+1 years'),
                 // 'status' => null,
             ];
+            if ($i % 100 == 0) {
+                Buses::insert($arr);
+                $arr = [];
+            }
         }
-        Buses::insert($arr);
     }
 }

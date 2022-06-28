@@ -15,12 +15,13 @@ class CreateBillDetailsTable extends Migration
     {
         Schema::create('bill_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('seat_id')->constrained('seats');
+            // $table->foreignId('seat_id')->constrained('seats');
             $table->foreignId('buses_id')->constrained('buses');
             $table->foreignId('bill_id')->constrained('bills');
+            $table->integer('quantity');
             $table->float('price');
             $table->timestamps();
-            $table->unique(['seat_id', 'buses_id', 'bill_id']);
+            $table->unique(['buses_id', 'bill_id']);
         });
     }
 
