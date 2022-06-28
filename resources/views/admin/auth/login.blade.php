@@ -61,11 +61,11 @@
                     <form action="{{route('admin.process_login')}}" method="post">
                         @csrf
                         <div class="form-group">
-                            <label class="control-label">Email</label>
-                            <input class="form-control" type="email" placeholder="Vui lòng nhập email" name="email">
+                            <label class="control-label" for="email">Email</label>
+                            <input class="form-control" type="email" placeholder="Vui lòng nhập email" name="email" id="email">
                         </div>
                         <div class="form-group mb-4" style="position:relative">
-                            <label class="control-label">Mật khẩu</label>
+                            <label class="control-label" for="password">Mật khẩu</label>
                             <input class="form-control" type="password" placeholder="Vui lòng nhập mật khẩu" name="password" id="password">
                             <i class="ti-eye" onclick="show_password()"></i>
                         </div>
@@ -75,10 +75,10 @@
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">
-                                            <input type="checkbox" name="remember">
+                                            <input type="checkbox" name="remember" id="remember">
                                         </span>
                                     </div>
-                                    <label class="col-form-label" style="margin-left:10px;">Ghi nhớ đăng nhập</label>
+                                    <label class="col-form-label" style="margin-left:10px;" for="remember">Ghi nhớ đăng nhập</label>
                                 </div>
                             </div>
                         </div>
