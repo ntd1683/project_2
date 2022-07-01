@@ -54,8 +54,6 @@
 <script src="{{asset('js/bootstrap-datetimepicker.min.js')}}"></script>
 <script src="{{asset('plugins/slimscroll/jquery.slimscroll.min.js')}}"></script>
 
-@stack('js')
-
 <script src="{{asset('js/select2.min.js')}}"></script>
 <script src="{{asset('js/admin.js')}}"></script>
 <script src="{{asset('js/jquery.toast.min.js')}}"></script>
@@ -81,5 +79,6 @@
         @endif
     });
 </script>
+@stack('js')
 </body>
 </html>

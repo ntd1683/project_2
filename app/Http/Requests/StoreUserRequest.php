@@ -15,7 +15,7 @@ class StoreUserRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,7 @@ class StoreUserRequest extends FormRequest
      */
     public function rules()
     {
+        dd('name');
         return [
             'name'=>[
                 'string',
@@ -46,6 +47,7 @@ class StoreUserRequest extends FormRequest
             ],
             'birthdate'=>[
                 'required',
+                'date',
             ],
             'level'=>[
                 'required',
@@ -53,12 +55,6 @@ class StoreUserRequest extends FormRequest
                 Rule::in(UserLevelEnum::getValues()),
             ],
             'address' =>[
-                'required',
-            ],
-            'district'=>[
-                'required',
-            ],
-            'province'=>[
                 'required',
             ],
         ];

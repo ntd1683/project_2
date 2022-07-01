@@ -21,8 +21,14 @@ class User extends Model implements AuthenticatableContract
     public $timestamps = false;
 
     protected $fillable =[
-        'email',
-        'password',
+        "name",
+        "phone",
+        "address",
+        "gender",
+        "birthdate",
+        "email",
+        "password",
+        "level"
     ];
 
     public function getGenderNameAttribute():string

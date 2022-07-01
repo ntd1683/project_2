@@ -12,10 +12,11 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
+use Throwable;
 
 class UserController extends Controller
 {
-
+    use ResponseTrait;
     private object $model;
     private string $table;
 
@@ -106,25 +107,38 @@ class UserController extends Controller
         $levels_us = UserLevelEnum::asArray();
         $levels=[];
         foreach ($levels_us as $level=>$value) {
-            if($value !== 2){
                 $level = UserLevelEnum::getKeyByValue($value);
                 $levels[$level]=$value;
-            }
         }
         return view('admin.create',[
             'levels' => $levels,
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreUserRequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreUserRequest $request)
     {
-        //
+        dd($request->name);
+        try{
+            $district = $request->get('district');
+            $province = $request->get('province');
+            $address = $request->get('address');
+            $address1 = $address . $district . $province;
+            $arr = $request->only([
+                "name",
+                "phone",
+                "gender",
+                "birthdate",
+                "email",
+                "password",
+                "level"
+            ]);
+            $arr['address'] = $address1;
+            User::create($arr);
+            return redirect()->route('admin.show_users')->with('success','Bạn thêm thành công !!!');
+        }
+        catch(Throwable $e){
+            return redirect()->route('admin.create')->with('error','Bạn thêm thất bại rồi !!!');
+        }
     }
 
     /**
