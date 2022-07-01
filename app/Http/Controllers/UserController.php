@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
 use Throwable;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -21,7 +22,7 @@ class UserController extends Controller
     private string $table;
 
     public function __construct(){
-        $this->model = User::query();
+        $this->model = (new User())->query();
         $this->table = (New User())->getTable();
         $route = Str::afterLast(Route::getFacadeRoot()->current()->uri(), '/');
         View::share([
@@ -97,7 +98,7 @@ class UserController extends Controller
             $levels[$level]=$value;
         }
 
-        return view('admin.users',[
+        return view('admin.staff.users',[
             'levels' => $levels,
         ]);
     }
@@ -110,19 +111,18 @@ class UserController extends Controller
                 $level = UserLevelEnum::getKeyByValue($value);
                 $levels[$level]=$value;
         }
-        return view('admin.create',[
+        return view('admin.staff.create',[
             'levels' => $levels,
         ]);
     }
 
     public function store(StoreUserRequest $request)
     {
-        dd($request->name);
         try{
             $district = $request->get('district');
             $province = $request->get('province');
             $address = $request->get('address');
-            $address1 = $address . $district . $province;
+            $address1 = $address .' '. $district. ' ' . $province;
             $arr = $request->only([
                 "name",
                 "phone",
@@ -133,11 +133,13 @@ class UserController extends Controller
                 "level"
             ]);
             $arr['address'] = $address1;
-            User::create($arr);
-            return redirect()->route('admin.show_users')->with('success','Bạn thêm thành công !!!');
+//            dd($arr);
+            $this->model->create($arr);
+            return redirect()->route('admin.users.show_users')->with('success','Bạn thêm thành công !!!');
         }
         catch(Throwable $e){
-            return redirect()->route('admin.create')->with('error','Bạn thêm thất bại rồi !!!');
+//            dd();
+            return redirect()->route('admin.users.create')->with('error','Bạn thêm thất bại rồi !!!');
         }
     }
 

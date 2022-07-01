@@ -27,7 +27,6 @@ class User extends Model implements AuthenticatableContract
         "gender",
         "birthdate",
         "email",
-        "password",
         "level"
     ];
 

@@ -59,6 +59,17 @@
 <script src="{{asset('js/jquery.toast.min.js')}}"></script>
 <script>
     $(function() {
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+        $.toast({
+            heading: 'Error',
+            text: '{{ $error }}',
+            icon: 'error',
+            position: 'top-right',
+            showHideTransition: 'slide',
+        });
+            @endforeach
+        @endif
         @if (session()->has('success'))
         $.toast({
             heading: 'Import Success',
