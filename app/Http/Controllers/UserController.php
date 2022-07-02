@@ -25,9 +25,18 @@ class UserController extends Controller
         $this->model = (new User())->query();
         $this->table = (New User())->getTable();
         $route = Str::afterLast(Route::getFacadeRoot()->current()->uri(), '/');
+//        $route = '/';
+//        dd(Str::afterLast(Route::getFacadeRoot()->current()->uri(), '/'));
+        $levels_us = UserLevelEnum::asArray();
+        $levels=[];
+        foreach ($levels_us as $level=>$value) {
+            $level = UserLevelEnum::getKeyByValue($value);
+            $levels[$level]=$value;
+        }
         View::share([
             'title'=> ucwords($this->table),
             'route'=>$route,
+            'levels' => $levels,
         ]);
     }
 
@@ -66,6 +75,9 @@ class UserController extends Controller
             ->addColumn('destroy', function ($object) {
                 return route('admin.users.destroy', $object);
             })
+            ->addColumn('edit', function ($object) {
+                return route('admin.users.edit',$object);
+            })
             ->filterColumn('level', function($query, $keyword) {
                 if($keyword !=='-1'){
                     $query->where('level',$keyword);
@@ -91,29 +103,13 @@ class UserController extends Controller
 
     public function show_users()
     {
-        $levels_us = UserLevelEnum::asArray();
-        $levels=[];
-        foreach ($levels_us as $level=>$value) {
-            $level = UserLevelEnum::getKeyByValue($value);
-            $levels[$level]=$value;
-        }
 
-        return view('admin.staff.users',[
-            'levels' => $levels,
-        ]);
+        return view('admin.staff.users');
     }
 
     public function create()
     {
-        $levels_us = UserLevelEnum::asArray();
-        $levels=[];
-        foreach ($levels_us as $level=>$value) {
-                $level = UserLevelEnum::getKeyByValue($value);
-                $levels[$level]=$value;
-        }
-        return view('admin.staff.create',[
-            'levels' => $levels,
-        ]);
+        return view('admin.staff.create');
     }
 
     public function store(StoreUserRequest $request)
@@ -122,7 +118,7 @@ class UserController extends Controller
             $district = $request->get('district');
             $province = $request->get('province');
             $address = $request->get('address');
-            $address1 = $address .' '. $district. ' ' . $province;
+            $address1 = $address .','. $district. ',' . $province;
             $arr = $request->only([
                 "name",
                 "phone",
@@ -139,7 +135,7 @@ class UserController extends Controller
         }
         catch(Throwable $e){
 //            dd();
-            return redirect()->route('admin.users.create')->with('error','Bạn thêm thất bại rồi !!!');
+            return redirect()->route('admin.users.create')->with('error','Bạn thêm thất bại rồi, vui lòng thử lại sau !!!');
         }
     }
 
@@ -149,32 +145,54 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show($id)
     {
-        //
+        echo $id;
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Display the specified resource.
      *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(\App\Models\User $user)
     {
-        //
+//        dd($user);
+//        dd($user);
+//        $user = $this->model->find($id);
+        $address_user = explode(',', $user->address);
+        return view('admin.staff.edit',[
+            'user'=> $user,
+            'address_user'=> $address_user,
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateUserRequest  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request,$user)
     {
-        //
+        try{
+            $district = $request->get('district');
+            $province = $request->get('province');
+            $address = $request->get('address');
+            $address1 = $address .','. $district. ',' . $province;
+            $arr = $request->only([
+                "name",
+                "phone",
+                "gender",
+                "birthdate",
+                "email",
+                "password",
+                "level"
+            ]);
+            $arr['address'] = $address1;
+            $object = $this->model->find($user);
+            $object -> fill($arr);
+            $object->save();
+            return redirect()->route('admin.users.show_users')->with('success','Bạn sửa thành công !!!');
+        }
+        catch(Throwable $e){
+            return redirect()->route('admin.users.create')->with('error','Bạn sửa thất bại rồi,vui lòng thử lại sau !!!');
+        }
     }
 
     /**
