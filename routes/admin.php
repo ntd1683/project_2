@@ -36,7 +36,9 @@ Route::group([
     Route::get('/', [UserController::class,'show_users'])->name('show_users');
     Route::get('/create', [UserController::class,'create'])->name('create');
     Route::post('/store', [UserController::class,'store'])->name('store');
-    Route::delete('/destroy{user}',[UserController::class,'destroy'])->name('destroy');
+    Route::delete('/destroy/{user}',[UserController::class,'destroy'])->name('destroy');
+    Route::get('/edit/{user}',[UserController::class,'edit'])->name('edit');
+    Route::post('/update/{user}',[UserController::class,'update'])->name('update');
 
 //    api
     Route::get('/api',[UserController::class,'api'])->name('api');

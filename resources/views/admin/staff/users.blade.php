@@ -11,6 +11,9 @@
         .select2-container{
             display:block!important;
         }
+        table.table td a:hover {
+            color: #ff0080;
+        }
     </style>
 @endpush
 @section('content')
@@ -79,6 +82,7 @@
                             <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Sửa</th>
                                 <th>Tên</th>
                                 <th>SĐT</th>
                                 <th>Ngày Sinh</th>
@@ -162,8 +166,17 @@
                     columns: [
                         {data: 'id', name: 'id'},
                         {
-                            data: 'name',
+                            data: 'edit',
                             targets: 1,
+                            orderable: false,
+                            searchable: false,
+                            render: function (data, type, row, meta) {
+                                return `<a class="btn btn-success" href="${data}" style="color:white!important;">Edit</a>`;
+                            }
+                        },
+                        {
+                            data: 'name',
+                            targets: 2,
                             orderable: true,
                             searchable: true,
                             render: function (data, type, row, meta) {
@@ -183,7 +196,7 @@
                         {data: 'level', name: 'level'},
                         {
                             data: 'destroy',
-                            targets: 7,
+                            targets: 8,
                             orderable: false,
                             searchable: false,
                             render: function (data, type, row, meta) {
