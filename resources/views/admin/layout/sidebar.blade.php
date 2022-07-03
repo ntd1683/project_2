@@ -7,7 +7,7 @@
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
-                <li @if($route === 'index' || $route === 'admin')
+                <li @if($route === 'index' || $route === 'admin' ||$route === 'profile')
                     class="active"
                 @endif>
                     <a href="{{route('admin.index')}}"><i class="fas fa-columns"></i> <span>Trang Chủ</span></a>

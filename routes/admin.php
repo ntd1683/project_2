@@ -23,6 +23,9 @@ Route::group([
     Route::get('/', [UserController::class,'index'])->name('index');
     Route::get('/index', [UserController::class,'index'])->name('index');
     Route::get('/logout', [AuthController::class,'logout'])->name('logout');
+    Route::get('/profile', [UserController::class,'show'])->name('profile');
+    Route::post('/update/{user}',[UserController::class,'updateProfile'])->name('update_profile');
+    Route::post('/change_password', [UserController::class,'changePassword'])->name('change_password');
 });
 
 Route::post('forgot_password', [AuthController::class,'processForgotPassword'])->name('process_forgot_password');

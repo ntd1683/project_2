@@ -155,11 +155,11 @@
         <li class="nav-item dropdown">
             <a href="javascript:void(0)" class="dropdown-toggle user-link  nav-link" data-bs-toggle="dropdown">
 <span class="user-img">
-<img class="rounded-circle" src="{{asset('img/user.jpg')}}" width="40" alt="Admin">
+<img class="rounded-circle" src="{{asset('images/admin.png')}}" width="40" alt="Admin">
 </span>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="admin-profile.html">Profile</a>
+                <a class="dropdown-item" href="{{route('admin.profile')}}">Profile</a>
                 <a class="dropdown-item" href="{{route('admin.logout')}}">Logout</a>
             </div>
         </li>

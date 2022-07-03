@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserLevelEnum;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
@@ -150,18 +152,23 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show()
     {
-        echo $id;
+        $id = Auth::id();
+        $user = $this->model->find($id);
+        $src = $user->src_image_level;
+        $address_user = explode(',', $user->address);
+        $breadcumbs = Breadcrumbs::render('show_user');
+        return view('admin.profile',[
+            'user'=> $user,
+            'breadcumbs'=>$breadcumbs,
+            'address_user'=>$address_user,
+            'src'=>$src,
+        ]);
     }
 
     public function edit(User $user)
+        // @todo Cài breadcumbs nha ô : composer require diglactic/laravel-breadcrumbs
     {
         $breadcumbs = Breadcrumbs::render('edit_user',$user);
         $address_user = explode(',', $user->address);
@@ -170,6 +177,55 @@ class UserController extends Controller
             'address_user'=> $address_user,
             'breadcumbs'=>$breadcumbs,
         ]);
+    }
+
+    public function updateProfile(UpdateProfileRequest $request,$user)
+    {
+        try{
+            $district = $request->get('district');
+            $province = $request->get('province');
+            $address = $request->get('address');
+            $address1 = $address .','. $district. ',' . $province;
+            $arr = $request->only([
+                "name",
+                "phone",
+                "gender",
+                "birthdate",
+                "email",
+            ]);
+            $arr['address'] = $address1;
+            $object = $this->model->find($user);
+            $object -> fill($arr);
+            $object->save();
+            return redirect()->route('admin.profile')->with('success','Bạn sửa thành công !!!');
+        }
+        catch(Throwable $e){
+            return redirect()->route('admin.users.create')->with('error','Bạn sửa thất bại rồi,vui lòng thử lại sau !!!');
+        }
+    }
+
+    public function changePassword(Request $request){
+        $id = Auth::id();
+        $user = $this->model->find($id);
+        $request->validate([
+            'old_password'=>'required',
+            'new_password'=>'required',
+            'confirm_password'=>'required|same:new_password',
+        ],[
+            'old_password.required'=>'Mật khẩu cũ không được bỏ trống',
+            'new_password.required'=>'Mật khẩu cũ không được bỏ trống',
+            'confirm_password.required'=>'Mật khẩu mới nhập không được bỏ trống',
+            'confirm_password.same'=>'Mật khẩu nhập không giống nhau',
+        ]);
+        $password_old = $request->get('old_password');
+        if(Hash::check($password_old,$user->password)){
+            $password_new = Hash::make($request->get('new_password'));
+            User::where(['id'=>$id])->update([
+                'password'=>$password_new,
+            ]);
+            return redirect()->route('admin.profile')->with('success','Đổi mật khẩu thành công !!!');
+        }
+        return redirect()->route('admin.profile')->with('error','Đổi mật khẩu thất bại !!!');
     }
 
     public function update(UpdateUserRequest $request,$user)
