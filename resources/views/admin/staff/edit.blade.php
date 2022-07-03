@@ -21,7 +21,7 @@
                     <h4 class="card-title">Thêm Nhân Viên</h4>
                 </div>
                     <div class="card-body">
-                        <form action="{{route('admin.users.update',$user)}}" id="form-create-post" method="post">
+                        <form action="{{route('admin.users.update',$user)}}" id="form-update-user" method="post">
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2">Tên</label>
                                 <div class="col-md-10">
@@ -137,7 +137,7 @@
             }
             $(document).ready(async function () {
 
-                console.log(city);
+                //city
                 $("#select-city").select2({tags: true});
                 const response = await fetch('{{ asset('locations/index.json') }}');
                 const cities = await response.json();
@@ -170,7 +170,7 @@
                     var regex = /^[\+|0]\d{1,13}$/;
                     return value.trim().match(regex);
                 });
-                $("#form-create-post").validate({
+                $("#form-update-user").validate({
                     rules: {
                         name: {
                             required: true,

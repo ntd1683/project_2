@@ -24,6 +24,11 @@ Breadcrumbs::for('edit_user', function ($trail, $user) {
     $trail->push('Sửa', route('admin.users.edit', $user->id));
 });
 
+Breadcrumbs::for('show_user', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Trang Cá Nhân', route('admin.profile'));
+});
+
 //// Home > Blog
 //Breadcrumbs::for('blog', function ($trail) {
 //    $trail->parent('home');
