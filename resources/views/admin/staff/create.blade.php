@@ -5,6 +5,12 @@
         .error {
             color: red !important;
         }
+        .btn-primary {
+            opacity:0.6;
+        }
+        .btn-primary:hover{
+            opacity:1;
+        }
     </style>
 @endpush
 @section('content')
@@ -84,7 +90,7 @@
                                 </div>
                             </div>
                             <div class="mt-4 text-center">
-                                <button class="btn btn-primary" type="submit">Thêm Nhân Viên</button>
+                                <button class="btn btn-primary" type="submit" onclick="alert('Vui lòng chờ 5s !!! Cảm ơn')">Thêm Nhân Viên</button>
                                 <a href="{{route('admin.users.show_users')}}" class="btn btn-link">Quay Lại</a>
                             </div>
                         </form>

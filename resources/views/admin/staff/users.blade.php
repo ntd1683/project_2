@@ -78,7 +78,8 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-center mb-0 datatable" id="table-index" style="text-align: center">
+                        <!-- thiếu class datatable-->
+                        <table class="table table-hover table-center mb-0" id="table-index" style="text-align: center">
                             <thead>
                             <tr>
                                 <th>#</th>

@@ -6,6 +6,7 @@ use App\Enums\UserLevelEnum;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
@@ -24,19 +25,22 @@ class UserController extends Controller
     public function __construct(){
         $this->model = (new User())->query();
         $this->table = (New User())->getTable();
-        $route = Str::afterLast(Route::getFacadeRoot()->current()->uri(), '/');
-//        $route = '/';
-//        dd(Str::afterLast(Route::getFacadeRoot()->current()->uri(), '/'));
+        // Làm sidebar - để biết mình đag ở tab nào
+        $current_path = Route::getFacadeRoot()->current()->uri();
+        $current_path_1 = Str::after($current_path, 'admin/');
+        $route = Str::before($current_path_1, '/');
+//        dd($route);
         $levels_us = UserLevelEnum::asArray();
         $levels=[];
-        foreach ($levels_us as $level=>$value) {
+        foreach ($levels_us as $value) {
             $level = UserLevelEnum::getKeyByValue($value);
             $levels[$level]=$value;
         }
+//        dd($levels);
         View::share([
             'title'=> ucwords($this->table),
-            'route'=>$route,
             'levels' => $levels,
+            'route'=> $route,
         ]);
     }
 
@@ -45,8 +49,10 @@ class UserController extends Controller
         $level_user = Auth::user()->level;
         $user = UserLevelEnum::getKeyByValue($level_user);
         $title ='Chào ' . $user .', chúc bạn một ngày tốt lành !!!';
+        // chỉ riêng trang này ko có title
         return view('admin.index',[
-            'title' => NULL,
+            'breadcumbs'=>null,
+            'title'=>NULL,
             'title_index' =>$title,
         ]);
     }
@@ -103,13 +109,18 @@ class UserController extends Controller
 
     public function show_users()
     {
-
-        return view('admin.staff.users');
+        $breadcumbs = Breadcrumbs::render('user');
+        return view('admin.staff.users',[
+            'breadcumbs' =>$breadcumbs,
+        ]);
     }
 
     public function create()
     {
-        return view('admin.staff.create');
+        $breadcumbs = Breadcrumbs::render('create_user');
+        return view('admin.staff.create',[
+            'breadcumbs' =>$breadcumbs,
+        ]);
     }
 
     public function store(StoreUserRequest $request)
@@ -150,21 +161,14 @@ class UserController extends Controller
         echo $id;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(\App\Models\User $user)
+    public function edit(User $user)
     {
-//        dd($user);
-//        dd($user);
-//        $user = $this->model->find($id);
+        $breadcumbs = Breadcrumbs::render('edit_user',$user);
         $address_user = explode(',', $user->address);
         return view('admin.staff.edit',[
             'user'=> $user,
             'address_user'=> $address_user,
+            'breadcumbs'=>$breadcumbs,
         ]);
     }
 
