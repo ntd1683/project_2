@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserLevelEnum;
+use App\Events\UserCreateEvent;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
@@ -142,8 +143,11 @@ class UserController extends Controller
                 "level"
             ]);
             $arr['address'] = $address1;
+            $arr['password'] = Hash::make('nhaxethuduc');
 //            dd($arr);
             $this->model->create($arr);
+            $user = (object) $arr;
+            UserCreateEvent::dispatch($user);
             return redirect()->route('admin.users.show_users')->with('success','Bạn thêm thành công !!!');
         }
         catch(Throwable $e){
@@ -152,6 +156,7 @@ class UserController extends Controller
         }
     }
 
+//    profile
     public function show()
     {
         $id = Auth::id();
@@ -179,6 +184,7 @@ class UserController extends Controller
         ]);
     }
 
+//    profile
     public function updateProfile(UpdateProfileRequest $request,$user)
     {
         try{
@@ -204,6 +210,7 @@ class UserController extends Controller
         }
     }
 
+//    profile
     public function changePassword(Request $request){
         $id = Auth::id();
         $user = $this->model->find($id);

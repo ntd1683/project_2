@@ -19,27 +19,28 @@ class AuthController extends Controller
 
     public function logout()
     {
-        session()->flush();
+//        session()->flush();
+        Auth::logout();
         return redirect()->route('admin.login');
     }
 
     public function processLogin(Request $request)
     {
-        $remember = $request->get('remember');
+        $remember = $request->has('remember');
         $arr = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
         if(Auth::attempt($arr,$remember)){
             session()->flash('success','Đăng nhập thành công');
-            $request->session()->regenerate();
+//            $request->session()->regenerate();
             $user = User::query()
                 ->where('email',$request->get('email'))
                 ->firstOrFail();
-            session()->put('id',$user->id);
-            session()->put('name',$user->name);
-            session()->put('avatar',$user->avatar);
-            session()->put('level',$user->level);
+            Auth::login($user, $remember);
+            if (Auth::viaRemember()) {
+                dd('1');
+            }
             return redirect()->intended('/admin/');
         }
         session()->flash('error','Email hoặc mật khẩu không đúng');
