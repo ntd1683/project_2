@@ -29,6 +29,12 @@ Breadcrumbs::for('show_user', function ($trail) {
     $trail->push('Trang Cá Nhân', route('admin.profile'));
 });
 
+// Trang Chủ > Xe
+Breadcrumbs::for('carriage', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Danh sách xe', route('admin.carriages.show_cars'));
+});
+
 //// Home > Blog
 //Breadcrumbs::for('blog', function ($trail) {
 //    $trail->parent('home');

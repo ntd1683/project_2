@@ -17,6 +17,11 @@
                     @endif>
                     <a href="{{route('admin.users.show_users')}}"><i class="fas fa-user-tie"></i> <span> Quản Lý Nhân Viên</span></a>
                 </li>
+                <li @if($route === 'carriages')
+                    class="active"
+                    @endif>
+                    <a href="{{route('admin.carriages.show_cars')}}"><i class="fas fa-bus"></i> <span> Quản Lý Xe</span></a>
+                </li>
             </ul>
         </div>
     </div>

@@ -18,7 +18,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('index');
 });
-Route::get('/test', [TestController::class, 'test']);
+
+Route::get('/test', [TestController::class, 'test'])->name('test');
+Route::get('/apiTest', [TestController::class, 'apiTest'])->name('api.test');
 
 
 //Route::get('edit_1/{user}',[UserController::class,'edit'])->name('edit_1');

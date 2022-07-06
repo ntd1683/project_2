@@ -17,6 +17,9 @@ class CreateCarriagesTable extends Migration
             $table->id();
             $table->string('license_plate')->unique();
             $table->string('category')->nullable();
+            $table->integer('seat_type')->default(0);
+            $table->integer('default_number_seat')->default(30);
+            $table->integer('slot')->default(0);
             // $table->foreignId('diagram_id')->constrained('diagrams');
             $table->softDeletes();
         });
