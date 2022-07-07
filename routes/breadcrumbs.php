@@ -35,6 +35,12 @@ Breadcrumbs::for('carriage', function ($trail) {
     $trail->push('Danh sách xe', route('admin.carriages.show_cars'));
 });
 
+// Trang Chủ > Xe > Thêm
+Breadcrumbs::for('carriage.create', function ($trail) {
+    $trail->parent('carriage');
+    $trail->push('Thêm', route('admin.carriages.create'));
+});
+
 //// Home > Blog
 //Breadcrumbs::for('blog', function ($trail) {
 //    $trail->parent('home');

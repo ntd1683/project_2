@@ -37,8 +37,22 @@ class AlterAddColumnsToCarriagesTable extends Migration
      */
     public function down()
     {
-        Schema::table('carriages', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasColumn('carriages', 'seat_type')) {
+            Schema::table('carriages', function (Blueprint $table) {
+                $table->dropColumn('seat_type');
+            });
+        }
+
+        if (Schema::hasColumn('carriages', 'default_number_seat')) {
+            Schema::table('carriages', function (Blueprint $table) {
+                $table->dropColumn('default_number_seat');
+            });
+        }
+
+        if (Schema::hasColumn('carriages', 'slot')) {
+            Schema::table('carriages', function (Blueprint $table) {
+                $table->dropColumn('slot');
+            });
+        }
     }
 }

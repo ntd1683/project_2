@@ -16,7 +16,7 @@ class CreateCarriagesTable extends Migration
         Schema::create('carriages', function (Blueprint $table) {
             $table->id();
             $table->string('license_plate')->unique();
-            $table->string('category')->nullable();
+            $table->integer('category')->default(0);
             $table->integer('seat_type')->default(0);
             $table->integer('default_number_seat')->default(30);
             $table->integer('slot')->default(0);
