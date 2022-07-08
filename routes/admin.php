@@ -63,4 +63,7 @@ Route::group([
 
 //    api
     Route::get('/api',[RouteController::class,'api'])->name('api');
+    Route::get('/apiNameRoutes',[RouteController::class,'apiNameRoutes'])->name('api.name_routes');
+    Route::get('/apiCityStart',[RouteController::class,'apiCityStart'])->name('api.city_start');
+    Route::get('/apiCityEnd',[RouteController::class,'apiCityEnd'])->name('api.city_end');
 });

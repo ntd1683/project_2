@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\City;
 use App\Models\Route;
 use App\Http\Requests\StoreRouteRequest;
 use App\Http\Requests\UpdateRouteRequest;
 use Diglactic\Breadcrumbs\Breadcrumbs;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
@@ -69,7 +71,37 @@ class RouteController extends Controller
             ->addColumn('destroy', function ($object) {
                 return route('admin.routes.destroy', $object);
             })
+            ->filterColumn('name', function($query, $keyword) {
+                if($keyword !=='null'){
+                    $query->where('name',$keyword);
+                }
+            })
+            ->filterColumn('city_start', function($query, $keyword) {
+                if($keyword !=='null'){
+                    $query->where('city_start_id',$keyword);
+                }
+            })
+            ->filterColumn('city_end', function($query, $keyword) {
+                if($keyword !=='null'){
+                    $query->where('city_end_id',$keyword);
+                }
+            })
             ->make(true);
+    }
+
+    public function apiNameRoutes(Request $request)
+    {
+        return $this->model->where('name','like','%'.$request->get('q') .'%')->get();
+    }
+
+    public function apiCityStart(Request $request)
+    {
+        return City::where('name','like','%'.$request->get('q') .'%')->get();
+    }
+
+    public function apiCityEnd(Request $request)
+    {
+        return City::where('name','like','%'.$request->get('q') .'%')->get();
     }
 
     /**

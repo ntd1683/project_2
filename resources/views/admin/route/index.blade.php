@@ -40,16 +40,6 @@
                 <div class="col-sm-6 col-md-3">
                     <form>
                         <div class="form-group">
-                            <label for="level">Chức Vụ</label>
-                            <select class="form-control select-filter" name="level" id="level" style="text-align: center">
-                                <option value="-1" Selected>Tất Cả</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-sm-6 col-md-3">
-                    <form>
-                        <div class="form-group">
                             <label for="select-name">Tên</label>
                             <select name="name" class="form-control" style="text-align: center" id="select-name">
                             </select>
@@ -59,8 +49,17 @@
                 <div class="col-sm-6 col-md-3">
                     <form>
                         <div class="form-group">
-                            <label for="select-provinces">Vị Trí</label>
-                            <select name="provinces" class="form-control" style="text-align: center" id="select-provinces">
+                            <label for="select-name">Điểm Đi</label>
+                            <select name="city_start_id" class="form-control" style="text-align: center" id="select-city-start-id">
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <form>
+                        <div class="form-group">
+                            <label for="select-name">Điểm Về</label>
+                            <select name="city_end_id" class="form-control" style="text-align: center" id="select-city-end-id">
                             </select>
                         </div>
                     </form>
@@ -100,6 +99,85 @@
         <script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
         <script>
             $(document).ready(function(){
+
+                $("#select-name").select2({
+                    ajax: {
+                        url: "{{route('admin.routes.api.name_routes')}}",
+                        dataType: 'json',
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        text: item.name,
+                                        id: item.name
+                                    }
+                                })
+                            };
+                        }
+                    },
+                    placeholder: 'Nhập tên chuyến đi',
+                    allowClear:true
+                });
+
+                $("#select-city-start-id").select2({
+                    ajax: {
+                        url: "{{route('admin.routes.api.city_start')}}",
+                        dataType: 'json',
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        text: item.name,
+                                        id: item.id
+                                    }
+                                })
+                            };
+                        }
+                    },
+                    placeholder: 'Nhập tên chuyến đi',
+                    allowClear:true
+                });
+
+                $("#select-city-end-id").select2({
+                    ajax: {
+                        url: "{{route('admin.routes.api.city_end')}}",
+                        dataType: 'json',
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        text: item.name,
+                                        id: item.id
+                                    }
+                                })
+                            };
+                        }
+                    },
+                    placeholder: 'Nhập tên chuyến về',
+                    allowClear:true
+                });
+
                 let table = $('#table-index').DataTable({
                     destroy: true,
                     dom: 'ltrp',
@@ -147,6 +225,15 @@
                             }
                         },
                     ],
+                });
+                $('#select-name').change(function () {
+                    table.columns(4).search(this.value).draw();
+                });
+                $('#select-city-start-id').change(function () {
+                    table.columns(2).search(this.value).draw();
+                });
+                $('#select-city-end-id').change(function () {
+                    table.columns(3).search(this.value).draw();
                 });
             });
         </script>
