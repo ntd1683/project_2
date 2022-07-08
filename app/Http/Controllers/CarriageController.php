@@ -66,7 +66,7 @@ class CarriageController extends Controller
                 return route('admin.carriages.edit', $object);
             })
             ->addColumn('delete', function ($object) {
-                return 2;
+                return route('admin.carriages.destroy', $object);
             })
             ->make(true);
     }
@@ -106,16 +106,40 @@ class CarriageController extends Controller
 
     public function edit(Carriage $carriage)
     {
+        $breadcumbs = Breadcrumbs::render('carriage.edit', $carriage);
+        return view('admin.carriage.edit', [
+            'carriage' => $carriage,
+            'breadcumbs' => $breadcumbs,
+            'title' => 'Sửa thông tin xe',
+        ]);
     }
 
 
     public function update(UpdateCarriageRequest $request, Carriage $carriage)
     {
-        dd(1);
+        try {
+            $carriage->update($request->except('_token'));
+            return redirect()->route('admin.carriages.show_cars')->with('success', 'Cập nhật thành công');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.carriages.show_cars')->with('error', 'Cập nhật thất bại');
+        }
     }
 
-    public function destroy(Carriage $carriage)
+    public function destroy($carriage)
     {
-        //
+        try {
+            Carriage::destroy($carriage);
+            return response()->json([
+                'heading' => 'success',
+                'text' => 'Xóa thành công',
+                'icon' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'heading' => 'error',
+                'text' => 'Xóa thất bại',
+                'icon' => 'error',
+            ]);
+        }
     }
 }

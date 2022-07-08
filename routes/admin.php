@@ -53,14 +53,14 @@ Route::group([
 Route::group([
     'as' => 'carriages.',
     'prefix' => 'carriages',
-    'middleware' => CheckAdminMiddleware::class,
+    // 'middleware' => CheckAdminMiddleware::class,
 ], function () {
     Route::get('/', [CarriageController::class, 'show_cars'])->name('show_cars');
     Route::get('/create', [CarriageController::class, 'create'])->name('create');
     Route::post('/store', [CarriageController::class, 'store'])->name('store');
-    Route::delete('/destroy/{car}', [CarriageController::class, 'destroy'])->name('destroy');
-    Route::get('/edit/{car}', [CarriageController::class, 'edit'])->name('edit');
-    Route::post('/update{car}', [CarriageController::class, 'update'])->name('update');
+    Route::delete('/destroy/{carriage}', [CarriageController::class, 'destroy'])->name('destroy');
+    Route::get('/edit/{carriage}', [CarriageController::class, 'edit'])->name('edit');
+    Route::post('/update/{carriage}', [CarriageController::class, 'update'])->name('update');
 
     //    api
     Route::get('/api', [CarriageController::class, 'api'])->name('api');

@@ -41,6 +41,12 @@ Breadcrumbs::for('carriage.create', function ($trail) {
     $trail->push('Thêm', route('admin.carriages.create'));
 });
 
+// Trang Chủ > Xe > Sửa
+Breadcrumbs::for('carriage.edit', function ($trail, $carriage) {
+    $trail->parent('carriage');
+    $trail->push('Sửa', route('admin.carriages.edit', $carriage->id));
+});
+
 //// Home > Blog
 //Breadcrumbs::for('blog', function ($trail) {
 //    $trail->parent('home');

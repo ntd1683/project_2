@@ -116,6 +116,31 @@
                         },
                     ],
                 });
+
+                // Delete element on table by ajax
+                $(document).on('click', '#btn-delete', function(){
+                    let confirm_delete = confirm('Bạn có chắc chắn muốn xóa?');
+                    if(confirm_delete){
+                        let form = $(this).parent('form');
+                        $.ajax({
+                            url: form.attr('action'),
+                            type: 'POST',
+                            data: form.serialize(),
+                            datatype: 'json',
+                            success: function(response){
+                                $.toast({
+                                    heading: response.heading,
+                                    text: response.text,
+                                    icon: response.icon,
+                                    position: 'top-right',
+                                    showHideTransition: 'slide',
+                                });
+                                // reload table with page present
+                                table.ajax.reload(null, false);
+                            }
+                        });
+                    }
+                });
             });
         </script>
     @endpush
