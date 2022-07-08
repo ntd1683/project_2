@@ -5,17 +5,71 @@ namespace App\Http\Controllers;
 use App\Models\Route;
 use App\Http\Requests\StoreRouteRequest;
 use App\Http\Requests\UpdateRouteRequest;
+use Diglactic\Breadcrumbs\Breadcrumbs;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
+use Yajra\DataTables\DataTables;
 
 class RouteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    use ResponseTrait;
+    private object $model;
+    private string $table;
+
+    public function __construct(){
+        $this->model = (new Route())->query();
+        $this->table = (New Route())->getTable();
+        // Làm sidebar - để biết mình đag ở tab nào
+        $current_path = \Illuminate\Support\Facades\Route::getFacadeRoot()->current()->uri();
+        $current_path_1 = Str::after($current_path, 'admin/');
+        $route = Str::before($current_path_1, '/');
+        View::share([
+            'title'=> ucwords($this->table),
+            'route'=> $route,
+        ]);
+    }
+
     public function index()
     {
-        //
+//        $route_model = $this->model->with('city_start')->with('city_end')->find('1');
+//        $result = $route_model->toArray();
+//        dd($result);
+        $breadcumbs = Breadcrumbs::render('route');
+        return view('admin.route.index',[
+            'breadcumbs' =>$breadcumbs,
+        ]);
+    }
+
+    public function api()
+    {
+        $route_model = $this->model->with('city_start')->with('city_end');
+        return DataTables::of($route_model)
+            ->editColumn('city_start', function ($object) {
+                return $object->city_start->pluck('name')->toArray();
+            })
+            ->editColumn('city_end', function ($object) {
+                return $object->city_end->pluck('name')->toArray();
+            })
+            ->editColumn('name', function ($object) {
+                return $object->name;
+            })
+            ->editColumn('distance', function ($object) {
+                return $object->distance_name;
+            })
+            ->editColumn('time', function ($object) {
+                return $object->time_name;
+            })
+            ->addColumn('show', function ($object) {
+                return route('admin.routes.show',$object);
+            })
+            ->addColumn('edit', function ($object) {
+                return route('admin.routes.edit',$object);
+            })
+            ->addColumn('destroy', function ($object) {
+                return route('admin.routes.destroy', $object);
+            })
+            ->make(true);
     }
 
     /**

@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RouteController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckAdminMiddleware;
 use App\Http\Middleware\CheckLoginMiddleware;
 use App\Http\Middleware\CheckLogoutMiddleware;
+use App\Http\Middleware\CheckStaffMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class,'processLogin'])->name('process_login');
@@ -47,4 +49,18 @@ Route::group([
     Route::get('/api',[UserController::class,'api'])->name('api');
     Route::get('/apiNameUsers',[UserController::class,'apiNameUsers'])->name('api.name_users');
     Route::get('/apiProvinces',[UserController::class,'apiProvinces'])->name('api.provinces');
+});
+Route::group([
+    'as' => 'routes.',
+    'prefix' => 'routes',
+    'middleware'=> CheckStaffMiddleware::class,
+],function(){
+    Route::get('/', [RouteController::class,'index'])->name('index');
+    Route::delete('/show/{route}',[RouteController::class,'show'])->name('show');
+    Route::get('/edit/{route}',[RouteController::class,'edit'])->name('edit');
+    Route::post('/update/{route}',[RouteController::class,'update'])->name('update');
+    Route::delete('/destroy/{route}',[RouteController::class,'destroy'])->name('destroy');
+
+//    api
+    Route::get('/api',[RouteController::class,'api'])->name('api');
 });

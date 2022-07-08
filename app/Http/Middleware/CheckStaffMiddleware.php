@@ -17,7 +17,7 @@ class CheckStaffMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::user()->level==1){
+        if(Auth::check()){
             return $next($request);
         }
         return redirect()->route('admin.index')->with('error','Bạn đang sử dụng tính năng của nhân viên !!!');

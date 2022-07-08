@@ -19,30 +19,20 @@ Breadcrumbs::for('create_user', function ($trail) {
     $trail->push('Thêm', route('admin.users.create'));
 });
 
+//Trang Chủ > Nhân viên > Chỉnh sửa
 Breadcrumbs::for('edit_user', function ($trail, $user) {
     $trail->parent('user');
     $trail->push('Sửa', route('admin.users.edit', $user->id));
 });
 
+//Trang Chủ > Nhân viên > Trang Cá Nhân
 Breadcrumbs::for('show_user', function ($trail) {
     $trail->parent('home');
     $trail->push('Trang Cá Nhân', route('admin.profile'));
 });
 
-//// Home > Blog
-//Breadcrumbs::for('blog', function ($trail) {
-//    $trail->parent('home');
-//    $trail->push('Blog', route('blog'));
-//});
-//
-//// Home > Blog > [Category]
-//Breadcrumbs::for('category', function ($trail, $category) {
-//    $trail->parent('blog');
-//    $trail->push($category->title, route('category', $category->id));
-//});
-//
-//// Home > Blog > [Category] > [Post]
-//Breadcrumbs::for('post', function ($trail, $post) {
-//    $trail->parent('category', $post->category);
-//    $trail->push($post->title, route('post', $post->id));
-//});
+// Trang Chủ > Lịch Trình
+Breadcrumbs::for('route', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Tuyến Đi', route('admin.routes.index'));
+});

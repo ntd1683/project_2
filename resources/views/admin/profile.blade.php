@@ -241,12 +241,14 @@
             }
 
             $password = document.getElementById('password_tab');
+            console.log($password);
             $profile = $('#per_details_tab');
             $tab_about = document.querySelector('[data-toggle="tab_about"]');
             $tab_password = document.querySelector('[data-toggle="tab_password"]');
             $edit_personal = document.getElementById("edit_personal_details");
 
             function show_password(){
+                console.log('1');
                 $password.classList.add('show');
                 $password.classList.add('active');
                 $profile.removeClass('active');
