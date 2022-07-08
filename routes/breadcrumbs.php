@@ -29,6 +29,24 @@ Breadcrumbs::for('show_user', function ($trail) {
     $trail->push('Trang Cá Nhân', route('admin.profile'));
 });
 
+// Trang Chủ > Xe
+Breadcrumbs::for('carriage', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Danh sách xe', route('admin.carriages.show_cars'));
+});
+
+// Trang Chủ > Xe > Thêm
+Breadcrumbs::for('carriage.create', function ($trail) {
+    $trail->parent('carriage');
+    $trail->push('Thêm', route('admin.carriages.create'));
+});
+
+// Trang Chủ > Xe > Sửa
+Breadcrumbs::for('carriage.edit', function ($trail, $carriage) {
+    $trail->parent('carriage');
+    $trail->push('Sửa', route('admin.carriages.edit', $carriage->id));
+});
+
 //// Home > Blog
 //Breadcrumbs::for('blog', function ($trail) {
 //    $trail->parent('home');
