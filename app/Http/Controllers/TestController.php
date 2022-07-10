@@ -39,4 +39,9 @@ class TestController extends Controller
             ->rawColumns(['edit', 'delete'])
             ->make(true);
     }
+
+    public function test1()
+    {
+        return view('admin.route.test');
+    }
 }

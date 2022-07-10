@@ -1,11 +1,18 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\RouteController;
+use App\Http\Controllers\TestController;
+
 use App\Http\Controllers\CarriageController;
+
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckAdminMiddleware;
 use App\Http\Middleware\CheckLoginMiddleware;
 use App\Http\Middleware\CheckLogoutMiddleware;
+use App\Http\Middleware\CheckStaffMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'processLogin'])->name('process_login');
@@ -65,3 +72,37 @@ Route::group([
     //    api
     Route::get('/api', [CarriageController::class, 'api'])->name('api');
 });
+Route::group([
+    'as' => 'routes.',
+    'prefix' => 'routes',
+    'middleware'=> CheckStaffMiddleware::class,
+],function(){
+    Route::get('/', [RouteController::class,'index'])->name('index');
+    Route::delete('/show/{route}',[RouteController::class,'show'])->name('show');
+    Route::get('/create', [RouteController::class,'create'])->name('create');
+    Route::post('/store', [RouteController::class,'store'])->name('store');
+    Route::get('/edit/{route}',[RouteController::class,'edit'])->name('edit');
+    Route::post('/update/{route}',[RouteController::class,'update'])->name('update');
+    Route::delete('/destroy/{route}',[RouteController::class,'destroy'])->name('destroy');
+
+//    api
+    Route::get('/api',[RouteController::class,'api'])->name('api');
+    Route::get('/apiNameRoutes',[RouteController::class,'apiNameRoutes'])->name('api.name_routes');
+    Route::get('/apiCityStart',[RouteController::class,'apiCityStart'])->name('api.city_start');
+    Route::get('/apiCityEnd',[RouteController::class,'apiCityEnd'])->name('api.city_end');
+    Route::get('/apiNameCheck',[RouteController::class,'apiNameCheck'])->name('api.apiNameCheck');
+});
+
+//city
+Route::group([
+    'as' => 'cities.',
+    'prefix' => 'cities',
+    'middleware'=> CheckStaffMiddleware::class,
+],function(){
+    Route::post('/store', [CityController::class,'store'])->name('store');
+//    api
+    Route::get('/cities/check/{cityName?}', [CityController::class, 'check'])->name('check');
+});
+Route::get('/test1', array(TestController::class, 'test1'))->name('store');
+
+

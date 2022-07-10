@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\City;
 use App\Models\Location;
 use App\Models\Route;
 use Illuminate\Database\Seeder;
@@ -16,15 +17,15 @@ class RouteSeeder extends Seeder
     public function run()
     {
         $arr = [];
-        $location = Location::query()->pluck('id')->toArray();
         $faker = \Faker\Factory::create('vi_VN');
-        for ($i = 1; $i <= 500; $i++) {
+        $city = City::query()->pluck('id')->toArray();
+        for ($i = 1; $i <= 20; $i++) {
             $arr[] = [
-                'location_start_id' => $faker->randomElement($location),
-                'location_end_id' => $faker->randomElement($location),
+                'city_start_id' => $faker->randomElement($city),
+                'city_end_id' => $faker->randomElement($city),
                 'name' => $faker->boolean ? ($faker->firstName . ' ' . $faker->lastName . ' - ' . $faker->firstName . ' ' . $faker->lastName) : null,
-                'time' => $faker->boolean ? ($faker->numberBetween(1, 48)) : null,
-                'distance' => $faker->boolean ? ($faker->numberBetween(15, 200)) : null,
+                'time' => $faker->numberBetween(1, 48),
+                'distance' => $faker->numberBetween(15, 200),
             ];
         }
         Route::insert($arr);

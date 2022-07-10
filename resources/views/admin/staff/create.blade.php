@@ -22,6 +22,7 @@
                 </div>
                     <div class="card-body">
                         <form action="{{route('admin.users.store')}}" id="form-create-post" method="post">
+                            @csrf
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2">Tên</label>
                                 <div class="col-md-10">

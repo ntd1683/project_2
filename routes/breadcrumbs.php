@@ -19,16 +19,35 @@ Breadcrumbs::for('create_user', function ($trail) {
     $trail->push('Thêm', route('admin.users.create'));
 });
 
+//Trang Chủ > Nhân viên > Chỉnh sửa
 Breadcrumbs::for('edit_user', function ($trail, $user) {
     $trail->parent('user');
     $trail->push('Sửa', route('admin.users.edit', $user->id));
 });
 
+//Trang Chủ > Nhân viên > Trang Cá Nhân
 Breadcrumbs::for('show_user', function ($trail) {
     $trail->parent('home');
     $trail->push('Trang Cá Nhân', route('admin.profile'));
 });
 
+// Trang Chủ > Chuyến Đi
+Breadcrumbs::for('route', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Chuyến Đi', route('admin.routes.index'));
+});
+
+//Trang Chủ > Chuyến Đi > Thêm
+Breadcrumbs::for('create_route', function ($trail) {
+    $trail->parent('route');
+    $trail->push('Thêm', route('admin.routes.create'));
+});
+
+//Trang Chủ > Chuyến Đi > Chỉnh sửa
+Breadcrumbs::for('edit_route', function ($trail, $route) {
+    $trail->parent('route');
+    $trail->push('Sửa', route('admin.routes.edit', $route->id));
+});
 // Trang Chủ > Xe
 Breadcrumbs::for('carriage', function ($trail) {
     $trail->parent('home');
@@ -46,21 +65,3 @@ Breadcrumbs::for('carriage.edit', function ($trail, $carriage) {
     $trail->parent('carriage');
     $trail->push('Sửa', route('admin.carriages.edit', $carriage->id));
 });
-
-//// Home > Blog
-//Breadcrumbs::for('blog', function ($trail) {
-//    $trail->parent('home');
-//    $trail->push('Blog', route('blog'));
-//});
-//
-//// Home > Blog > [Category]
-//Breadcrumbs::for('category', function ($trail, $category) {
-//    $trail->parent('blog');
-//    $trail->push($category->title, route('category', $category->id));
-//});
-//
-//// Home > Blog > [Category] > [Post]
-//Breadcrumbs::for('post', function ($trail, $post) {
-//    $trail->parent('category', $post->category);
-//    $trail->push($post->title, route('post', $post->id));
-//});
