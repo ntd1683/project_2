@@ -48,3 +48,20 @@ Breadcrumbs::for('edit_route', function ($trail, $route) {
     $trail->parent('route');
     $trail->push('Sửa', route('admin.routes.edit', $route->id));
 });
+// Trang Chủ > Xe
+Breadcrumbs::for('carriage', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Danh sách xe', route('admin.carriages.show_cars'));
+});
+
+// Trang Chủ > Xe > Thêm
+Breadcrumbs::for('carriage.create', function ($trail) {
+    $trail->parent('carriage');
+    $trail->push('Thêm', route('admin.carriages.create'));
+});
+
+// Trang Chủ > Xe > Sửa
+Breadcrumbs::for('carriage.edit', function ($trail, $carriage) {
+    $trail->parent('carriage');
+    $trail->push('Sửa', route('admin.carriages.edit', $carriage->id));
+});

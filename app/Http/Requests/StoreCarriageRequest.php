@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\CarriageCategoryEnum;
+use App\Enums\SeatTypeEnum;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreCarriageRequest extends FormRequest
@@ -13,7 +16,7 @@ class StoreCarriageRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +27,35 @@ class StoreCarriageRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'license_plate' => [
+                'required',
+                'unique:carriages',
+                'regex:/^[0-9]{1,2}-[A-Z0-9]{1,2}-[0-9]{4,5}$/',
+            ],
+            'category' => [
+                'required',
+                Rule::in(CarriageCategoryEnum::asArray()),
+            ],
+            'seat_type' => [
+                'required',
+                Rule::in(SeatTypeEnum::asArray()),
+            ],
+            'default_number_seat' => [
+                'required',
+                'integer',
+                'min:10',
+                'max:100',
+            ],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'license_plate.regex' => 'Biển số xe không hợp lệ',
+            'license_plate.unique' => 'Biển số xe đã tồn tại',
+            'default_number_seat.min' => 'Số lượng ghế tối thiểu 10',
+            'default_number_seat.max' => 'Số lượng ghế tối đa 100',
         ];
     }
 }

@@ -21,6 +21,10 @@
                     class="active"
                     @endif>
                     <a href="{{route('admin.routes.index')}}"><i class="fas fa-shuttle-van"></i> <span> Quản Lý Chuyến Đi</span></a>
+                <li @if($route === 'carriages')
+                    class="active"
+                    @endif>
+                    <a href="{{route('admin.carriages.show_cars')}}"><i class="fas fa-bus"></i> <span> Quản Lý Xe</span></a>
                 </li>
             </ul>
         </div>

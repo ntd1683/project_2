@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Carriage;
+use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -14,8 +15,8 @@ class TestController extends Controller
 
     public function __construct()
     {
-        $this->model = User::query();
-        $this->table = (new User())->getTable();
+        $this->model = Carriage::query();
+        $this->table = (new Carriage())->getTable();
 
         View::share('title', ucwords($this->table));
         View::share('table', $this->table);
@@ -23,13 +24,20 @@ class TestController extends Controller
 
     public function test()
     {
-        $columns = array();
-        foreach(\DB::select("SHOW COLUMNS FROM users") as $column)
-        {
-            $columns[] = $column->Field;
-        }
+        return view('test');
+    }
 
-        return $columns;
+    public function apiTest()
+    {
+        return DataTables::of($this->model)
+            ->addColumn('edit', function ($model) {
+                // return route('admin.carriage.edit', $model->id);
+            })
+            ->addColumn('delete', function ($model) {
+                // return route('admin.carriage.destroy', $model->id);
+            })
+            ->rawColumns(['edit', 'delete'])
+            ->make(true);
     }
 
     public function test1()
