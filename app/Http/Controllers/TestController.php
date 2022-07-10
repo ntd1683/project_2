@@ -31,4 +31,9 @@ class TestController extends Controller
 
         return $columns;
     }
+
+    public function test1()
+    {
+        return view('admin.route.test');
+    }
 }

@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CityController;
 use App\Http\Controllers\RouteController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckAdminMiddleware;
 use App\Http\Middleware\CheckLoginMiddleware;
@@ -57,6 +59,8 @@ Route::group([
 ],function(){
     Route::get('/', [RouteController::class,'index'])->name('index');
     Route::delete('/show/{route}',[RouteController::class,'show'])->name('show');
+    Route::get('/create', [RouteController::class,'create'])->name('create');
+    Route::post('/store', [RouteController::class,'store'])->name('store');
     Route::get('/edit/{route}',[RouteController::class,'edit'])->name('edit');
     Route::post('/update/{route}',[RouteController::class,'update'])->name('update');
     Route::delete('/destroy/{route}',[RouteController::class,'destroy'])->name('destroy');
@@ -66,4 +70,19 @@ Route::group([
     Route::get('/apiNameRoutes',[RouteController::class,'apiNameRoutes'])->name('api.name_routes');
     Route::get('/apiCityStart',[RouteController::class,'apiCityStart'])->name('api.city_start');
     Route::get('/apiCityEnd',[RouteController::class,'apiCityEnd'])->name('api.city_end');
+    Route::get('/apiNameCheck',[RouteController::class,'apiNameCheck'])->name('api.apiNameCheck');
 });
+
+//city
+Route::group([
+    'as' => 'cities.',
+    'prefix' => 'cities',
+    'middleware'=> CheckStaffMiddleware::class,
+],function(){
+    Route::post('/store', [CityController::class,'store'])->name('store');
+//    api
+    Route::get('/cities/check/{cityName?}', [CityController::class, 'check'])->name('check');
+});
+Route::get('/test1', array(TestController::class, 'test1'))->name('store');
+
+

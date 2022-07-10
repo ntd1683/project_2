@@ -10,6 +10,17 @@ class Route extends Model
 {
     use HasFactory;
 
+    protected $fillable =[
+        "city_start_id",
+        "city_end_id",
+        "name",
+        "time",
+        "distance",
+        "images",
+    ];
+
+    public $timestamps = false;
+
     public function getDistanceNameAttribute():string
     {
         return (!$this->distance) ? 0 : $this->distance . ' km';

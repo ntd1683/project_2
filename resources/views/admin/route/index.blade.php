@@ -27,7 +27,7 @@
                 <a class="btn btn-white filter-btn" id="filter_search">
                     <i class="fas fa-filter"></i>
                 </a>
-                <a href="{{route('admin.users.create')}}" class="btn btn-white filter-btn add-button ml-3">
+                <a href="{{route('admin.routes.create')}}" class="btn btn-white filter-btn add-button ml-3">
                     <i class="fas fa-plus"></i>
                 </a>
             </div>

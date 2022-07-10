@@ -31,8 +31,20 @@ Breadcrumbs::for('show_user', function ($trail) {
     $trail->push('Trang Cá Nhân', route('admin.profile'));
 });
 
-// Trang Chủ > Lịch Trình
+// Trang Chủ > Chuyến Đi
 Breadcrumbs::for('route', function ($trail) {
     $trail->parent('home');
-    $trail->push('Tuyến Đi', route('admin.routes.index'));
+    $trail->push('Chuyến Đi', route('admin.routes.index'));
+});
+
+//Trang Chủ > Chuyến Đi > Thêm
+Breadcrumbs::for('create_route', function ($trail) {
+    $trail->parent('route');
+    $trail->push('Thêm', route('admin.routes.create'));
+});
+
+//Trang Chủ > Chuyến Đi > Chỉnh sửa
+Breadcrumbs::for('edit_route', function ($trail, $route) {
+    $trail->parent('route');
+    $trail->push('Sửa', route('admin.routes.edit', $route->id));
 });
