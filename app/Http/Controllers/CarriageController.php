@@ -76,7 +76,6 @@ class CarriageController extends Controller
         $breadcumbs = Breadcrumbs::render('carriage');
         return view('admin.carriage.index', [
             'breadcumbs' => $breadcumbs,
-            'title' => 'Danh sách xe',
         ]);
     }
 
@@ -90,7 +89,6 @@ class CarriageController extends Controller
         $breadcumbs = Breadcrumbs::render('carriage.create');
         return view('admin.carriage.create', [
             'breadcumbs' => $breadcumbs,
-            'title' => 'Thêm mới xe',
         ]);
     }
 
@@ -110,7 +108,6 @@ class CarriageController extends Controller
         return view('admin.carriage.edit', [
             'carriage' => $carriage,
             'breadcumbs' => $breadcumbs,
-            'title' => 'Sửa thông tin xe',
         ]);
     }
 

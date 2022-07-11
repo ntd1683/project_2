@@ -98,7 +98,7 @@
                             orderable: false,
                             searchable: false,
                             render: function (data, type, row, meta) {
-                                return `<a class="btn btn-success" href="${data}" style="color:white!important;">Sửa</a>`;
+                                return `<a class="btn btn-success" href="${data}" style="color:white!important;">Edit</a>`;
                             }
                         },
                         {                             
@@ -110,7 +110,7 @@
                                 return `<form action="${data}" method="post">
                                     @csrf
                                     @method('DELETE')
-                                <button type='button' class="btn btn-danger" id="btn-delete" >Xóa</button>
+                                <button type='button' class="btn btn-danger" id="btn-delete" >Delete</button>
                                 </form>`;
                             }
                         },
