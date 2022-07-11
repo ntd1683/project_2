@@ -22,7 +22,7 @@ class BillDetailSeeder extends Seeder
         $buses = Buses::query()->pluck('id')->toArray();
         $bill = Bill::query()->pluck('id')->toArray();
         $faker = \Faker\Factory::create('vi_VN');
-        for ($i = 1; $i <= 1000; $i++) {
+        for ($i = 1; $i <= 100; $i++) {
             $arr[] = [
                 // 'seat_id' => $faker->randomElement($seat),
                 'buses_id' => $faker->randomElement($buses),
