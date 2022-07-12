@@ -43,7 +43,11 @@ class StoreRouteRequest extends FormRequest
             'images'=>[
                 'nullable',
                 'file',
-            ]
+            ],
+            'name'=>[
+                'required',
+                'unique:App\Models\Route,name',
+            ],
         ];
     }
 
@@ -51,8 +55,8 @@ class StoreRouteRequest extends FormRequest
     {
         return [
             'required' => 'Bạn đang bỏ trống ô nào đó',
-            'email.unique' =>'Email bị trùng',
-            'name.regex'=>'Tên không phải thuộc người Việt Nam',
+            'numeric' =>'Phải là chữ số',
+            'unique'=>'Bị trùng rồi',
         ];
     }
 }

@@ -235,6 +235,28 @@
                 $('#select-city-end-id').change(function () {
                     table.columns(3).search(this.value).draw();
                 });
+                $(document).on('click','#btn-delete',function(){
+                    let confirm_delete = confirm("Bạn có chắc muốn xoá không ?");
+                    if (confirm_delete === true) {
+                        let form = $(this).parents('form');
+                        $.ajax({
+                            type: "POST",
+                            url: form.attr('action'),
+                            data: form.serialize(),
+                            dataType: "json",
+                            success: function (response) {
+                                $.toast({
+                                    heading: 'success',
+                                    text: 'Chúc mừng !!! Bạn đã xoá thành công!',
+                                    icon: 'success',
+                                    position: 'top-right',
+                                    showHideTransition: 'slide',
+                                });
+                                table.draw();
+                            },
+                        });
+                    }
+                });
             });
         </script>
     @endpush

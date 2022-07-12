@@ -65,7 +65,7 @@
                                 </div>
                             </div>
                             <div class="mt-4 text-center">
-                                <button class="btn btn-primary" type="submit" onclick="alert('Vui lòng chờ 5s !!! Cảm ơn')" id="btn-submit">Thêm Nhân Viên</button>
+                                <button class="btn btn-primary" type="submit" onclick="alert('Vui lòng chờ 5s !!! Cảm ơn')" id="btn-submit">Thêm Tuyến Xe</button>
                                 <a href="{{route('admin.routes.index')}}" class="btn btn-link">Quay Lại</a>
                             </div>
                         </form>

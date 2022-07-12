@@ -8,6 +8,7 @@ use App\Http\Requests\StoreRouteRequest;
 use App\Http\Requests\UpdateRouteRequest;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -140,7 +141,7 @@ class RouteController extends Controller
 
             // @todo cài thư viện image nha php artisan storage:link
             if(isset($request->images)){
-                $arr['images'] = optional($request->file('images'))->store('route_images');
+                $arr['images'] = optional($request->file('images'))->storePublicly('route_images');
             }
 //            dd($arr);
             $this->model->create($arr);
@@ -161,22 +162,62 @@ class RouteController extends Controller
     public function edit(Route $route)
     {
         $breadcumbs = Breadcrumbs::render('edit_route',$route);
+        $city_start = City::where('id',$route->city_start_id)->FirstOrFail();
+        $city_start_name = $city_start->name;
+        $city_end = City::where('id',$route->city_end_id)->FirstOrFail();
+        $city_end_name = $city_end->name;
+//        $images = Storage::url($route->images);
+        $images = asset('storage/'.$route->images);
+//        $images = Storage::getVisibility($route->images);
+//        dd($images);
         return view('admin.route.edit',[
-            'user'=> $route,
+            'route'=> $route,
             'breadcumbs'=>$breadcumbs,
+            'city_start_name'=>$city_start_name,
+            'city_end_name'=>$city_end_name,
+            'images'=>$images
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateRouteRequest  $request
-     * @param  \App\Models\Route  $route
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateRouteRequest $request, Route $route)
+    public function update(UpdateRouteRequest $request,$route)
     {
-        //
+//        dd($request->get('images'));
+        try{
+            $check_name = $request->get('name');
+            $check_unique_name = Route::where('name',$check_name)->exists();
+            if($check_unique_name){
+                return redirect()->back()->with('error','Trùng tên rồi !!!');
+            }
+            $city_start = $request->get('city_start_id');
+            $city_end = $request->get('city_end_id');
+//            dd(1,$request);
+            $city_start_name = City::where('name',$city_start)->firstOrFail();
+            $city_start_id = $city_start_name->id;
+            $city_end_name = City::where('name',$city_end)->firstOrFail();
+            $city_end_id = $city_end_name->id;
+
+            $arr = $request->only([
+                "name",
+                "time",
+                "distance",
+                "city_start_id",
+                "city_end_id"
+            ]);
+            $arr['city_start_id'] = $city_start_id;
+            $arr['city_end_id'] = $city_end_id;
+
+            if(!$request->images){
+                $arr['images'] = optional($request->file('images'))->store('route_images');
+            }
+
+            $object = $this->model->find($route);
+            $object -> fill($arr);
+            $object->save();
+            return redirect()->back()->with('success','Bạn sửa thành công !!!');
+        }
+        catch(Throwable $e){
+            return redirect()->back()->with('error','Bạn sửa thất bại rồi,vui lòng thử lại sau !!!');
+        }
     }
 
 
