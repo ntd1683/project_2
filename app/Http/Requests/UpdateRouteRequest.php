@@ -13,7 +13,7 @@ class UpdateRouteRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,36 @@ class UpdateRouteRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'city_start_id'=>[
+                'required',
+            ],
+            'city_end_id'=>[
+                'required',
+            ],
+            'time'=>[
+                'numeric',
+                'required',
+            ],
+            'distance' =>[
+                'required',
+                'numeric',
+            ],
+            'images'=>[
+                'nullable',
+                'file',
+            ],
+            'name'=>[
+                'required',
+            ],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'Bạn đang bỏ trống ô nào đó',
+            'numeric' =>'Phải là chữ số',
+            'unique'=>'Bị trùng rồi',
         ];
     }
 }

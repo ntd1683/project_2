@@ -48,6 +48,13 @@ Breadcrumbs::for('edit_route', function ($trail, $route) {
     $trail->parent('route');
     $trail->push('Sửa', route('admin.routes.edit', $route->id));
 });
+
+//Trang Chủ > Tuyến Xe > Xem chi tiết
+Breadcrumbs::for('show_route', function ($trail, $route) {
+    $trail->parent('route');
+    $trail->push('Xem Chi Tiết', route('admin.routes.show', $route->id));
+});
+
 // Trang Chủ > Xe
 Breadcrumbs::for('carriage', function ($trail) {
     $trail->parent('home');

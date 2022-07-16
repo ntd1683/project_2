@@ -41,7 +41,7 @@
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2">Tên</label>
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control" name="name" id="name" placeholder="ví dụ : Đắk Lắk - Hồ Chí Minh">
+                                    <input type="text" readonly class="form-control" name="name" id="name" placeholder="Click điểm đi , điểm đến để hiện thị tên">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -65,7 +65,7 @@
                                 </div>
                             </div>
                             <div class="mt-4 text-center">
-                                <button class="btn btn-primary" type="submit" onclick="alert('Vui lòng chờ 5s !!! Cảm ơn')" id="btn-submit">Thêm Nhân Viên</button>
+                                <button class="btn btn-primary" type="submit" onclick="alert('Vui lòng chờ 5s !!! Cảm ơn')" id="btn-submit">Thêm Tuyến Xe</button>
                                 <a href="{{route('admin.routes.index')}}" class="btn btn-link">Quay Lại</a>
                             </div>
                         </form>

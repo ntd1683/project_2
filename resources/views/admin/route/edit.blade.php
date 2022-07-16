@@ -24,7 +24,7 @@
                     <h4 class="card-title">Sửa Chuyến Đi</h4>
                 </div>
                     <div class="card-body">
-                        <form action="{{route('admin.routes.store')}}" id="form-create-route" method="post" enctype="multipart/form-data">
+                        <form action="{{route('admin.routes.update',$route)}}" id="form-create-route" method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2">Điểm Đến</label>
@@ -41,31 +41,32 @@
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2">Tên</label>
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control" name="name" id="name" placeholder="ví dụ : Đắk Lắk - Hồ Chí Minh">
+                                    <input type="text" readonly class="form-control" name="name" id="name" placeholder="ví dụ : Đắk Lắk - Hồ Chí Minh" value="{{$route->name}}">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-form-label col-md-2">Thời Gian Đi (Đơn vị giờ)</label>
+                                <label class="col-form-label col-md-2">Thời Gian Đi</label>
                                 <div class="col-md-10">
-                                    <input type="number" class="form-control" name="time">
+                                    <input type="number" class="form-control" name="time" placeholder="Đơn vị giờ" value="{{$route->time}}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2">Khoảng Cách</label>
                                 <div class="col-md-10">
-                                    <input type="number" class="form-control" name="distance" id="distance">
+                                    <input type="number" class="form-control" name="distance" id="distance" placeholder="Đơn vị km" value="{{$route->distance}}">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-form-label col-md-2">Ảnh Hiện Thị</label>
+                                <label class="col-form-label col-md-2">Chọn ảnh mới nếu bạn thích : </label>
                                 <div class="col-md-10">
                                     <input type="file" name="images" onchange="loadFile(event)">
                                     <br>
-                                    <img id="output" width="200"  alt="Ảnh đã chọn"/>
+                                    <img id="output" width="200" alt="Ảnh đã chọn"/>
+                                    <img id="output" width="200" src="{{$images}}" alt="Ảnh cũ"/>
                                 </div>
                             </div>
                             <div class="mt-4 text-center">
-                                <button class="btn btn-primary" type="submit" onclick="alert('Vui lòng chờ 5s !!! Cảm ơn')" id="btn-submit">Thêm Nhân Viên</button>
+                                <button class="btn btn-primary" type="submit" onclick="alert('Vui lòng chờ 5s !!! Cảm ơn')" id="btn-submit">Sửa Tuyến Xe</button>
                                 <a href="{{route('admin.routes.index')}}" class="btn btn-link">Quay Lại</a>
                             </div>
                         </form>
@@ -109,7 +110,8 @@
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
         <script>
-            {{--const city = '{{$address_user[2]}}';--}}
+            const city_start_1 = '{{$city_start_name}}';
+            const city_end_1 = '{{$city_end_name}}';
             function mySubmitFunction(e) {
                 e.preventDefault();
                 someBug();
@@ -186,19 +188,26 @@
                 $("#city_end_id").select2({tags: true});
                 const response_start = await fetch('{{ asset('locations/index.json') }}');
                 const cities_start = await response_start.json();
+                var string_start;
+                var string_end;
                 $.each(cities_start, function (index, each) {
-                    $("#city_start_id").append(`
-                <option data-path='${each.file_path}'>
-                    ${index}
-                </option>`)
+                    string_start += `<option data-path='${each.file_path}'`;
+                    if (city_start_1 === index) {
+                        string_start += ` selected `;
+                    }
+                    string_start += `>${index}</option>`;
+                    $("#city_start_id").append(string_start);
                     $("#select-city").append(`
                 <option data-path='${each.file_path}'>
                     ${index}
                 </option>`)
-                    $("#city_end_id").append(`
-                <option data-path='${each.file_path}'>
-                    ${index}
-                </option>`)
+
+                    string_end += `<option data-path='${each.file_path}'`;
+                    if (city_end_1 === index) {
+                        string_end += ` selected `;
+                    }
+                    string_end += `>${index}</option>`;
+                    $("#city_end_id").append(string_end);
                 });
                 function generateName(){
                     city_start = $("#city_start_id").val();

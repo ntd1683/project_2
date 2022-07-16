@@ -6,8 +6,10 @@ use App\Models\City;
 use App\Models\Route;
 use App\Http\Requests\StoreRouteRequest;
 use App\Http\Requests\UpdateRouteRequest;
+use App\Models\Route_driver_car;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -66,30 +68,6 @@ class RouteController extends Controller
             ->editColumn('time', function ($object) {
                 return $object->time_name;
             })
-            ->addColumn('show', function ($object) {
-                return route('admin.routes.show',$object);
-            })
-            ->addColumn('edit', function ($object) {
-                return route('admin.routes.edit',$object);
-            })
-            ->addColumn('destroy', function ($object) {
-                return route('admin.routes.destroy', $object);
-            })
-            ->filterColumn('name', function($query, $keyword) {
-                if($keyword !=='null'){
-                    $query->where('name',$keyword);
-                }
-            })
-            ->filterColumn('city_start', function($query, $keyword) {
-                if($keyword !=='null'){
-                    $query->where('city_start_id',$keyword);
-                }
-            })
-            ->filterColumn('city_end', function($query, $keyword) {
-                if($keyword !=='null'){
-                    $query->where('city_end_id',$keyword);
-                }
-            })
             ->make(true);
     }
 
@@ -142,12 +120,10 @@ class RouteController extends Controller
             if(isset($request->images)){
                 $arr['images'] = optional($request->file('images'))->store('route_images');
             }
-//            dd($arr);
             $this->model->create($arr);
             return redirect()->route('admin.routes.index')->with('success','Bạn thêm thành công !!!');
         }
         catch(Throwable $e){
-//            dd(2,$request);
             return redirect()->route('admin.routes.create')->with('error','Bạn thêm thất bại rồi, vui lòng thử lại sau !!!');
         }
     }
@@ -155,28 +131,80 @@ class RouteController extends Controller
 
     public function show(Route $route)
     {
-        //
+        $breadcumbs = Breadcrumbs::render('show_route',$route);
+        $city_start = City::where('id',$route->city_start_id)->FirstOrFail();
+        $city_start_name = $city_start->name;
+        $city_end = City::where('id',$route->city_end_id)->FirstOrFail();
+        $city_end_name = $city_end->name;
+//        $images = Storage::url($route->images);
+        $images = asset('storage/'.$route->images);
+//        $images = Storage::getVisibility($route->images);
+//        dd($images);
+
+
+        return view('admin.route.show',[
+            'route'=> $route,
+            'breadcumbs'=>$breadcumbs,
+            'city_start_name'=>$city_start_name,
+            'city_end_name'=>$city_end_name,
+            'images'=>$images
+        ]);
     }
 
     public function edit(Route $route)
     {
         $breadcumbs = Breadcrumbs::render('edit_route',$route);
+        $city_start = City::where('id',$route->city_start_id)->FirstOrFail();
+        $city_start_name = $city_start->name;
+        $city_end = City::where('id',$route->city_end_id)->FirstOrFail();
+        $city_end_name = $city_end->name;
+//        $images = Storage::url($route->images);
+        $images = asset('storage/'.$route->images);
+//        $images = Storage::getVisibility($route->images);
+//        dd($images);
         return view('admin.route.edit',[
-            'user'=> $route,
+            'route'=> $route,
             'breadcumbs'=>$breadcumbs,
+            'city_start_name'=>$city_start_name,
+            'city_end_name'=>$city_end_name,
+            'images'=>$images
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateRouteRequest  $request
-     * @param  \App\Models\Route  $route
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateRouteRequest $request, Route $route)
+    public function update(UpdateRouteRequest $request,$route)
     {
-        //
+//        dd($request);
+        try{
+            $city_start = $request->get('city_start_id');
+            $city_end = $request->get('city_end_id');
+            $city_start_name = City::where('name',$city_start)->firstOrFail();
+            $city_start_id = $city_start_name->id;
+            $city_end_name = City::where('name',$city_end)->firstOrFail();
+            $city_end_id = $city_end_name->id;
+
+            $arr = $request->only([
+                "name",
+                "time",
+                "distance",
+                "city_start_id",
+                "city_end_id"
+            ]);
+            $arr['city_start_id'] = $city_start_id;
+            $arr['city_end_id'] = $city_end_id;
+
+            if(isset($request->images)){
+                $arr['images'] = optional($request->file('images'))->store('route_images');
+            }
+//            dd('1');
+            $object = $this->model->find($route);
+            $object -> fill($arr);
+//            dd($object);
+            $object->save();
+            return redirect()->back()->with('success','Bạn sửa thành công !!!');
+        }
+        catch(Throwable $e){
+            return redirect()->back()->with('error','Bạn sửa thất bại rồi,vui lòng thử lại sau !!!');
+        }
     }
 
 
