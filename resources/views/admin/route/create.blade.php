@@ -41,7 +41,7 @@
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2">Tên</label>
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control" name="name" id="name" placeholder="ví dụ : Đắk Lắk - Hồ Chí Minh">
+                                    <input type="text" readonly class="form-control" name="name" id="name" placeholder="Click điểm đi , điểm đến để hiện thị tên">
                                 </div>
                             </div>
                             <div class="form-group row">
