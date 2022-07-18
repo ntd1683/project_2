@@ -46,12 +46,11 @@
                                 <label class="col-form-label col-md-2">Ảnh hiển thị : </label>
                                 <div class="col-md-10">
                                     <br>
-                                    <img id="output" width="200" alt="Ảnh đã chọn"/>
+                                    <img id="output" width="200" alt="Ảnh đã chọn" src="{{asset($images)}}"/>
                                 </div>
                             </div>
                             <div class="mt-4 text-center">
-                                <a class="btn btn-success" href="{{route('admin.routes.index',$route)}}">Sửa</a>
-                                <a class="btn btn-danger" href="{{route('admin.routes.index',$route)}}">Xoá</a>
+                                <a class="btn btn-success" href="{{route('admin.routes.edit',$route)}}">Sửa</a>
                                 <a href="{{route('admin.routes.index')}}" class="btn btn-link">Quay Lại</a>
                             </div>
                     </div>
@@ -60,35 +59,57 @@
     </div>
 {{--    Nợ sau này làm :3 --}}
 {{--    @todo làm bảng show tài xế <3 --}}
-{{--    <div class="row">--}}
-{{--        <div class="col-md-12">--}}
-{{--            <div class="card">--}}
-{{--                <div class="card-body">--}}
-{{--                    <div class="row justify-content-center">--}}
-{{--                        <h1>Thông tin xe và tài xế</h1>--}}
-{{--                    </div>--}}
-{{--                    <div class="table-responsive">--}}
-{{--                        <!-- thiếu class datatable-->--}}
-{{--                        <table class="table table-hover table-center mb-0" id="table-index" style="text-align: center">--}}
-{{--                            <thead>--}}
-{{--                            <tr>--}}
-{{--                                <th>#</th>--}}
-{{--                                <th>Loại xe</th>--}}
-{{--                                <th>Loại ghế</th>--}}
-{{--                                <th>Tên tài xế</th>--}}
-{{--                                <th>Giá tiền</th>--}}
-{{--                            </tr>--}}
-{{--                            </thead>--}}
-{{--                        </table>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
+    @if($check_route_driver_car == 1)
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <h1>Thông tin xe và tài xế</h1>
+                    </div>
+                    <div class="table-responsive">
+                        <!-- thiếu class datatable-->
+                        <table class="table table-hover table-center mb-0" id="table-index" style="text-align: center">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên tài xế</th>
+                                <th>Biển số xe</th>
+                                <th>Loại xe</th>
+                                <th>Loại ghế</th>
+                                <th>Giá tiền</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     @push('js')
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
+        <script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
         <script>
+            $(document).ready(function(){
+                let table = $('#table-index').DataTable({
+                    destroy: true,
+                    dom: 'ltrp',
+                    lengthMenu:[5,10,20,25,50,100],
+                    select: true,
+                    processing: true,
+                    serverSide: true,
+                    ajax: '{!! route('admin.route_driver_car.api',$route->id) !!}/',
+                    columns: [
+                        {data: 'id', name: 'id'},
+                        {data: 'name_driver', name: 'name_driver'},
+                        {data: 'license_plate_car', name: 'license_plate_car'},
+                        {data: 'category_car', name: 'category_car'},
+                        {data: 'seat_type_car', name: 'seat_type_car'},
+                        {data: 'price', name: 'price'},
+                    ],
+                });
+            });
         </script>
     @endpush
 @endsection

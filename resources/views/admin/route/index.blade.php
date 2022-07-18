@@ -98,6 +98,7 @@
     @push('js')
         <script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
         <script>
+
             $(document).ready(function(){
 
                 $("#select-name").select2({

@@ -62,7 +62,12 @@
                                     <input type="file" name="images" onchange="loadFile(event)">
                                     <br>
                                     <img id="output" width="200" alt="Ảnh đã chọn"/>
-                                    <img id="output" width="200" src="{{$images}}" alt="Ảnh cũ"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-2">Ảnh cũ : </label>
+                                <div class="col-md-10">
+                                    <img width="200" src="{{asset($images)}}" alt="Ảnh cũ"/>
                                 </div>
                             </div>
                             <div class="mt-4 text-center">
