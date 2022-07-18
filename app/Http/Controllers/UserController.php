@@ -6,6 +6,9 @@ use App\Enums\UserLevelEnum;
 use App\Events\UserCreateEvent;
 use App\Http\Requests\ChangePassword;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Models\Bill;
+use App\Models\Carriage;
+use App\Models\Customer;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -52,12 +55,22 @@ class UserController extends Controller
     {
         $level_user = Auth::user()->level;
         $user = UserLevelEnum::getKeyByValue($level_user);
+        $customer_counters = Customer::query()->count();
+        $driver_counters = $this->model->where('level','0')->count();
+        $car_counters = Carriage::query()->count();
+        $price = Bill::query()->sum('price');
+        // @todo Nhớ chạy lệnh nha Composer dump-autoload
+        $revenue = number_shorten($price);
         $title ='Chào ' . $user .', chúc bạn một ngày tốt lành !!!';
         // chỉ riêng trang này ko có title
         return view('admin.index',[
             'breadcumbs'=>null,
             'title'=>NULL,
             'title_index' =>$title,
+            'customer_counters'=>$customer_counters,
+            'driver_counters'=>$driver_counters,
+            'car_counters'=>$car_counters,
+            'revenue'=>$revenue,
         ]);
     }
 
