@@ -23,7 +23,7 @@
                 <div class="card-header">
                     <h4 class="card-title">Xem Tuyến Đi</h4>
                 </div>
-                    <div class="card-body"> readonly
+                    <div class="card-body">
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2">Tên</label>
                                 <div class="col-md-10">
