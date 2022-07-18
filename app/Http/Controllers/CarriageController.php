@@ -8,6 +8,7 @@ use App\Models\Carriage;
 use App\Http\Requests\StoreCarriageRequest;
 use App\Http\Requests\UpdateCarriageRequest;
 use Diglactic\Breadcrumbs\Breadcrumbs;
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -31,25 +32,15 @@ class CarriageController extends Controller
         $route = Str::before($current_path_1, '/');
 
         // Load seat type enum
-        $seat_types = SeatTypeEnum::asArray();
-        $seat_types_array = [];
-        foreach ($seat_types as $value) {
-            $seat_type = SeatTypeEnum::getKeyByValue($value);
-            $seat_types_array[$seat_type] = $value;
-        }
+        $seatTypes = SeatTypeEnum::asArray();
         // Load category enum
         $categories = CarriageCategoryEnum::asArray();
-        $categories_array = [];
-        foreach ($categories as $value) {
-            $category = CarriageCategoryEnum::getKeyByValue($value);
-            $categories_array[$category] = $value;
-        }
 
         View::share([
             'title' => ucwords($this->table),
             'route' => $route,
-            'seatTypes' => $seat_types_array,
-            'categories' => $categories_array,
+            'seatTypes' => $seatTypes,
+            'categories' => $categories,
         ]);
     }
 
@@ -71,17 +62,22 @@ class CarriageController extends Controller
             ->make(true);
     }
 
-    public function show_cars()
+    public function apiNameCarriages(Request $request)
+    {
+        return $this->model->where('license_plate', 'like', '%' . $request->get('q') . '%')->get();
+    }
+
+    public function apiNumberSeats(Request $request)
+    {
+        return $this->model->where('default_number_seat', 'like', '%' . $request->get('q') . '%')->distinct()->orderBy('default_number_seat', 'desc')->get('default_number_seat');
+    }
+
+    public function index()
     {
         $breadcumbs = Breadcrumbs::render('carriage');
         return view('admin.carriage.index', [
             'breadcumbs' => $breadcumbs,
         ]);
-    }
-
-    public function index()
-    {
-        //
     }
 
     public function create()
@@ -96,9 +92,9 @@ class CarriageController extends Controller
     {
         try {
             $this->model->create($request->except('_token'));
-            return redirect()->route('admin.carriages.show_cars')->with('success', 'Thêm mới thành công');
+            return redirect()->route('admin.carriages.index')->with('success', 'Thêm mới thành công');
         } catch (\Exception $e) {
-            return redirect()->route('admin.carriages.show_cars')->with('error', 'Thêm mới thất bại');
+            return redirect()->route('admin.carriages.index')->with('error', 'Thêm mới thất bại');
         }
     }
 
@@ -116,9 +112,9 @@ class CarriageController extends Controller
     {
         try {
             $carriage->update($request->except('_token'));
-            return redirect()->route('admin.carriages.show_cars')->with('success', 'Cập nhật thành công');
+            return redirect()->route('admin.carriages.index')->with('success', 'Cập nhật thành công');
         } catch (\Exception $e) {
-            return redirect()->route('admin.carriages.show_cars')->with('error', 'Cập nhật thất bại');
+            return redirect()->route('admin.carriages.index')->with('error', 'Cập nhật thất bại');
         }
     }
 
