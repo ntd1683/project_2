@@ -75,7 +75,7 @@
                     var regex = /^[0-9]{1,2}-[A-Z0-9]{1,2}-[0-9]{4,5}$/;
                     return value.trim().match(regex);
                 });
-                
+
                 $("#form-create-post").validate({
                     rules: {
                         license_plate: {
@@ -114,7 +114,7 @@
                         },
                     },
                     submitHandler: function (form) {
-                        $(form).submit();
+                        form.submit();
                     }
                 });
             });

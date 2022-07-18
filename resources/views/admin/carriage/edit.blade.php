@@ -34,9 +34,9 @@
                                 <div class="col-md-10">
                                     <select class="form-control" name="category">
                                         @foreach($categories as $category=>$value)
-                                            <option value="{{$value}}" 
+                                            <option value="{{$value}}"
                                                 @if ($carriage->category == $value)
-                                                    selected 
+                                                    selected
                                                 @endif
                                             >{{$category}}
                                             </option>
@@ -84,7 +84,7 @@
                     var regex = /^[0-9]{1,2}-[A-Z0-9]{1,2}-[0-9]{4,5}$/;
                     return value.trim().match(regex);
                 });
-                
+
                 $("#form-create-post").validate({
                     rules: {
                         license_plate: {
@@ -123,7 +123,7 @@
                         },
                     },
                     submitHandler: function (form) {
-                        $(form).submit();
+                        form.submit();
                     }
                 });
             });

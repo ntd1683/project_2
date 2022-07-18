@@ -25,6 +25,17 @@
                 </div>
                     <div class="card-body">
                             <div class="form-group row">
+                                <label class="col-form-label col-md-2">Được Ghim</label>
+                                <div class="col-md-10">
+                                    @if($route->pin == 1)
+                                        <button type="button" class="btn btn-dark btn-lg">✓</button>
+                                    @endif
+                                    @if($route->pin == 0)
+                                        <button type="button" class="btn btn-light btn-lg">✗</button>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label class="col-form-label col-md-2">Tên</label>
                                 <div class="col-md-10">
                                     <input type="text" readonly class="form-control" name="name" id="name" placeholder="ví dụ : Đắk Lắk - Hồ Chí Minh" value="{{$route->name}}">

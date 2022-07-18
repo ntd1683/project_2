@@ -68,6 +68,9 @@ class RouteController extends Controller
             ->editColumn('time', function ($object) {
                 return $object->time_name;
             })
+            ->editColumn('pin', function ($object) {
+                return $object->pin;
+            })
             ->addColumn('show', function ($object) {
                 return route('admin.routes.show',$object);
             })
@@ -120,7 +123,6 @@ class RouteController extends Controller
 
     public function store(StoreRouteRequest $request)
     {
-//        dd($request->reverse);
         try{
             $city_start = $request->get('city_start_id');
             $city_end = $request->get('city_end_id');
@@ -134,14 +136,20 @@ class RouteController extends Controller
                 "time",
                 "distance",
                 "city_start_id",
-                "city_end_id"
+                "city_end_id",
             ]);
             $arr['city_start_id'] = $city_start_id;
             $arr['city_end_id'] = $city_end_id;
+
+            $arr['pin'] = 0;
+            if($request->pin){
+                $arr['pin'] = 1;
+            }
             // @todo cài thư viện image nha php artisan storage:link
             if(isset($request->images)){
                 $arr['images'] = optional($request->file('images'))->store('route_images', ['disk' => 'upload']);
             }
+//            dd($arr);
             $this->model->create($arr);
 //            Tạo tuyến ngược lại
 
@@ -163,10 +171,15 @@ class RouteController extends Controller
                 $arr['name'] = $name;
                 $arr['city_start_id'] = $city_start_id;
                 $arr['city_end_id'] = $city_end_id;
-                // @todo cài thư viện image nha php artisan storage:link
+
+                $arr['pin'] = 0;
+                if($request->pin){
+                    $arr['pin'] = 1;
+                }
                 if(isset($request->images)){
                     $arr['images'] = optional($request->file('images'))->store('route_images', ['disk' => 'upload']);
                 }
+//                dd($arr);
                 $this->model->create($arr);
             }
             return redirect()->route('admin.routes.index')->with('success','Bạn thêm thành công !!!');
@@ -235,17 +248,19 @@ class RouteController extends Controller
             ]);
             $arr['city_start_id'] = $city_start_id;
             $arr['city_end_id'] = $city_end_id;
+            $arr['pin'] = 0;
+            if($request->pin){
+                $arr['pin'] = 1;
+            }
             if(isset($request->images)){
-//                dd('3');
                 $arr['images'] = optional($request->file('images'))->store('route_images', ['disk' => 'upload']);
             }
 //            dd($route);
             $object = $this->model->find($route);
             $object -> fill($arr);
-//            dd($object);
+            $object->pin = $arr['pin'];
             $object->save();
-//            return redirect()->back()->with('success','Bạn sửa thành công !!!');
-            return redirect()->route('admin.routes.index')->with('success','Bạn thêm thành công !!!');
+            return redirect()->route('admin.routes.index')->with('success','Bạn sửa thành công !!!');
         }
         catch(Throwable $e){
             return redirect()->back()->with('error','Bạn sửa thất bại rồi,vui lòng thử lại sau !!!');
