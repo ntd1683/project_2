@@ -227,7 +227,7 @@
                         }
                     },
                     submitHandler: function (form) {
-                        $(form).submit();
+                        form.submit();
                     }
                 });
             });

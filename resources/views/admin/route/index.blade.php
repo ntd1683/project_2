@@ -68,7 +68,6 @@
         </div>
     </div>
     {{-- End Filter --}}
-
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -85,6 +84,7 @@
                                 <th>Tên</th>
                                 <th>Thời Gian</th>
                                 <th>Khoảng Cách</th>
+                                <th>Được Ghim</th>
                                 <th>Sửa</th>
                                 <th>Xoá</th>
                             </tr>
@@ -194,7 +194,7 @@
                             orderable: false,
                             searchable: false,
                             render: function (data, type, row, meta) {
-                                return `<a class="btn btn-info" href="${data}" style="color:white!important;">Show</a>`;
+                                return `<a class="btn btn-info" href="${data}" style="color:white!important;">Xem</a>`;
                             }
                         },
                         {data: 'id', name: 'id'},
@@ -204,24 +204,38 @@
                         {data: 'time', name: 'time'},
                         {data: 'distance', name: 'distance'},
                         {
-                            data: 'edit',
+                            data: 'pin',
                             targets: 7,
+                            orderable: true,
+                            searchable: false,
+                            render: function (data, type, row, meta) {
+                                if(data == 1){
+                                    return `<button type="button" class="btn btn-dark btn-lg">✓</button>`;
+                                }
+                                if(data == 0){
+                                    return `<button type="button" class="btn btn-light btn-lg">✗</button>`;
+                                }
+                            }
+                        },
+                        {
+                            data: 'edit',
+                            targets: 8,
                             orderable: false,
                             searchable: false,
                             render: function (data, type, row, meta) {
-                                return `<a class="btn btn-success" href="${data}" style="color:white!important;">Edit</a>`;
+                                return `<a class="btn btn-success" href="${data}" style="color:white!important;">Sửa</a>`;
                             }
                         },
                         {
                             data: 'destroy',
-                            targets: 8,
+                            targets: 9,
                             orderable: false,
                             searchable: false,
                             render: function (data, type, row, meta) {
                                 return `<form action="${data}" method="post">
                                     @csrf
                                 @method('DELETE')
-                                <button type='button' class="btn btn-danger" id="btn-delete" >Delete</button>
+                                <button type='button' class="btn btn-danger" id="btn-delete" >Xoá</button>
                             </form>`;
                             }
                         },

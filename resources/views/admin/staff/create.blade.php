@@ -205,8 +205,8 @@
                             required:"Không được bỏ trống",
                         }
                     },
-                    submitHandler: function (form) {
-                        $(form).submit();
+                    submitHandler: function (form) {S
+                        form.submit();
                     }
                 });
             });

@@ -14,8 +14,13 @@
         span.select2-container{
             z-index:10000 !important;
         }
-        #label-reverse:hover{
+
+        #label-reverse,#label-pin{
+            opacity:0.6;
+        }
+        #label-reverse:hover,#label-pin:hover{
             cursor: pointer;
+            opacity:1;
         }
     </style>
 @endpush
@@ -68,7 +73,15 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-{{--                                <label class="col-form-label col-md-2">Bạn có muốn tạo tuyến ngược lại không</label>--}}
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        <label for="pin" id="label-pin">
+                                            <input type="checkbox" name="pin" id="pin"> Bạn có muốn ghim tuyến này không ?
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <div class="col-md-10">
                                     <div class="checkbox">
                                         <label for="reverse" id="label-reverse">
@@ -78,7 +91,7 @@
                                 </div>
                             </div>
                             <div class="mt-4 text-center">
-                                <button class="btn btn-primary" type="submit" onclick="alert('Vui lòng chờ 5s !!! Cảm ơn')" id="btn-submit">Thêm Tuyến Xe</button>
+                                <button class="btn btn-primary" type="submit" id="btn-submit">Thêm Tuyến Xe</button>
                                 <a href="{{route('admin.routes.index')}}" class="btn btn-link">Quay Lại</a>
                             </div>
                         </form>
@@ -296,13 +309,12 @@
                             required:"Không được bỏ trống",
                         }
                     },
-                    submitHandler: function () {
+                    submitHandler:async function (form) {
                         checkCityStart();
                         checkCityEnd();
-                        if (check == true){
-                            $("#form-create-route").submit();
+                        if (check === true){
+                            form.submit();
                         }
-                        console.log(check);
                     }
                 });
             });

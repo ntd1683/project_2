@@ -14,6 +14,14 @@
         span.select2-container{
             z-index:10000 !important;
         }
+
+        #label-pin{
+            opacity:0.6;
+        }
+        #label-pin:hover{
+            cursor: pointer;
+            opacity:1;
+        }
     </style>
 @endpush
 @section('content')
@@ -68,6 +76,19 @@
                                 <label class="col-form-label col-md-2">Ảnh cũ : </label>
                                 <div class="col-md-10">
                                     <img width="200" src="{{asset($images)}}" alt="Ảnh cũ"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        <label for="pin" id="label-pin">
+                                            <input type="checkbox" name="pin" id="pin"
+                                            @if($route->pin==1)
+                                                checked
+                                            @endif
+                                            > Bạn có muốn ghim tuyến này không ?
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="mt-4 text-center">
@@ -151,7 +172,6 @@
                 console.log($("#select-city").val());
             }
 
-            console.log('check');
             function submitForm() {
                 alert('Vui lòng chờ 5s !!!');
                 const obj = $("#form-create-city");
@@ -188,6 +208,7 @@
             }
 {{--            Load city--}}
             $(document).ready(async function () {
+                let check9i = 0;
                 $("#city_start_id").select2({tags: true});
                 $("#select-city").select2({tags: true});
                 $("#city_end_id").select2({tags: true});
@@ -298,13 +319,12 @@
                             required:"Không được bỏ trống",
                         }
                     },
-                    submitHandler: function () {
+                    submitHandler:async function (form) {
                         checkCityStart();
                         checkCityEnd();
-                        if (check == true){
-                            $("#form-create-route").submit();
+                        if (check === true){
+                            form.submit();
                         }
-                        console.log(check);
                     }
                 });
             });
