@@ -41,8 +41,43 @@
                         <div class="col-sm-6 col-md-3">
                             <form>
                                 <div class="form-group">
-                                    <label for="level">Route</label>
-                                    <select class="form-control" name="route" id="route" style="text-align: center">
+                                    <label for="level">License Plate</label>
+                                    <select class="form-control" name="license_plate" id="license-plate" style="text-align: center">
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <form>
+                                <div class="form-group">
+                                    <label for="level">Carriage type</label>
+                                    <select class="form-control select" name="carriage_type" id="carriage-type" style="text-align: center">
+                                        <option value="">Tất cả</option>
+                                        @foreach($categories as $categorie=>$value)
+                                            <option value="{{$value}}">{{$categorie}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <form>
+                                <div class="form-group">
+                                    <label for="level">Seat type</label>
+                                    <select class="form-control select" name="seat_type" id="seat-type" style="text-align: center">
+                                        <option value="">Tất cả</option>
+                                        @foreach($seatTypes as $seatType=>$value)
+                                            <option value="{{$value}}">{{$seatType}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <form>
+                                <div class="form-group">
+                                    <label for="level">Number seat</label>
+                                    <select class="form-control" name="number_seat" id="number-seat" style="text-align: center">
                                     </select>
                                 </div>
                             </form>
@@ -57,7 +92,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-center mb-0" id="table-data">
+                        <table class="table table-hover table-center mb-0" id="table-data" style="text-align: center">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -77,11 +112,68 @@
     </div>
     @push('js')
         <script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
+
         <script>
             $(document).ready(function() {
+                $('#license-plate').select2({
+                    ajax: {
+                        url: "{{route('admin.carriages.api.name_carriages')}}",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        text: item.license_plate,
+                                        id: item.license_plate,
+                                    }
+                                })
+                            };
+                        }
+                    },
+                    placeholder: 'Chọn bảng số xe',
+                    allowClear:true,
+                });
+
+                $('#number-seat').select2({
+                    ajax: {
+                        url: "{{route('admin.carriages.api.number_seat')}}",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        text: item.default_number_seat,
+                                        id: item.default_number_seat,
+                                    }
+                                })
+                            };
+                        }
+                    },
+                    placeholder: 'Chọn số ghế xe',
+                    allowClear:true,
+                });
+
+
                 let table = $('#table-data').DataTable({
                         destroy: true,
                         dom: 'ltrp',
+                        lengthMenu:[5,10,20,25,50,100],
                         select: true,
                         processing: true,
                         serverSide: true,
@@ -140,6 +232,19 @@
                             }
                         });
                     }
+                });
+
+                $('#license-plate').change(function () {
+                    table.columns(1).search(this.value).draw();
+                });
+                $('#carriage-type').change(function () {
+                    table.columns(2).search(this.value).draw();
+                });
+                $('#seat-type').change(function () {
+                    table.columns(3).search(this.value).draw();
+                });
+                $('#number-seat').change(function () {
+                    table.columns(4).search(this.value).draw();
                 });
             });
         </script>

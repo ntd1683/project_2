@@ -59,7 +59,7 @@
 
                             <div class="mt-4 text-center">
                                 <button class="btn btn-primary" type="submit">Thêm Xe</button>
-                                <a href="{{route('admin.carriages.show_cars')}}" class="btn btn-link">Quay Lại</a>
+                                <a href="{{route('admin.carriages.index')}}" class="btn btn-link">Quay Lại</a>
                             </div>
                         </form>
                     </div>

@@ -21,10 +21,16 @@
                     class="active"
                     @endif>
                     <a href="{{route('admin.routes.index')}}"><i class="fas fa-shuttle-van"></i> <span> Quản Lý Chuyến Đi</span></a>
+                </li>
                 <li @if($route === 'carriages')
                     class="active"
                     @endif>
-                    <a href="{{route('admin.carriages.show_cars')}}"><i class="fas fa-bus"></i> <span> Quản Lý Xe</span></a>
+                    <a href="{{route('admin.carriages.index')}}"><i class="fas fa-bus"></i> <span> Quản Lý Xe</span></a>
+                </li>
+                <li @if($route === 'buses')
+                    class="active"
+                    @endif>
+                    <a href="{{route('admin.buses.index')}}"><i class="fas fa-shuttle-van"></i> <span> Quản Lý Chuyến Xe</span></a>
                 </li>
             </ul>
         </div>

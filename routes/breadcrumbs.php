@@ -51,7 +51,7 @@ Breadcrumbs::for('edit_route', function ($trail, $route) {
 // Trang Chủ > Xe
 Breadcrumbs::for('carriage', function ($trail) {
     $trail->parent('home');
-    $trail->push('Danh sách xe', route('admin.carriages.show_cars'));
+    $trail->push('Danh sách xe', route('admin.carriages.index'));
 });
 
 // Trang Chủ > Xe > Thêm
