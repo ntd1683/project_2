@@ -9,7 +9,7 @@
                                         <i class="far fa-user"></i>
                                     </span>
                                 <div class="dash-widget-info">
-                                    <h3>429</h3><!-- Number user -->
+                                    <h3>{{$customer_counters}}</h3><!-- Number user -->
                                     <h6 class="text-muted">Khách Hàng</h6>
                                 </div>
                             </div>
@@ -25,7 +25,7 @@
                                         <i class="fas fa-user-circle"></i>
                                     </span>
                                 <div class="dash-widget-info">
-                                    <h3>148</h3>
+                                    <h3>{{$driver_counters}}</h3>
                                     <h6 class="text-muted">Tài xế</h6>
                                 </div>
                             </div>
@@ -40,7 +40,7 @@
                                         <i class="fas fa-car"></i>
                                     </span>
                                 <div class="dash-widget-info">
-                                    <h3>124</h3>
+                                    <h3>{{$car_counters}}</h3>
                                     <h6 class="text-muted">Xe</h6>
                                 </div>
                             </div>
@@ -55,7 +55,7 @@
                                         <i class="fas fa-dollar-sign"></i>
                                     </span>
                                 <div class="dash-widget-info">
-                                    <h3>$11378</h3>
+                                    <h3>${{$revenue}}</h3>
                                     <h6 class="text-muted">Doanh Thu</h6>
                                 </div>
                             </div>
