@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\UserLevelEnum;
 use App\Events\UserCreateEvent;
+use App\Http\Requests\ChangePassword;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
@@ -211,19 +212,9 @@ class UserController extends Controller
     }
 
 //    profile
-    public function changePassword(Request $request){
+    public function changePassword(ChangePassword $request){
         $id = Auth::id();
         $user = $this->model->find($id);
-        $request->validate([
-            'old_password'=>'required',
-            'new_password'=>'required',
-            'confirm_password'=>'required|same:new_password',
-        ],[
-            'old_password.required'=>'Mật khẩu cũ không được bỏ trống',
-            'new_password.required'=>'Mật khẩu cũ không được bỏ trống',
-            'confirm_password.required'=>'Mật khẩu mới nhập không được bỏ trống',
-            'confirm_password.same'=>'Mật khẩu nhập không giống nhau',
-        ]);
         $password_old = $request->get('old_password');
         if(Hash::check($password_old,$user->password)){
             $password_new = Hash::make($request->get('new_password'));

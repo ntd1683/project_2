@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CarriageCategoryEnum;
+use App\Enums\SeatTypeEnum;
 use App\Models\Carriage;
+use App\Models\Route_driver_car;
+use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,11 +19,8 @@ class TestController extends Controller
 
     public function __construct()
     {
-        $this->model = Carriage::query();
-        $this->table = (new Carriage())->getTable();
-
-        View::share('title', ucwords($this->table));
-        View::share('table', $this->table);
+        $this->model = (new Route_driver_car())->query();
+        $this->table = (New Route_driver_car())->getTable();
     }
 
     public function test()
@@ -42,6 +43,18 @@ class TestController extends Controller
 
     public function test1()
     {
-        return view('admin.route.test');
+        $arr = $this->model->with('driver_name')->with('car_name')
+            ->where('route_id',7)
+            ->get()
+            ->map(function ($each){
+                $each->name_driver = ($each->driver_name->pluck('name'))[0];
+                $each->license_plate_car = ($each->car_name->pluck('license_plate'))[0];
+                $each->category_car = CarriageCategoryEnum::getKeyByValue(($each->car_name->pluck('category'))[0]);
+                $each->seat_type_car = SeatTypeEnum::getKeyByValue(($each->car_name->pluck('seat_type'))[0]);
+                unset($each->driver_name);
+                unset($each->car_name);
+                return $each;
+            });
+        return $arr;
     }
 }

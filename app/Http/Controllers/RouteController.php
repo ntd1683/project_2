@@ -68,6 +68,30 @@ class RouteController extends Controller
             ->editColumn('time', function ($object) {
                 return $object->time_name;
             })
+            ->addColumn('show', function ($object) {
+                return route('admin.routes.show',$object);
+            })
+            ->addColumn('edit', function ($object) {
+                return route('admin.routes.edit',$object);
+            })
+            ->addColumn('destroy', function ($object) {
+                return route('admin.routes.destroy', $object);
+            })
+            ->filterColumn('name', function($query, $keyword) {
+                if($keyword !=='null'){
+                    $query->where('name',$keyword);
+                }
+            })
+            ->filterColumn('city_start', function($query, $keyword) {
+                if($keyword !=='null'){
+                    $query->where('city_start_id',$keyword);
+                }
+            })
+            ->filterColumn('city_end', function($query, $keyword) {
+                if($keyword !=='null'){
+                    $query->where('city_end_id',$keyword);
+                }
+            })
             ->make(true);
     }
 
@@ -96,8 +120,7 @@ class RouteController extends Controller
 
     public function store(StoreRouteRequest $request)
     {
-
-//        dd($request->name);
+//        dd($request->reverse);
         try{
             $city_start = $request->get('city_start_id');
             $city_end = $request->get('city_end_id');
@@ -115,12 +138,37 @@ class RouteController extends Controller
             ]);
             $arr['city_start_id'] = $city_start_id;
             $arr['city_end_id'] = $city_end_id;
-
             // @todo cài thư viện image nha php artisan storage:link
             if(isset($request->images)){
-                $arr['images'] = optional($request->file('images'))->store('route_images');
+                $arr['images'] = optional($request->file('images'))->store('route_images', ['disk' => 'upload']);
             }
             $this->model->create($arr);
+//            Tạo tuyến ngược lại
+
+            if($request->get('reverse')==='on'){
+                $city_end = $request->get('city_start_id');
+                $city_start = $request->get('city_end_id');
+//            dd(1,$request);
+                $city_start_name = City::where('name',$city_start)->firstOrFail();
+                $city_start_id = $city_start_name->id;
+                $city_end_name = City::where('name',$city_end)->firstOrFail();
+                $city_end_id = $city_end_name->id;
+                $name = $city_start_name->name .' - '. $city_end_name->name;
+                $arr = $request->only([
+                    "time",
+                    "distance",
+                    "city_start_id",
+                    "city_end_id"
+                ]);
+                $arr['name'] = $name;
+                $arr['city_start_id'] = $city_start_id;
+                $arr['city_end_id'] = $city_end_id;
+                // @todo cài thư viện image nha php artisan storage:link
+                if(isset($request->images)){
+                    $arr['images'] = optional($request->file('images'))->store('route_images', ['disk' => 'upload']);
+                }
+                $this->model->create($arr);
+            }
             return redirect()->route('admin.routes.index')->with('success','Bạn thêm thành công !!!');
         }
         catch(Throwable $e){
@@ -131,23 +179,23 @@ class RouteController extends Controller
 
     public function show(Route $route)
     {
+        $check_route_driver_car = 0;
         $breadcumbs = Breadcrumbs::render('show_route',$route);
         $city_start = City::where('id',$route->city_start_id)->FirstOrFail();
         $city_start_name = $city_start->name;
         $city_end = City::where('id',$route->city_end_id)->FirstOrFail();
         $city_end_name = $city_end->name;
-//        $images = Storage::url($route->images);
-        $images = asset('storage/'.$route->images);
-//        $images = Storage::getVisibility($route->images);
-//        dd($images);
-
-
+        $images = 'upload/' . $route->images;
+        if (Route_driver_car::where('route_id','=',$route->id)->exists()) {
+            $check_route_driver_car = 1;
+        }
         return view('admin.route.show',[
             'route'=> $route,
             'breadcumbs'=>$breadcumbs,
             'city_start_name'=>$city_start_name,
             'city_end_name'=>$city_end_name,
-            'images'=>$images
+            'images'=>$images,
+            'check_route_driver_car'=>$check_route_driver_car,
         ]);
     }
 
@@ -158,10 +206,7 @@ class RouteController extends Controller
         $city_start_name = $city_start->name;
         $city_end = City::where('id',$route->city_end_id)->FirstOrFail();
         $city_end_name = $city_end->name;
-//        $images = Storage::url($route->images);
-        $images = asset('storage/'.$route->images);
-//        $images = Storage::getVisibility($route->images);
-//        dd($images);
+        $images = 'upload/' . $route->images;
         return view('admin.route.edit',[
             'route'=> $route,
             'breadcumbs'=>$breadcumbs,
@@ -173,7 +218,6 @@ class RouteController extends Controller
 
     public function update(UpdateRouteRequest $request,$route)
     {
-//        dd($request);
         try{
             $city_start = $request->get('city_start_id');
             $city_end = $request->get('city_end_id');
@@ -181,7 +225,7 @@ class RouteController extends Controller
             $city_start_id = $city_start_name->id;
             $city_end_name = City::where('name',$city_end)->firstOrFail();
             $city_end_id = $city_end_name->id;
-
+//            dd('new');
             $arr = $request->only([
                 "name",
                 "time",
@@ -191,16 +235,17 @@ class RouteController extends Controller
             ]);
             $arr['city_start_id'] = $city_start_id;
             $arr['city_end_id'] = $city_end_id;
-
             if(isset($request->images)){
-                $arr['images'] = optional($request->file('images'))->store('route_images');
+//                dd('3');
+                $arr['images'] = optional($request->file('images'))->store('route_images', ['disk' => 'upload']);
             }
-//            dd('1');
+//            dd($route);
             $object = $this->model->find($route);
             $object -> fill($arr);
 //            dd($object);
             $object->save();
-            return redirect()->back()->with('success','Bạn sửa thành công !!!');
+//            return redirect()->back()->with('success','Bạn sửa thành công !!!');
+            return redirect()->route('admin.routes.index')->with('success','Bạn thêm thành công !!!');
         }
         catch(Throwable $e){
             return redirect()->back()->with('error','Bạn sửa thất bại rồi,vui lòng thử lại sau !!!');

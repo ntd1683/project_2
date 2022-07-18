@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\RouteController;
+use App\Http\Controllers\RouteDriverCarController;
 use App\Http\Controllers\TestController;
 
 use App\Http\Controllers\CarriageController;
@@ -88,7 +89,6 @@ Route::group([
 
 //    api
     Route::get('/api',[RouteController::class,'api'])->name('api');
-    Route::get('/routeDriverCarApi',[RouteController::class,'api_route_driver_car'])->name('api.route_driver_car');
     Route::get('/apiNameRoutes',[RouteController::class,'apiNameRoutes'])->name('api.name_routes');
     Route::get('/apiCityStart',[RouteController::class,'apiCityStart'])->name('api.city_start');
     Route::get('/apiCityEnd',[RouteController::class,'apiCityEnd'])->name('api.city_end');
@@ -105,6 +105,15 @@ Route::group([
 //    api
     Route::get('/cities/check/{cityName?}', [CityController::class, 'check'])->name('check');
 });
-Route::get('/test1', array(TestController::class, 'test1'))->name('store');
 
+//route_driver_Car
+Route::group([
+    'as' => 'route_driver_car.',
+    'prefix' => 'route_driver_car',
+    'middleware'=> CheckStaffMiddleware::class,
+],function(){
+//    api
+    Route::get('/api/{id}',[RouteDriverCarController::class, 'api'])->name('api');
+});
+Route::get('/test1', array(TestController::class, 'test1'))->name('store');
 

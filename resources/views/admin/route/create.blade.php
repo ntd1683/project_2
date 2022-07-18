@@ -14,6 +14,9 @@
         span.select2-container{
             z-index:10000 !important;
         }
+        #label-reverse:hover{
+            cursor: pointer;
+        }
     </style>
 @endpush
 @section('content')
@@ -62,6 +65,16 @@
                                     <input type="file" name="images" onchange="loadFile(event)">
                                     <br>
                                     <img id="output" width="200"  alt="Ảnh đã chọn"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+{{--                                <label class="col-form-label col-md-2">Bạn có muốn tạo tuyến ngược lại không</label>--}}
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        <label for="reverse" id="label-reverse">
+                                            <input type="checkbox" name="reverse" id="reverse"> Bạn có muốn tạo tuyến ngược lại không
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="mt-4 text-center">
