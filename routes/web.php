@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Applicant\HomePageController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -15,14 +16,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
+//Route::get('/', function () {
+//    return view('index');
+//});
+
+Route::get('/', [HomePageController::class, 'index'])->name('index');
 
 Route::get('/test', [TestController::class, 'test'])->name('test');
-Route::get('/test1', [TestController::class, 'test1'])->name('test1');
-Route::get('/apiTest', [TestController::class, 'apiTest'])->name('api.test');
-Route::post('/apiRevenueTest', [TestController::class, 'apiRevenueTest'])->name('api.RevenueTest');
 
 
 //Route::get('edit_1/{user}',[UserController::class,'edit'])->name('edit_1');

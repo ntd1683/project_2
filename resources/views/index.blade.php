@@ -29,17 +29,6 @@
                 <div class="search-wrap-1 ftco-animate p-4">
                     <form action="#" method="get" class="search-property-1">
                         <div class="row">
-                            <!-- list 1 -->
-                            <!-- <div class="col-lg align-items-end">
-                              <div class="form-group">
-                                <label for="#">Destination</label>
-                                <div class="form-field">
-                                  <div class="icon"><span class="ion-ios-search"></span></div>
-                                  <input type="text" class="form-control" placeholder="Search place">
-                                </div>
-                              </div>
-                            </div> -->
-                            <!-- end list 1 -->
                             <div class="col-lg align-items-end">
                                 <div class="form-group">
                                     <label for="#">Nơi đi</label>
@@ -47,12 +36,10 @@
                                         <div class="select-wrap">
                                             <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                                             <select name="" id="" class="form-control">
-                                                <option value="">Chọn nơi đi</option>
-                                                <option value="">Đắk Lắk</option>
-                                                <option value="">Nha Trang</option>
-                                                <option value="">Đà Lạt</option>
-                                                <option value="">Hồ Chí Minh</option>
-                                                <option value="">Bình Dương</option>
+                                                <option value="-1" selected>Chọn nơi đi</option>
+                                                @foreach($city_start as $key => $value)
+                                                <option value="{{$key}}">{{$value}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -66,11 +53,9 @@
                                             <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                                             <select name="" id="" class="form-control">
                                                 <option value="">Chọn nơi đến</option>
-                                                <option value="">Đắk Lắk</option>
-                                                <option value="">Nha Trang</option>
-                                                <option value="">Đà Lạt</option>
-                                                <option value="">Hồ Chí Minh</option>
-                                                <option value="">Bình Dương</option>
+                                                @foreach($city_end as $key => $value)
+                                                    <option value="{{$key}}">{{$value}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -81,7 +66,7 @@
                                     <label for="#">Ngày khởi hành</label>
                                     <div class="form-field">
                                         <div class="icon"><span class="ion-ios-calendar"></span></div>
-                                        <input type="text" class="form-control checkout_date" placeholder="Chọn ngày khởi hành">
+                                        <input type="text" id="departure-day" class="form-control checkout_date" placeholder="Chọn ngày khởi hành">
                                     </div>
                                 </div>
                             </div>
@@ -163,15 +148,17 @@
             </div>
         </div>
         <div class="row">
+            @foreach($routes as $route)
             <div class="col-md-4 ftco-animate">
                 <div class="project-wrap">
                     <a href="#" class="img"
-                       style="background-image:url({{asset('images/DakLak_NTD.jpg')}})"></a>
+                       style="background-image:url({{asset($route->img)}})"></a>
                     <div class="text p-4">
-                        <span class="price" style="text-align:center">Từ 250.000đ/Vé</span>
-                        <span class="days">Ngày Thường</span>
-                        <h3><a href="#">Sài Gòn - Đắk Lắk</a></h3>
-                        <p class="location"><span class="fas fa-location-arrow"></span> 345km</p>
+                        <span class="price" style="text-align:center">Từ {{$route->price}}Đ/Vé</span>
+{{--                        <span class="days">Ngày Thường</span>--}}
+                        <h3><a href="#">{{$route->name}}</a></h3>
+                        <p class="location" style="display:inline-block"><span class="fas fa-location-arrow"></span> {{$route->distance}}km</p>
+                        <p class="location" style="display:inline-block;margin-left: 10px;"><span class="fas fa-stopwatch"></span> {{$route->distance}}h</p>
                         <ul>
                             <li><span class="fas fa-wifi"></span></li>
                             <li><span class="fas fa-fan"></span></li>
@@ -180,91 +167,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 ftco-animate">
-                <div class="project-wrap">
-                    <a href="#" class="img"
-                       style="background-image:url({{asset('images/Dalat.jpg')}})"></a>
-                    <div class="text p-4">
-                        <span class="price" style="text-align:center">Từ 420.000đ/Vé</span>
-                        <span class="days">Ngày Thường</span>
-                        <h3><a href="#">Sài Gòn - Đà Lạt</a></h3>
-                        <p class="location"><span class="fas fa-location-arrow"></span> 310km</p>
-                        <ul>
-                            <li><span class="fas fa-wifi"></span></li>
-                            <li><span class="fas fa-fan"></span></li>
-                            <li><span class="fas fa-prescription-bottle"></span></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 ftco-animate">
-                <div class="project-wrap">
-                    <a href="#" class="img"
-                       style="background-image:url({{asset('images/vungtau.jpg')}})"></a>
-                    <div class="text p-4">
-                        <span class="price" style="text-align:center">Từ 200.000đ/Vé</span>
-                        <span class="days">Ngày Thường</span>
-                        <h3><a href="#">Sài Gòn - Vũng Tàu</a></h3>
-                        <p class="location"><span class="fas fa-location-arrow"></span> 110km</p>
-                        <ul>
-                            <li><span class="fas fa-wifi"></span></li>
-                            <li><span class="fas fa-fan"></span></li>
-                            <li><span class="fas fa-prescription-bottle"></span></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 ftco-animate">
-                <div class="project-wrap">
-                    <a href="#" class="img"
-                       style="background-image:url({{asset('images/Saigon.jpeg')}})"></a>
-                    <div class="text p-4">
-                        <span class="price" style="text-align:center">Từ 250.000đ/Vé</span>
-                        <span class="days">Ngày Thường</span>
-                        <h3><a href="#">Đắk Lắk - Sài Gòn</a></h3>
-                        <p class="location"><span class="fas fa-location-arrow"></span> 345km</p>
-                        <ul>
-                            <li><span class="fas fa-wifi"></span></li>
-                            <li><span class="fas fa-fan"></span></li>
-                            <li><span class="fas fa-prescription-bottle"></span></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 ftco-animate">
-                <div class="project-wrap">
-                    <a href="#" class="img"
-                       style="background-image:url({{asset('images/Saigon2.jpg')}})"></a>
-                    <div class="text p-4">
-                        <span class="price" style="text-align:center">Từ 420.000đ/Vé</span>
-                        <span class="days">Ngày Thường</span>
-                        <h3><a href="#">Đà Lạt - Sài Gòn</a></h3>
-                        <p class="location"><span class="fas fa-location-arrow"></span> 345km</p>
-                        <ul>
-                            <li><span class="fas fa-wifi"></span></li>
-                            <li><span class="fas fa-fan"></span></li>
-                            <li><span class="fas fa-prescription-bottle"></span></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 ftco-animate">
-                <div class="project-wrap">
-                    <a href="#" class="img"
-                       style="background-image:url({{asset('images/binhduong.jpg')}})"></a>
-                    <div class="text p-4">
-                        <span class="price" style="text-align:center">Từ 250.000đ/Vé</span>
-                        <span class="days">Ngày Thường</span>
-                        <h3><a href="#">Bình Dương - Đắk Lắk</a></h3>
-                        <p class="location"><span class="fas fa-location-arrow"></span> 300km</p>
-                        <ul>
-                            <li><span class="fas fa-wifi"></span></li>
-                            <li><span class="fas fa-fan"></span></li>
-                            <li><span class="fas fa-prescription-bottle"></span></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
@@ -434,4 +337,17 @@
         </div>
     </div>
 </section>
+    @push('js')
+        <script>
+            $(document).ready( function() {
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                var yyyy = today.getFullYear();
+
+                today = dd + '/' + mm + '/' + yyyy;
+                $('#departure-day').val(today);
+            });
+        </script>
+    @endpush
 @endsection

@@ -5308,9 +5308,7 @@ h1, h2, h3,
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
     color: rgba(255, 255, 255, 0.4); }
-    @media (max-width: 767.98px) {
-      .search-property-1 .form-group .icon {
-        right: 10px; } }
+    @media (max-width: 767.98px) { }
 
 .bg-light {
   background: #f9fafb !important; }

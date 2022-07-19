@@ -17,7 +17,6 @@ class Route extends Model
         "time",
         "distance",
         "images",
-        "pin",
     ];
 
     public $timestamps = false;
@@ -41,5 +40,4 @@ class Route extends Model
     {
         return $this->hasMany(City::class,'id','city_end_id');
     }
-
 }
