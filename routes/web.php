@@ -22,6 +22,7 @@ Route::get('/', function () {
 Route::get('/test', [TestController::class, 'test'])->name('test');
 Route::get('/test1', [TestController::class, 'test1'])->name('test1');
 Route::get('/apiTest', [TestController::class, 'apiTest'])->name('api.test');
+Route::post('/apiRevenueTest', [TestController::class, 'apiRevenueTest'])->name('api.RevenueTest');
 
 
 //Route::get('edit_1/{user}',[UserController::class,'edit'])->name('edit_1');

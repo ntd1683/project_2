@@ -9,5 +9,8 @@ class Bill extends Model
 {
     use HasFactory;
 
-
+    public function customer_name()
+    {
+        return $this->hasOne(Customer::class,'id','customer_id');
+    }
 }

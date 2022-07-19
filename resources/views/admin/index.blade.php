@@ -1,4 +1,83 @@
 @extends('admin.layout.master')
+@push('css')
+    <link rel="stylesheet" href="{{asset('plugins/datatables/datatables.min.css')}}">
+    <style>
+        .highcharts-figure,
+        .highcharts-data-table table {
+            min-width: 360px;
+            max-width: 800px;
+            margin: 1em auto;
+        }
+
+        .highcharts-data-table table {
+            font-family: Verdana, sans-serif;
+            border-collapse: collapse;
+            border: 1px solid #ebebeb;
+            margin: 10px auto;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .highcharts-data-table caption {
+            padding: 1em 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+
+        .highcharts-data-table th {
+            font-weight: 600;
+            padding: 0.5em;
+        }
+
+        .highcharts-data-table td,
+        .highcharts-data-table th,
+        .highcharts-data-table caption {
+            padding: 0.5em;
+        }
+
+        .highcharts-data-table thead tr,
+        .highcharts-data-table tr:nth-child(even) {
+            background: #f8f8f8;
+        }
+
+        .highcharts-data-table tr:hover {
+            background: #f1f7ff;
+        }
+
+        #form_statistical {
+            position: absolute;
+            z-index: 99;
+            top: 5px;
+            left: 10px;
+        }
+
+        .class-statistical {
+            padding: 5px;
+            border: 0px;
+            border-radius: 10px;
+            background-color: #86DDF3;
+            opacity: 0.8;
+        }
+
+        .class-statistical:hover {
+            opacity: 1;
+            cursor: pointer;
+        }
+        ul.pagination {
+            margin-bottom: 1rem!important;
+            justify-content: center!important;
+        }
+
+        tr{
+            text-align:center;
+        }
+
+        h4.card-title{
+            text-align:center;
+        }
+    </style>
+@endpush
 @section('content')
             <div class="row">
                 <div class="col-xl-3 col-sm-6 col-12">
@@ -68,258 +147,195 @@
 
                     <div class="card card-table flex-fill">
                         <div class="card-header">
-                            <h4 class="card-title">Recent Bookings</h4>
+                            <h4 class="card-title">Top Khách Hàng </h4>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-center">
+                                <table class="table table-center" id="table-customers-revenue">
                                     <thead>
                                     <tr>
-                                        <th>Customer</th>
-                                        <th>Date</th>
-                                        <th>Service</th>
-                                        <th>Status</th>
-                                        <th>Price</th>
+                                        <th>Tên Khách Hàng</th>
+                                        <th>Giới Tính</th>
+                                        <th>Ngày Sinh</th>
+                                        <th>Đã Chi</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td class="text-nowrap">
-                                            <img class="avatar-xs rounded-circle"
-                                                 src="assets/img/customer/user-05.jpg" alt="User Image"> Annette
-                                            Silva
-                                        </td>
-                                        <td class="text-nowrap">9 Sep 2020</td>
-                                        <td>Car Repair Services</td>
-                                        <td>
-                                            <span class="badge bg-danger inv-badge">Pending</span>
-                                        </td>
-                                        <td>
-                                            <div class="font-weight-600">$50</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-nowrap">
-                                            <img class="avatar-xs rounded-circle"
-                                                 src="assets/img/customer/user-06.jpg" alt="User Image"> Stephen
-                                            Wilson
-                                        </td>
-                                        <td class="text-nowrap">8 Sep 2020</td>
-                                        <td>Steam Car Wash</td>
-                                        <td>
-                                            <span class="badge bg-danger inv-badge">Pending</span>
-                                        </td>
-                                        <td>
-                                            <div class="font-weight-600">$14</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-nowrap">
-                                            <img class="avatar-xs rounded-circle"
-                                                 src="assets/img/customer/user-07.jpg" alt="User Image"> Ryan
-                                            Rodriguez
-                                        </td>
-                                        <td class="text-nowrap">7 Sep 2020</td>
-                                        <td>House Cleaning Services</td>
-                                        <td>
-                                            <span class="badge bg-danger inv-badge">Pending</span>
-                                        </td>
-                                        <td>
-                                            <div class="font-weight-600">$100</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-nowrap">
-                                            <img class="avatar-xs rounded-circle"
-                                                 src="assets/img/customer/user-08.jpg" alt="User Image"> Lucile
-                                            Devera
-                                        </td>
-                                        <td class="text-nowrap">6 Sep 2020</td>
-                                        <td>Interior Designing</td>
-                                        <td>
-                                            <span class="badge bg-danger inv-badge">Pending</span>
-                                        </td>
-                                        <td>
-                                            <div class="font-weight-600">$5</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-nowrap">
-                                            <img class="avatar-xs rounded-circle"
-                                                 src="assets/img/customer/user-09.jpg" alt="User Image"> Roland
-                                            Storey
-                                        </td>
-                                        <td class="text-nowrap">5 Sep 2020</td>
-                                        <td>Plumbing Services</td>
-                                        <td>
-                                            <span class="badge bg-danger inv-badge">Pending</span>
-                                        </td>
-                                        <td>
-                                            <div class="font-weight-600">$150</div>
-                                        </td>
-                                    </tr>
-                                    </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="col-md-6 d-flex">
-
                     <div class="card card-table flex-fill">
                         <div class="card-header">
-                            <h4 class="card-title">Payments</h4>
+                            <h4 class="card-title">Các Tuyến Phổ Biến</h4>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-center">
+                                <table class="table table-center" id="table-route-commons">
                                     <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>User</th>
-                                        <th>Provider</th>
-                                        <th>Service</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
+                                        <th>Tên Tuyến</th>
+                                        <th>Số Lượng Đơn Của Tuyến</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>15 Sep 2020</td>
-                                        <td>
-                                                    <span class="table-avatar">
-                                                        <a href="#" class="avatar avatar-xs mr-2">
-                                                            <img class="avatar-img rounded-circle" alt=""
-                                                                 src="assets/img/customer/user-02.jpg">
-                                                        </a>
-                                                        <a href="javascript:void(0);">Nancy Olson</a>
-                                                    </span>
-                                        </td>
-                                        <td>
-                                                    <span class="table-avatar">
-                                                        <a href="#" class="avatar avatar-xs mr-2">
-                                                            <img class="avatar-img rounded-circle" alt=""
-                                                                 src="assets/img/provider/provider-02.jpg">
-                                                        </a>
-                                                        <a href="javascript:void(0);">Matthew Garcia</a>
-                                                    </span>
-                                        </td>
-                                        <td>Car Repair Services</td>
-                                        <td>$50</td>
-                                        <td>
-                                            <span class="badge badge-dark">Pending</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>14 Sep 2020</td>
-                                        <td>
-                                                    <span class="table-avatar">
-                                                        <a href="#" class="avatar avatar-xs mr-2">
-                                                            <img class="avatar-img rounded-circle" alt=""
-                                                                 src="assets/img/customer/user-03.jpg">
-                                                        </a>
-                                                        <a href="javascript:void(0);">Ramona Kingsley</a>
-                                                    </span>
-                                        </td>
-                                        <td>
-                                                    <span class="table-avatar">
-                                                        <a href="#" class="avatar avatar-xs mr-2">
-                                                            <img class="avatar-img rounded-circle" alt=""
-                                                                 src="assets/img/provider/provider-03.jpg">
-                                                        </a>
-                                                        <a href="javascript:void(0);">Yolanda Potter</a>
-                                                    </span>
-                                        </td>
-                                        <td>Electric Panel Repairing Service</td>
-                                        <td>$45</td>
-                                        <td>
-                                            <span class="badge badge-dark">Pending</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>13 Sep 2020</td>
-                                        <td>
-                                                    <span class="table-avatar">
-                                                        <a href="#" class="avatar avatar-xs mr-2">
-                                                            <img class="avatar-img rounded-circle" alt=""
-                                                                 src="assets/img/customer/user-04.jpg">
-                                                        </a>
-                                                        <a href="javascript:void(0);">Ricardo Lung</a>
-                                                    </span>
-                                        </td>
-                                        <td>
-                                                    <span class="table-avatar">
-                                                        <a href="#" class="avatar avatar-xs mr-2">
-                                                            <img class="avatar-img rounded-circle" alt=""
-                                                                 src="assets/img/provider/provider-04.jpg">
-                                                        </a>
-                                                        <a href="javascript:void(0);">Ricardo Flemings</a>
-                                                    </span>
-                                        </td>
-                                        <td>Steam Car Wash</td>
-                                        <td>$14</td>
-                                        <td>
-                                            <span class="badge badge-dark">Pending</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>12 Sep 2020</td>
-                                        <td>
-                                                    <span class="table-avatar">
-                                                        <a href="#" class="avatar avatar-xs mr-2">
-                                                            <img class="avatar-img rounded-circle" alt=""
-                                                                 src="assets/img/customer/user-05.jpg">
-                                                        </a>
-                                                        <a href="javascript:void(0);">Annette Silva</a>
-                                                    </span>
-                                        </td>
-                                        <td>
-                                                    <span class="table-avatar">
-                                                        <a href="#" class="avatar avatar-xs mr-2">
-                                                            <img class="avatar-img rounded-circle" alt=""
-                                                                 src="assets/img/provider/provider-05.jpg">
-                                                        </a>
-                                                        <a href="javascript:void(0);">Maritza Wasson</a>
-                                                    </span>
-                                        </td>
-                                        <td>House Cleaning Services</td>
-                                        <td>$100</td>
-                                        <td>
-                                            <span class="badge badge-dark">Pending</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>11 Sep 2020</td>
-                                        <td>
-                                                    <span class="table-avatar">
-                                                        <a href="#" class="avatar avatar-xs mr-2">
-                                                            <img class="avatar-img rounded-circle" alt=""
-                                                                 src="assets/img/customer/user-06.jpg">
-                                                        </a>
-                                                        <a href="javascript:void(0);">Stephen Wilson</a>
-                                                    </span>
-                                        </td>
-                                        <td>
-                                                    <span class="table-avatar">
-                                                        <a href="#" class="avatar avatar-xs mr-2">
-                                                            <img class="avatar-img rounded-circle" alt=""
-                                                                 src="assets/img/provider/provider-06.jpg">
-                                                        </a>
-                                                        <a href="javascript:void(0);">Marya Ruiz</a>
-                                                    </span>
-                                        </td>
-                                        <td>Computer & Server AMC Service</td>
-                                        <td>$80</td>
-                                        <td>
-                                            <span class="badge badge-info">Inprogress</span>
-                                        </td>
-                                    </tr>
-                                    </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
+            <figure class="highcharts-figure" style="position:relative">
+                <form id="form_statistical"  onsubmit="return false">
+                    @csrf
+                    <select id="statistical" class="class-statistical" name="data">
+                        <option value="1" selected>30 Ngày</option>
+                        <option value="2">12 Tháng</option>
+                    </select>
+                    <button onclick="btn_statistical()" class="class-statistical">Duyệt</button>
+                </form>
+                <div id="container"></div>
+            </figure>
+@push('js')
+    <script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
+    <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
+    <!-- highchart -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script>
+        var statistical_data = 1;
+        var statistical_title = '30 ngày';
+        function btn_statistical(){
+            const statistical_select = document.getElementById('statistical');
+            statistical_data = statistical_select.options[statistical_select.selectedIndex].value;
+            if (statistical_data == 1) {
+                statistical_title = '30 ngày';
+            } else if (statistical_data == 2) {
+                statistical_title = '12 tháng';
+            }
+            ajax_statistical();
+        }
+
+        function ajax_statistical(){
+
+            console.log(statistical_title);
+            const obj = $("#form_statistical");
+            const formData = new FormData(obj[0]);
+            console.log(statistical_data);
+            $.ajax({
+                type:"POST",
+                url: "{{route('admin.bills.api.revenue')}}",
+                data:formData,
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                async: false,
+                cache: false,
+                success: function (response) {
+                    console.log('check');
+                    const arrX = Object.keys(response);
+                    const arrY = Object.values(response);
+                    let title_hightchart = "Doanh thu " + statistical_title + " gần nhất" ;
+
+                    Highcharts.chart('container', {
+
+                        title: {
+                            text: title_hightchart
+                        },
+
+                        yAxis: {
+                            title: {
+                                text: 'Doanh Thu'
+                            }
+                        },
+
+                        xAxis: {
+                            categories: arrX
+                        },
+
+                        legend: {
+                            layout: 'vertical',
+                            align: 'right',
+                            verticalAlign: 'middle'
+                        },
+
+                        plotOptions: {
+                            series: {
+                                label: {
+                                    connectorAllowed: false
+                                },
+                            }
+                        },
+
+                        series: [{
+                            name: 'Doanh thu',
+                            data: arrY
+                        }],
+
+                        responsive: {
+                            rules: [{
+                                condition: {
+                                    maxWidth: 500
+                                },
+                                chartOptions: {
+                                    legend: {
+                                        layout: 'horizontal',
+                                        align: 'center',
+                                        verticalAlign: 'bottom'
+                                    }
+                                }
+                            }]
+                        }
+                    });
+                }
+            });
+        }
+        $(document).ready(function () {
+            ajax_statistical();
+            console.log('chekc1');
+            let table_customers_revenue = $('#table-customers-revenue').DataTable({
+                destroy: true,
+                dom: 'ltrp',
+                lengthMenu:[5,10,15,30],
+                select: true,
+                processing: true,
+                serverSide: true,
+                ajax: '{!! route('admin.bills.api.customers_revenue') !!}',
+                columns: [
+                    {data: 'name_customer', name: 'name_customer'},
+                    {data: 'gender_customer', name: 'gender_customer'},
+                    {data: 'birthdate_customer', name: 'birthdate_customer'},
+                    {data: 'revenue', name: 'revenue'},
+                ],
+            });
+            let table_route_commons = $('#table-route-commons').DataTable({
+                destroy: true,
+                dom: 'ltrp',
+                lengthMenu:[5,10,15],
+                select: true,
+                processing: true,
+                serverSide: true,
+                ajax: '{!! route('admin.bill_details.api.route_commons') !!}',
+                columns: [
+                    {data: 'name', name: 'name'},
+                    {data: 'count', name: 'count'},
+                ],
+            });
+            table_customers_revenue.draw();
+            table_route_commons.draw();
+
+            console.log('chekc2');
+        });
+
+    </script>
+@endpush
 @endsection
