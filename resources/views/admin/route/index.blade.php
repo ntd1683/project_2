@@ -84,7 +84,6 @@
                                 <th>Tên</th>
                                 <th>Thời Gian</th>
                                 <th>Khoảng Cách</th>
-                                <th>Được Ghim</th>
                                 <th>Sửa</th>
                                 <th>Xoá</th>
                             </tr>
@@ -204,22 +203,8 @@
                         {data: 'time', name: 'time'},
                         {data: 'distance', name: 'distance'},
                         {
-                            data: 'pin',
-                            targets: 7,
-                            orderable: true,
-                            searchable: false,
-                            render: function (data, type, row, meta) {
-                                if(data == 1){
-                                    return `<button type="button" class="btn btn-dark btn-lg">✓</button>`;
-                                }
-                                if(data == 0){
-                                    return `<button type="button" class="btn btn-light btn-lg">✗</button>`;
-                                }
-                            }
-                        },
-                        {
                             data: 'edit',
-                            targets: 8,
+                            targets: 7,
                             orderable: false,
                             searchable: false,
                             render: function (data, type, row, meta) {
@@ -228,7 +213,7 @@
                         },
                         {
                             data: 'destroy',
-                            targets: 9,
+                            targets: 8,
                             orderable: false,
                             searchable: false,
                             render: function (data, type, row, meta) {

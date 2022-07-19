@@ -56,6 +56,7 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&amp;sensor=false"></script>
 <script>eval(mod_pagespeed_Iwq$2YFlEZ);</script>
 <script src="{{asset('js/main.js')}}"></script>
+@stack('js')
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
 <script>

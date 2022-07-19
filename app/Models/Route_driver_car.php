@@ -19,4 +19,9 @@ class Route_driver_car extends Model
     {
         return $this->hasMany(Carriage::class,'id','car_id');
     }
+
+    public function route()
+    {
+        return $this->hasMany(Route::class,'id','route_id');
+    }
 }
