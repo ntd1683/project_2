@@ -52,8 +52,6 @@
 <script>eval(mod_pagespeed_qYprJAbAOR);</script>
 <script>eval(mod_pagespeed_cXP3eADYe3);</script>
 <script>eval(mod_pagespeed_PXw0x0BHOQ);</script>
-<script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&amp;sensor=false"></script>
 <script>eval(mod_pagespeed_Iwq$2YFlEZ);</script>
 <script src="{{asset('js/main.js')}}"></script>
 @stack('js')
