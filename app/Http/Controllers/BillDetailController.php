@@ -5,9 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Bill_detail;
 use App\Http\Requests\StoreBill_detailRequest;
 use App\Http\Requests\UpdateBill_detailRequest;
+use Yajra\DataTables\DataTables;
 
 class BillDetailController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->model = (new Bill_detail())->query();
+        $this->table = (New Bill_detail())->getTable();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,6 +24,20 @@ class BillDetailController extends Controller
     public function index()
     {
         //
+    }
+
+    public function apiRouteCommons()
+    {
+        $result = $this->model
+            ->selectRaw("routes.name,COUNT('id') as count")
+            ->leftJoin('buses', 'bill_details.buses_id', '=', 'buses.id')
+            ->leftJoin('route_driver_cars', 'buses.route_driver_car_id', '=', 'route_driver_cars.id')
+            ->leftJoin('routes', 'route_driver_cars.route_id', '=', 'routes.id')
+            ->groupBy('routes.name')
+            ->orderBy('count','desc')
+            ->get();
+//        return $result;
+        return DataTables::of($result)->make(true);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 
+use App\Http\Controllers\BillController;
+use App\Http\Controllers\BillDetailController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\RouteDriverCarController;
@@ -115,5 +117,25 @@ Route::group([
 //    api
     Route::get('/api/{id}',[RouteDriverCarController::class, 'api'])->name('api');
 });
-Route::get('/test1', array(TestController::class, 'test1'))->name('store');
+
+//bill
+Route::group([
+    'as' => 'bills.',
+    'prefix' => 'bills',
+    'middleware'=> CheckStaffMiddleware::class,
+],function(){
+//    api
+    Route::post('/api',[BillController::class, 'apiRevenue'])->name('api.revenue');
+    Route::get('/api',[BillController::class, 'apiCustomerRevenue'])->name('api.customers_revenue');
+});
+
+//bill_details
+Route::group([
+    'as' => 'bill_details.',
+    'prefix' => 'bill_details',
+    'middleware'=> CheckStaffMiddleware::class,
+],function(){
+//    api
+    Route::get('/apiRouteCommons',[BillDetailController::class, 'apiRouteCommons'])->name('api.route_commons');
+});
 

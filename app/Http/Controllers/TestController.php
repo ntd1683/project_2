@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Enums\CarriageCategoryEnum;
 use App\Enums\SeatTypeEnum;
+use App\Models\Bill;
+use App\Models\Bill_detail;
 use App\Models\Carriage;
+use App\Models\Customer;
 use App\Models\Route_driver_car;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
@@ -19,41 +22,56 @@ class TestController extends Controller
 
     public function __construct()
     {
-        $this->model = (new Route_driver_car())->query();
-        $this->table = (New Route_driver_car())->getTable();
+        $this->model = (new Bill_detail())->query();
+        $this->table = (New Bill_detail())->getTable();
     }
 
     public function test()
     {
-        function number_shorten($number, $precision = 3, $divisors = null) {
+        //SELECT routes.name,COUNT('id') as count FROM `bill_details` LEFT JOIN buses on buses_id = buses.id
+        //LEFT JOIN route_driver_cars on route_driver_cars.id = buses.route_driver_car_id
+        //LEFT JOIN routes on routes.id = route_driver_cars.route_id
+        //GROUP BY(routes.name);
+        $arr = $this->model
+            ->selectRaw("routes.name,COUNT('id') as count")
+            ->leftJoin('buses', 'bill_details.buses_id', '=', 'buses.id')
+            ->leftJoin('route_driver_cars', 'buses.route_driver_car_id', '=', 'route_driver_cars.id')
+            ->leftJoin('routes', 'route_driver_cars.route_id', '=', 'routes.id')
+            ->groupBy('routes.name')
+            ->orderBy('count','desc')
+            ->get();
+        return $arr;
+    }
 
-            // Setup default $divisors if not provided
-            if (!isset($divisors)) {
-                $divisors = array(
-                    pow(1000, 0) => '', // 1000^0 == 1
-                    pow(1000, 1) => 'K', // Thousand
-                    pow(1000, 2) => 'M', // Million
-                    pow(1000, 3) => 'B', // Billion
-                    pow(1000, 4) => 'T', // Trillion
-                    pow(1000, 5) => 'Qa', // Quadrillion
-                    pow(1000, 6) => 'Qi', // Quintillion
-                );
+    public function apiRevenueTest(Request $request)
+    {
+        $arr = [];
+        $data = $request->data;
+        if($data == 1){
+            $price = Bill::query()
+                ->selectRaw("DATE_FORMAT(created_at,'%d-%m-%Y') as date")
+                ->selectRaw("SUM(price) as revenue")
+                ->groupBy('date')
+                ->orderBy('date', 'desc')
+                ->where('created_at', '>', now()->subDays(30)->endOfDay())
+                ->get()->toArray();
+            foreach ($price as $each){
+                $arr[$each['date']] = (float)$each['revenue'];
             }
-
-            // Loop through each $divisor and find the
-            // lowest amount that matches
-            foreach ($divisors as $divisor => $shorthand) {
-                if (abs($number) < ($divisor * 1000)) {
-                    // We found a match!
-                    break;
-                }
-            }
-
-            // We found our match, or there were no matches.
-            // Either way, use the last defined value for $divisor.
-            return number_format($number / $divisor, $precision) . $shorthand;
         }
-        return number_shorten(100000000000);
+        else if($data == 2){
+            $price = Bill::query()
+                ->selectRaw("DATE_FORMAT(created_at,'%m-%Y') as date")
+                ->selectRaw("SUM(price) as revenue")
+                ->groupBy('date')
+                ->orderBy('date', 'desc')
+                ->where('created_at', '>', now()->subMonths(12)->endOfMonth())
+                ->get()->toArray();
+            foreach ($price as $each){
+                $arr[$each['date']] = (float)$each['revenue'];
+            }
+        }
+        return $arr;
     }
 
     public function apiTest()
@@ -71,18 +89,6 @@ class TestController extends Controller
 
     public function test1()
     {
-        $arr = $this->model->with('driver_name')->with('car_name')
-            ->where('route_id',7)
-            ->get()
-            ->map(function ($each){
-                $each->name_driver = ($each->driver_name->pluck('name'))[0];
-                $each->license_plate_car = ($each->car_name->pluck('license_plate'))[0];
-                $each->category_car = CarriageCategoryEnum::getKeyByValue(($each->car_name->pluck('category'))[0]);
-                $each->seat_type_car = SeatTypeEnum::getKeyByValue(($each->car_name->pluck('seat_type'))[0]);
-                unset($each->driver_name);
-                unset($each->car_name);
-                return $each;
-            });
-        return $arr;
+        return view('test1');
     }
 }
