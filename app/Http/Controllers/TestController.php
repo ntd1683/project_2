@@ -28,19 +28,7 @@ class TestController extends Controller
 
     public function test()
     {
-        //SELECT routes.name,COUNT('id') as count FROM `bill_details` LEFT JOIN buses on buses_id = buses.id
-        //LEFT JOIN route_driver_cars on route_driver_cars.id = buses.route_driver_car_id
-        //LEFT JOIN routes on routes.id = route_driver_cars.route_id
-        //GROUP BY(routes.name);
-        $arr = $this->model
-            ->selectRaw("routes.name,COUNT('id') as count")
-            ->leftJoin('buses', 'bill_details.buses_id', '=', 'buses.id')
-            ->leftJoin('route_driver_cars', 'buses.route_driver_car_id', '=', 'route_driver_cars.id')
-            ->leftJoin('routes', 'route_driver_cars.route_id', '=', 'routes.id')
-            ->groupBy('routes.name')
-            ->orderBy('count','desc')
-            ->get();
-        return $arr;
+
     }
 
     public function apiRevenueTest(Request $request)

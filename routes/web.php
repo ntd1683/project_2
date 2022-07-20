@@ -16,13 +16,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('/', function () {
-//    return view('index');
-//});
-
 Route::get('/', [HomePageController::class, 'index'])->name('index');
+Route::get('/mua-ve/', [HomePageController::class, 'book_ticket'])->name('applicant.book_ticket');
 
-Route::get('/test', [TestController::class, 'test'])->name('test');
+
+Route::get('/test/', [TestController::class, 'test1'])->name('test');
+;
 
 
 //Route::get('edit_1/{user}',[UserController::class,'edit'])->name('edit_1');

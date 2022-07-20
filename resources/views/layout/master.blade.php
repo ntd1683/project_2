@@ -13,6 +13,9 @@
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,500;1,100&display=swap');
+        html{
+            scroll-behavior: smooth;
+        }
     </style>
     <link rel="stylesheet" href="{{asset('plugins/fontawesome/css/fontawesome.min.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/fontawesome/css/all.min.css')}}">

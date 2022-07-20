@@ -26,8 +26,9 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="search-wrap-1 ftco-animate p-4">
-                    <form action="#" method="get" class="search-property-1">
+                <div class="search-wrap-1 ftco-animate p-4" style="border-radius:15px;box-shadow: 5px 5px #847979c4;">
+                    <form action="{{route('applicant.book_ticket')}}" method="get" class="search-property-1">
+                        <input type="hidden" name="step" value="1">
                         <div class="row">
                             <div class="col-lg align-items-end">
                                 <div class="form-group">
@@ -35,7 +36,7 @@
                                     <div class="form-field">
                                         <div class="select-wrap">
                                             <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                            <select name="" id="" class="form-control">
+                                            <select name="city_start" id="" class="form-control">
                                                 <option value="-1" selected>Chọn nơi đi</option>
                                                 @foreach($city_start as $key => $value)
                                                 <option value="{{$key}}">{{$value}}</option>
@@ -51,8 +52,8 @@
                                     <div class="form-field">
                                         <div class="select-wrap">
                                             <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                            <select name="" id="" class="form-control">
-                                                <option value="">Chọn nơi đến</option>
+                                            <select name="city_end" id="" class="form-control">
+                                                <option value="-1">Chọn nơi đến</option>
                                                 @foreach($city_end as $key => $value)
                                                     <option value="{{$key}}">{{$value}}</option>
                                                 @endforeach
@@ -66,7 +67,7 @@
                                     <label for="#">Ngày khởi hành</label>
                                     <div class="form-field">
                                         <div class="icon"><span class="ion-ios-calendar"></span></div>
-                                        <input type="text" id="departure-day" class="form-control checkout_date" placeholder="Chọn ngày khởi hành">
+                                        <input type="text" id="departure-day" name="departure_time" class="form-control checkout_date" placeholder="Chọn ngày khởi hành">
                                     </div>
                                 </div>
                             </div>
@@ -151,12 +152,12 @@
             @foreach($routes as $route)
             <div class="col-md-4 ftco-animate">
                 <div class="project-wrap">
-                    <a href="#" class="img"
+                    <a href="{{route('applicant.book_ticket')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}" class="img"
                        style="background-image:url({{asset($route->img)}})"></a>
                     <div class="text p-4">
-                        <span class="price" style="text-align:center">Từ {{$route->price}}Đ/Vé</span>
+                        <a href="{{route('applicant.book_ticket')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}"><span class="price" style="text-align:center">Từ {{$route->price}} Đ/Vé</span></a>
 {{--                        <span class="days">Ngày Thường</span>--}}
-                        <h3><a href="#">{{$route->name}}</a></h3>
+                        <h3><a href="{{route('applicant.book_ticket')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}">{{$route->name}}</a></h3>
                         <p class="location" style="display:inline-block"><span class="fas fa-location-arrow"></span> {{$route->distance}}km</p>
                         <p class="location" style="display:inline-block;margin-left: 10px;"><span class="fas fa-stopwatch"></span> {{$route->distance}}h</p>
                         <ul>
