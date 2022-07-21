@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Buses extends Model
 {
     use HasFactory;
+
+    public function route_driver_car()
+    {
+        return $this->belongsTo(Route_driver_car::class, 'route_driver_car_id');
+    }
 }
