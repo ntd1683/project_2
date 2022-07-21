@@ -24,4 +24,5 @@ class Route_driver_car extends Model
     {
         return $this->hasMany(Route::class,'id','route_id');
     }
+
 }
