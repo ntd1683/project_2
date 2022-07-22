@@ -97,6 +97,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Bảng số xe</th>
+                                    {{-- <th>Tuyến đường</th> --}}
                                     <th>Loại xe</th>
                                     <th>Loại ghế</th>
                                     <th>Số ghế</th>
@@ -117,7 +118,7 @@
             $(document).ready(function() {
                 $('#license-plate').select2({
                     ajax: {
-                        url: "{{route('admin.carriages.api.name_carriages')}}",
+                        url: "{{route('admin.carriages.api.nameCarriages')}}",
                         dataType: 'json',
                         delay: 250,
                         data: function (params) {
@@ -144,7 +145,7 @@
 
                 $('#number-seat').select2({
                     ajax: {
-                        url: "{{route('admin.carriages.api.number_seat')}}",
+                        url: "{{route('admin.carriages.api.numberSeats')}}",
                         dataType: 'json',
                         delay: 250,
                         data: function (params) {
@@ -181,6 +182,7 @@
                         columns: [
                         { data: 'id', name: 'id' },
                         { data: 'license_plate', name: 'license_plate' },
+                        // { data: 'route_name', name:'route_name'},
                         { data: 'category', name: 'category' },
                         { data: 'seat_type', name: 'seat_type' },
                         { data: 'default_number_seat', name: 'default_number_seat' },
