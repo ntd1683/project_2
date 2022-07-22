@@ -13,4 +13,11 @@ class Buses extends Model
     {
         return $this->belongsTo(Route_driver_car::class, 'route_driver_car_id');
     }
+    public $timestamps = false;
+
+    protected $fillable = [
+        "route_driver_car_id",
+        "departure_time",
+        "price",
+    ];
 }

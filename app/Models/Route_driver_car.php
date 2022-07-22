@@ -12,17 +12,25 @@ class Route_driver_car extends Model
 
     public function driver_name()
     {
-        return $this->hasMany(User::class,'id','driver_id');
+        return $this->hasMany(User::class, 'id', 'driver_id');
     }
 
     public function car_name()
     {
-        return $this->hasMany(Carriage::class,'id','car_id');
+        return $this->hasMany(Carriage::class, 'id', 'car_id');
     }
 
     public function route()
     {
-        return $this->hasMany(Route::class,'id','route_id');
+        return $this->hasMany(Route::class, 'id', 'route_id');
     }
 
+    public $timestamps = false;
+
+    protected $fillable = [
+        'route_id',
+        'driver_id',
+        'car_id',
+        'price',
+    ];
 }

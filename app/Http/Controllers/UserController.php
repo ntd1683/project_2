@@ -29,25 +29,26 @@ class UserController extends Controller
     private object $model;
     private string $table;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->model = (new User())->query();
-        $this->table = (New User())->getTable();
+        $this->table = (new User())->getTable();
         // Làm sidebar - để biết mình đag ở tab nào
         $current_path = Route::getFacadeRoot()->current()->uri();
         $current_path_1 = Str::after($current_path, 'admin/');
         $route = Str::before($current_path_1, '/');
-//        dd($route);
+        //        dd($route);
         $levels_us = UserLevelEnum::asArray();
-        $levels=[];
+        $levels = [];
         foreach ($levels_us as $value) {
             $level = UserLevelEnum::getKeyByValue($value);
-            $levels[$level]=$value;
+            $levels[$level] = $value;
         }
-//        dd($levels);
+        //        dd($levels);
         View::share([
-            'title'=> ucwords($this->table),
+            'title' => ucwords($this->table),
             'levels' => $levels,
-            'route'=> $route,
+            'route' => $route,
         ]);
     }
 
@@ -55,6 +56,7 @@ class UserController extends Controller
     {
         $level_user = Auth::user()->level;
         $user = UserLevelEnum::getKeyByValue($level_user);
+<<<<<<< HEAD
         $customer_counters = Customer::query()->count();
         $driver_counters = $this->model->where('level','0')->count();
         $car_counters = Carriage::query()->count();
@@ -71,6 +73,14 @@ class UserController extends Controller
             'driver_counters'=>$driver_counters,
             'car_counters'=>$car_counters,
             'revenue'=>$revenue,
+=======
+        $title = 'Chào ' . $user . ', chúc bạn một ngày tốt lành !!!';
+        // chỉ riêng trang này ko có title
+        return view('admin.index', [
+            'breadcumbs' => null,
+            'title' => NULL,
+            'title_index' => $title,
+>>>>>>> car_route_dri-buses
         ]);
     }
 
@@ -99,16 +109,16 @@ class UserController extends Controller
                 return route('admin.users.destroy', $object);
             })
             ->addColumn('edit', function ($object) {
-                return route('admin.users.edit',$object);
+                return route('admin.users.edit', $object);
             })
-            ->filterColumn('level', function($query, $keyword) {
-                if($keyword !=='-1'){
-                    $query->where('level',$keyword);
+            ->filterColumn('level', function ($query, $keyword) {
+                if ($keyword !== '-1') {
+                    $query->where('level', $keyword);
                 }
             })
-            ->filterColumn('name', function($query, $keyword) {
-                if($keyword !=='null'){
-                    $query->where('name',$keyword);
+            ->filterColumn('name', function ($query, $keyword) {
+                if ($keyword !== 'null') {
+                    $query->where('name', $keyword);
                 }
             })
             ->make(true);
@@ -116,37 +126,55 @@ class UserController extends Controller
 
     public function apiNameUsers(Request $request)
     {
-        return $this->model->where('name','like','%'.$request->get('q') .'%')->get();
+        return $this->model->where('name', 'like', '%' . $request->get('q') . '%')->get();
+    }
+    public function apiNameDrivers(Request $request)
+    {
+        if ($request->get('route_id') != null && $request->get('car_id') == null) {
+            return $this->model->join('route_driver_cars', 'route_driver_cars.driver_id', '=', 'users.id')
+                ->where('route_driver_cars.route_id', $request->get('route_id'))
+                ->where('users.name', 'like', '%' . $request->get('q') . '%')
+                ->where('users.level', UserLevelEnum::DRIVER)
+                ->get();
+        } else if ($request->get('route_id') != null && $request->get('car_id') != null) {
+            return $this->model->join('route_driver_cars', 'route_driver_cars.driver_id', '=', 'users.id')
+                ->where('route_driver_cars.route_id', $request->get('route_id'))
+                ->where('route_driver_cars.car_id', $request->get('car_id'))
+                ->where('users.name', 'like', '%' . $request->get('q') . '%')
+                ->where('users.level', UserLevelEnum::DRIVER)
+                ->get();
+        }
+        return $this->model->where('name', 'like', '%' . $request->get('q') . '%')->where('level', UserLevelEnum::DRIVER)->get();
     }
 
     public function apiProvinces(Request $request)
     {
-        return $this->model->where('address','like','%'.$request->get('q') .'%')->get();
+        return $this->model->where('address', 'like', '%' . $request->get('q') . '%')->get();
     }
 
     public function show_users()
     {
         $breadcumbs = Breadcrumbs::render('user');
-        return view('admin.staff.users',[
-            'breadcumbs' =>$breadcumbs,
+        return view('admin.staff.users', [
+            'breadcumbs' => $breadcumbs,
         ]);
     }
 
     public function create()
     {
         $breadcumbs = Breadcrumbs::render('create_user');
-        return view('admin.staff.create',[
-            'breadcumbs' =>$breadcumbs,
+        return view('admin.staff.create', [
+            'breadcumbs' => $breadcumbs,
         ]);
     }
 
     public function store(StoreUserRequest $request)
     {
-        try{
+        try {
             $district = $request->get('district');
             $province = $request->get('province');
             $address = $request->get('address');
-            $address1 = $address .','. $district. ',' . $province;
+            $address1 = $address . ',' . $district . ',' . $province;
             $arr = $request->only([
                 "name",
                 "phone",
@@ -158,19 +186,18 @@ class UserController extends Controller
             ]);
             $arr['address'] = $address1;
             $arr['password'] = Hash::make('nhaxethuduc');
-//            dd($arr);
+            //            dd($arr);
             $this->model->create($arr);
             $user = (object) $arr;
             UserCreateEvent::dispatch($user);
-            return redirect()->route('admin.users.show_users')->with('success','Bạn thêm thành công !!!');
-        }
-        catch(Throwable $e){
-//            dd();
-            return redirect()->route('admin.users.create')->with('error','Bạn thêm thất bại rồi, vui lòng thử lại sau !!!');
+            return redirect()->route('admin.users.show_users')->with('success', 'Bạn thêm thành công !!!');
+        } catch (Throwable $e) {
+            //            dd();
+            return redirect()->route('admin.users.create')->with('error', 'Bạn thêm thất bại rồi, vui lòng thử lại sau !!!');
         }
     }
 
-//    profile
+    //    profile
     public function show()
     {
         $id = Auth::id();
@@ -178,34 +205,34 @@ class UserController extends Controller
         $src = $user->src_image_level;
         $address_user = explode(',', $user->address);
         $breadcumbs = Breadcrumbs::render('show_user');
-        return view('admin.profile',[
-            'user'=> $user,
-            'breadcumbs'=>$breadcumbs,
-            'address_user'=>$address_user,
-            'src'=>$src,
+        return view('admin.profile', [
+            'user' => $user,
+            'breadcumbs' => $breadcumbs,
+            'address_user' => $address_user,
+            'src' => $src,
         ]);
     }
 
     public function edit(User $user)
-        // @todo Cài breadcumbs nha ô : composer require diglactic/laravel-breadcrumbs
+    // @todo Cài breadcumbs nha ô : composer require diglactic/laravel-breadcrumbs
     {
-        $breadcumbs = Breadcrumbs::render('edit_user',$user);
+        $breadcumbs = Breadcrumbs::render('edit_user', $user);
         $address_user = explode(',', $user->address);
-        return view('admin.staff.edit',[
-            'user'=> $user,
-            'address_user'=> $address_user,
-            'breadcumbs'=>$breadcumbs,
+        return view('admin.staff.edit', [
+            'user' => $user,
+            'address_user' => $address_user,
+            'breadcumbs' => $breadcumbs,
         ]);
     }
 
-//    profile
-    public function updateProfile(UpdateProfileRequest $request,$user)
+    //    profile
+    public function updateProfile(UpdateProfileRequest $request, $user)
     {
-        try{
+        try {
             $district = $request->get('district');
             $province = $request->get('province');
             $address = $request->get('address');
-            $address1 = $address .','. $district. ',' . $province;
+            $address1 = $address . ',' . $district . ',' . $province;
             $arr = $request->only([
                 "name",
                 "phone",
@@ -215,37 +242,54 @@ class UserController extends Controller
             ]);
             $arr['address'] = $address1;
             $object = $this->model->find($user);
-            $object -> fill($arr);
+            $object->fill($arr);
             $object->save();
-            return redirect()->route('admin.profile')->with('success','Bạn sửa thành công !!!');
-        }
-        catch(Throwable $e){
-            return redirect()->route('admin.users.create')->with('error','Bạn sửa thất bại rồi,vui lòng thử lại sau !!!');
+            return redirect()->route('admin.profile')->with('success', 'Bạn sửa thành công !!!');
+        } catch (Throwable $e) {
+            return redirect()->route('admin.users.create')->with('error', 'Bạn sửa thất bại rồi,vui lòng thử lại sau !!!');
         }
     }
 
+<<<<<<< HEAD
 //    profile
     public function changePassword(ChangePassword $request){
         $id = Auth::id();
         $user = $this->model->find($id);
+=======
+    //    profile
+    public function changePassword(Request $request)
+    {
+        $id = Auth::id();
+        $user = $this->model->find($id);
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required',
+            'confirm_password' => 'required|same:new_password',
+        ], [
+            'old_password.required' => 'Mật khẩu cũ không được bỏ trống',
+            'new_password.required' => 'Mật khẩu cũ không được bỏ trống',
+            'confirm_password.required' => 'Mật khẩu mới nhập không được bỏ trống',
+            'confirm_password.same' => 'Mật khẩu nhập không giống nhau',
+        ]);
+>>>>>>> car_route_dri-buses
         $password_old = $request->get('old_password');
-        if(Hash::check($password_old,$user->password)){
+        if (Hash::check($password_old, $user->password)) {
             $password_new = Hash::make($request->get('new_password'));
-            User::where(['id'=>$id])->update([
-                'password'=>$password_new,
+            User::where(['id' => $id])->update([
+                'password' => $password_new,
             ]);
-            return redirect()->route('admin.profile')->with('success','Đổi mật khẩu thành công !!!');
+            return redirect()->route('admin.profile')->with('success', 'Đổi mật khẩu thành công !!!');
         }
-        return redirect()->route('admin.profile')->with('error','Đổi mật khẩu thất bại !!!');
+        return redirect()->route('admin.profile')->with('error', 'Đổi mật khẩu thất bại !!!');
     }
 
-    public function update(UpdateUserRequest $request,$user)
+    public function update(UpdateUserRequest $request, $user)
     {
-        try{
+        try {
             $district = $request->get('district');
             $province = $request->get('province');
             $address = $request->get('address');
-            $address1 = $address .','. $district. ',' . $province;
+            $address1 = $address . ',' . $district . ',' . $province;
             $arr = $request->only([
                 "name",
                 "phone",
@@ -257,12 +301,11 @@ class UserController extends Controller
             ]);
             $arr['address'] = $address1;
             $object = $this->model->find($user);
-            $object -> fill($arr);
+            $object->fill($arr);
             $object->save();
-            return redirect()->route('admin.users.show_users')->with('success','Bạn sửa thành công !!!');
-        }
-        catch(Throwable $e){
-            return redirect()->route('admin.users.create')->with('error','Bạn sửa thất bại rồi,vui lòng thử lại sau !!!');
+            return redirect()->route('admin.users.show_users')->with('success', 'Bạn sửa thành công !!!');
+        } catch (Throwable $e) {
+            return redirect()->route('admin.users.create')->with('error', 'Bạn sửa thất bại rồi,vui lòng thử lại sau !!!');
         }
     }
 
@@ -274,16 +317,15 @@ class UserController extends Controller
      */
     public function destroy($user)
     {
-        $arr=[];
+        $arr = [];
         $arr['status'] = true;
-        $arr['messages'] ='';
-        $user_get = $this->model->where('id',$user)->firstOrFail();
-        if($user_get->level == 2){
+        $arr['messages'] = '';
+        $user_get = $this->model->where('id', $user)->firstOrFail();
+        if ($user_get->level == 2) {
             $arr['status'] = false;
-        }
-        else{
+        } else {
             User::destroy($user);
         }
-        return response($arr,200);
+        return response($arr, 200);
     }
 }

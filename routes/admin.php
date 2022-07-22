@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\BillDetailController;
+use App\Http\Controllers\BusesController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\RouteDriverCarController;
@@ -45,7 +46,7 @@ Route::post('reset_password', [AuthController::class, 'processResetPassword'])->
 Route::group([
     'as' => 'users.',
     'prefix' => 'users',
-    'middleware' => CheckAdminMiddleware::class,
+    // 'middleware' => CheckAdminMiddleware::class,
 ], function () {
     Route::get('/', [UserController::class, 'show_users'])->name('show_users');
     Route::get('/create', [UserController::class, 'create'])->name('create');
@@ -57,6 +58,7 @@ Route::group([
     //    api
     Route::get('/api', [UserController::class, 'api'])->name('api');
     Route::get('/apiNameUsers', [UserController::class, 'apiNameUsers'])->name('api.name_users');
+    Route::get('/apiNameDrivers', [UserController::class, 'apiNameDrivers'])->name('api.name_drivers');
     Route::get('/apiProvinces', [UserController::class, 'apiProvinces'])->name('api.provinces');
 });
 
@@ -65,7 +67,7 @@ Route::group([
     'prefix' => 'carriages',
     // 'middleware' => CheckAdminMiddleware::class,
 ], function () {
-    Route::get('/', [CarriageController::class, 'show_cars'])->name('show_cars');
+    Route::get('/', [CarriageController::class, 'index'])->name('index');
     Route::get('/create', [CarriageController::class, 'create'])->name('create');
     Route::post('/store', [CarriageController::class, 'store'])->name('store');
     Route::delete('/destroy/{carriage}', [CarriageController::class, 'destroy'])->name('destroy');
@@ -74,68 +76,89 @@ Route::group([
 
     //    api
     Route::get('/api', [CarriageController::class, 'api'])->name('api');
+    Route::get('/apiNameCarriages', [CarriageController::class, 'apiNameCarriages'])->name('api.nameCarriages');
+    Route::get('/apiNumberSeats', [CarriageController::class, 'apiNumberSeats'])->name('api.numberSeats');
 });
 //route
 Route::group([
     'as' => 'routes.',
     'prefix' => 'routes',
-    'middleware'=> CheckStaffMiddleware::class,
-],function(){
-    Route::get('/', [RouteController::class,'index'])->name('index');
-    Route::get('/show/{route}',[RouteController::class,'show'])->name('show');
-    Route::get('/create', [RouteController::class,'create'])->name('create');
-    Route::post('/store', [RouteController::class,'store'])->name('store');
-    Route::get('/edit/{route}',[RouteController::class,'edit'])->name('edit');
-    Route::post('/update/{route}',[RouteController::class,'update'])->name('update');
-    Route::delete('/destroy/{route}',[RouteController::class,'destroy'])->name('destroy');
+    'middleware' => CheckStaffMiddleware::class,
+], function () {
+    Route::get('/', [RouteController::class, 'index'])->name('index');
+    Route::get('/show/{route}', [RouteController::class, 'show'])->name('show');
+    Route::get('/create', [RouteController::class, 'create'])->name('create');
+    Route::post('/store', [RouteController::class, 'store'])->name('store');
+    Route::get('/edit/{route}', [RouteController::class, 'edit'])->name('edit');
+    Route::post('/update/{route}', [RouteController::class, 'update'])->name('update');
+    Route::delete('/destroy/{route}', [RouteController::class, 'destroy'])->name('destroy');
 
-//    api
-    Route::get('/api',[RouteController::class,'api'])->name('api');
-    Route::get('/apiNameRoutes',[RouteController::class,'apiNameRoutes'])->name('api.name_routes');
-    Route::get('/apiCityStart',[RouteController::class,'apiCityStart'])->name('api.city_start');
-    Route::get('/apiCityEnd',[RouteController::class,'apiCityEnd'])->name('api.city_end');
-    Route::get('/apiNameCheck',[RouteController::class,'apiNameCheck'])->name('api.apiNameCheck');
+    //    api
+    Route::get('/api', [RouteController::class, 'api'])->name('api');
+    Route::get('/apiNameRoutes', [RouteController::class, 'apiNameRoutes'])->name('api.name_routes');
+    Route::get('/apiCityStart', [RouteController::class, 'apiCityStart'])->name('api.city_start');
+    Route::get('/apiCityEnd', [RouteController::class, 'apiCityEnd'])->name('api.city_end');
+    Route::get('/apiNameCheck', [RouteController::class, 'apiNameCheck'])->name('api.apiNameCheck');
+    Route::get('/apiGetCityByRoute', [RouteController::class, 'apiGetCityByRoute'])->name('api.apiGetCityByRoute');
+    Route::get('/apiGetRouteByCity', [RouteController::class, 'apiGetRouteByCity'])->name('api.apiGetRouteByCity');
 });
 
 //city
 Route::group([
     'as' => 'cities.',
     'prefix' => 'cities',
-    'middleware'=> CheckStaffMiddleware::class,
-],function(){
-    Route::post('/store', [CityController::class,'store'])->name('store');
-//    api
+    // 'middleware' => CheckStaffMiddleware::class,
+], function () {
+    Route::post('/store', [CityController::class, 'store'])->name('store');
+    //    api
     Route::get('/cities/check/{cityName?}', [CityController::class, 'check'])->name('check');
+    Route::get('/apiCity', [CityController::class, 'apiCity'])->name('api.city');
 });
 
 //route_driver_Car
 Route::group([
     'as' => 'route_driver_car.',
     'prefix' => 'route_driver_car',
-    'middleware'=> CheckStaffMiddleware::class,
-],function(){
-//    api
-    Route::get('/api/{id}',[RouteDriverCarController::class, 'api'])->name('api');
+    'middleware' => CheckStaffMiddleware::class,
+], function () {
+    //    api
+    Route::get('/api/{id}', [RouteDriverCarController::class, 'api'])->name('api');
 });
 
 //bill
 Route::group([
     'as' => 'bills.',
     'prefix' => 'bills',
-    'middleware'=> CheckStaffMiddleware::class,
-],function(){
-//    api
-    Route::post('/api',[BillController::class, 'apiRevenue'])->name('api.revenue');
-    Route::get('/api',[BillController::class, 'apiCustomerRevenue'])->name('api.customers_revenue');
+    'middleware' => CheckStaffMiddleware::class,
+], function () {
+    //    api
+    Route::post('/api', [BillController::class, 'apiRevenue'])->name('api.revenue');
+    Route::get('/api', [BillController::class, 'apiCustomerRevenue'])->name('api.customers_revenue');
 });
 
 //bill_details
 Route::group([
     'as' => 'bill_details.',
     'prefix' => 'bill_details',
-    'middleware'=> CheckStaffMiddleware::class,
-],function(){
-//    api
-    Route::get('/apiRouteCommons',[BillDetailController::class, 'apiRouteCommons'])->name('api.route_commons');
+    'middleware' => CheckStaffMiddleware::class,
+], function () {
+    //    api
+    Route::get('/apiRouteCommons', [BillDetailController::class, 'apiRouteCommons'])->name('api.route_commons');
 });
+Route::group([
+    'as' => 'buses.',
+    'prefix' => 'buses',
+    // 'middleware' => CheckStaffMiddleware::class,
+], function () {
+    Route::get('/', [BusesController::class, 'index'])->name('index');
+    Route::delete('/show/{buses}', [BusesController::class, 'show'])->name('show');
+    Route::get('/create', [BusesController::class, 'create'])->name('create');
+    Route::post('/store', [BusesController::class, 'store'])->name('store');
+    Route::get('/edit/{buses}', [BusesController::class, 'edit'])->name('edit');
+    Route::post('/update/{buses}', [BusesController::class, 'update'])->name('update');
+    Route::delete('/destroy/{buses}', [BusesController::class, 'destroy'])->name('destroy');
 
+    //    api
+    Route::get('/api', [BusesController::class, 'api'])->name('api');
+    Route::get('/apiGetPrice', [BusesController::class, 'apiGetPrice'])->name('api.apiGetPrice');
+});

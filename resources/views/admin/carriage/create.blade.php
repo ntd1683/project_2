@@ -56,10 +56,38 @@
                                     <input type="number" class="form-control" name="default_number_seat" >
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label class="col-form-label">Tuyến đường</label>
+                                </div>
+                                <div class="col-md-5 mb-3">
+                                    <label class="col-form-label">Địa điểm 1</label>
+                                    <select class="form-control" name="from" id="from">
+                                    </select>
+                                </div>
+                                <div class="col-md-5 mb-3">
+                                    <label class="col-form-label">Địa điểm 2</label>
+                                    <select class="form-control" name="to" id="to">
+                                    </select>
+                                </div>
+                            </div>
 
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-2" for="select-seat-type">Tài xế</label>
+                                <div class="col-md-10">
+                                    <select class="form-control" name="driver" id="driver">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-2">Giá theo tuyến đường</label>
+                                <div class="col-md-10">
+                                    <input type="number" class="form-control" name="price" id="price" placeholder="Giá">
+                                </div>
+                            </div>
                             <div class="mt-4 text-center">
                                 <button class="btn btn-primary" type="submit">Thêm Xe</button>
-                                <a href="{{route('admin.carriages.show_cars')}}" class="btn btn-link">Quay Lại</a>
+                                <a href="{{route('admin.carriages.index')}}" class="btn btn-link">Quay Lại</a>
                             </div>
                         </form>
                     </div>
@@ -94,6 +122,20 @@
                             min: 10,
                             max: 100,
                         },
+                        from: {
+                            required: true,
+                        },
+                        to: {
+                            required: true,
+                        },
+                        driver: {
+                            required: true,
+                        },
+                        price: {
+                            required: true,
+                            number: true,
+                            min: 0,
+                        },
                     },
                     messages: {
                         license_plate: {
@@ -112,10 +154,104 @@
                             min: "Số lượng ghế phải lớn hơn 10",
                             max: "Số lượng ghế phải nhỏ hơn 100",
                         },
+                        from: {
+                            required: "Vui lòng chọn địa điểm đi",
+                        },
+                        to: {
+                            required: "Vui lòng chọn địa điểm đến",
+                        },
+                        driver: {
+                            required: "Vui lòng chọn tài xế",
+                        },
+                        price: {
+                            required: "Vui lòng nhập giá",
+                            number: "Vui lòng nhập số",
+                            min: "Giá phải lớn hơn 0",
+                        },
                     },
                     submitHandler: function (form) {
                         form.submit();
                     }
+                });
+
+                // select2 for "#from" and "#to"
+                $('#from').select2({
+                    ajax: {
+                        url: "{{route('admin.cities.api.city')}}",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        text: item.name,
+                                        id: item.id,
+                                    }
+                                })
+                            };
+                        }
+                    },
+                    placeholder: 'Địa điểm 1',
+                    allowClear:true,
+                });
+                $('#to').select2({
+                    ajax: {
+                        url: "{{route('admin.cities.api.city')}}",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        text: item.name,
+                                        id: item.id,
+                                    }
+                                })
+                            };
+                        }
+                    },
+                    placeholder: 'Điểm đi',
+                    allowClear:true,
+                });
+
+                $('#driver').select2({
+                    ajax: {
+                        url: "{{route('admin.users.api.name_drivers')}}",
+                        dataType: 'json',
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        text: item.name,
+                                        id: item.id,
+                                    }
+                                })
+                            };
+                        }
+                    },
+                    placeholder: 'Nhập tên tài xế',
+                    allowClear:true
                 });
             });
         </script>
