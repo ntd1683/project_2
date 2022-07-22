@@ -18,15 +18,15 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Thêm Chuyến Xe</h4>
+                    <h4 class="card-title">Sửa Chuyến Xe</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{route('admin.buses.store')}}" id="form-create-post" method="post">
+                    <form action="{{route('admin.buses.update', $buses)}}" id="form-create-post" method="post">
                         @csrf
                         <div class="form-group row">
                             <div class="col-md-4 mb-3">
                                 <label class="col-form-label">Tuyến đường</label>
-                                <select class="form-control" name="route" id="route" value="{{old('route')}}">
+                                <select class="form-control" name="route" id="route">
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -57,7 +57,7 @@
                         <div class="form-group row">
                             <label class="col-form-label col-md-2">Ngày khởi hành</label>
                             <div class="col-md-10">
-                                <input class="form-control" name="date" id="date" type="date">
+                                <input class="form-control" name="date" id="date" type="date" value="">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -73,7 +73,7 @@
                             </div>
                         </div>
                         <div class="mt-4 text-center">
-                            <button class="btn btn-primary" type="submit" onclick="alert('Vui lòng chờ 5s !!! Cảm ơn')">Thêm Chuyến Xe</button>
+                            <button class="btn btn-primary" type="submit" onclick="alert('Vui lòng chờ 5s !!! Cảm ơn')">Sửa Chuyến Xe</button>
                             <a href="{{route('admin.buses.index')}}" class="btn btn-link">Quay Lại</a>
                         </div>
                     </form>
@@ -84,6 +84,13 @@
     @push('js')
         <script>
             $(document).ready(function() {
+                // set value for '#date'
+                let date = '{{$buses->departure_time}}'.split(' ')[0];
+                let time = '{{$buses->departure_time}}'.split(' ')[1].split(':')[0] + ':' + '{{$buses->departure_time}}'.split(' ')[1].split(':')[1];
+                $('#date').val(date);
+                $('#time').val(time);
+                $('#price').val('{{$buses->price}}');
+
                 $('#route').select2({
                     ajax: {
                         url: "{{route('admin.routes.api.name_routes')}}",
@@ -108,6 +115,12 @@
                     },
                     placeholder: 'Chọn tuyến đường',
                     allowClear:true
+                });
+                $('#route').select2('trigger', 'select', {
+                    data: {
+                        text: '{{$route->name}}',
+                        id: {{$route->id}}
+                    }
                 });
 
                 $('#driver').select2({
@@ -134,6 +147,12 @@
                     },
                     placeholder: 'Nhập tên tài xế',
                     allowClear:true
+                });
+                $('#driver').select2('trigger', 'select', {
+                    data: {
+                        text: '{{$driver->name}}',
+                        id: {{$driver->id}}
+                    }
                 });
                 
                 $('#license-plate').select2({
@@ -162,6 +181,12 @@
                     placeholder: 'Chọn bảng số xe',
                     allowClear:true,
                 });
+                $('#license-plate').select2('trigger', 'select', {
+                    data: {
+                        text: '{{$car->license_plate}}',
+                        id: {{$car->id}}
+                    }
+                });
 
                 $('#from').select2({
                     ajax: {
@@ -189,6 +214,12 @@
                     placeholder: 'Điểm đi',
                     allowClear:true,
                 });
+                $('#from').select2('trigger', 'select', {
+                    data: {
+                        text: '{{$from->name}}',
+                        id: {{$from->id}}
+                    }
+                });
 
                 $('#to').select2({
                     ajax: {
@@ -215,6 +246,12 @@
                     },
                     placeholder: 'Điểm đến',
                     allowClear:true,
+                });
+                $('#to').select2('trigger', 'select', {
+                    data: {
+                        text: '{{$to->name}}',
+                        id: {{$to->id}}
+                    }
                 });
 
                 // parent change and child change

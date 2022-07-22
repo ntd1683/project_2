@@ -36,13 +36,26 @@
     {{--  Add  --}}
     <div class="card filter-card" id="add_show" style="display: none;" >
         <div class="card-body pb-0">
-                <div class="row filter-row">
-                        <div class="col-sm-6 col-md-3">
-                            <div class="form-group">
-                                <a href="{{route('admin.buses.create')}}"><button type="button" class="btn btn-info btn-lg" style="font-size: 15px;">Add Bus</button></a>
-                            </div>
-                        </div>
+            <div class="row text-center">
+                <div class="col-md-2"></div>
+                <div class="col-md-2"></div>
+                <div class="col-md-2"></div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <a href="{{route('admin.buses.create')}}"><button type="button" class="btn btn-primary btn-lg" style="font-size: 15px;">Tạo môt chuyến xe bất kỳ</button></a>
+                    </div>
                 </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <a href="#"><button type="button" class="btn btn-primary btn-lg" style="font-size: 15px;">Tạo nhanh theo tuyến đường</button></a>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <a href="#"><button type="button" class="btn btn-primary btn-lg" style="font-size: 15px;">Tạo nhanh tháng tiếp theo</button></a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     {{-- End Add --}}
@@ -218,7 +231,7 @@
                 
                 $('#license-plate').select2({
                     ajax: {
-                        url: "{{route('admin.carriages.api.name_carriages')}}",
+                        url: "{{route('admin.carriages.api.nameCarriages')}}",
                         dataType: 'json',
                         delay: 250,
                         data: function (params) {
@@ -326,11 +339,35 @@
                     table.column(8).search(this.value).draw();
                 });
                 $('#min, #max').change(function() {
-                    console.log(new Date($('#min').val()));
                     table.draw();
                 });
                 $('#time').change(function() {
                     table.column(3).search(this.value).draw();
+                });
+
+                 // Delete element on table by ajax
+                 $(document).on('click', '#btn-delete', function(){
+                    let confirm_delete = confirm('Bạn có chắc chắn muốn xóa?');
+                    if(confirm_delete){
+                        let form = $(this).parent('form');
+                        $.ajax({
+                            url: form.attr('action'),
+                            type: 'POST',
+                            data: form.serialize(),
+                            datatype: 'json',
+                            success: function(response){
+                                $.toast({
+                                    heading: response.heading,
+                                    text: response.text,
+                                    icon: response.icon,
+                                    position: 'top-right',
+                                    showHideTransition: 'slide',
+                                });
+                                // reload table with page present
+                                table.ajax.reload(null, false);
+                            }
+                        });
+                    }
                 });
             });
 
