@@ -5,9 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Buses;
 use App\Http\Requests\StoreBusesRequest;
 use App\Http\Requests\UpdateBusesRequest;
+use App\Models\Carriage;
+use App\Models\City;
 use App\Models\Route as ModelsRoute;
 use App\Models\Route_driver_car;
+use App\Models\User;
 use DateTime;
+use Diglactic\Breadcrumbs\Breadcrumbs;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
@@ -41,7 +47,7 @@ class BusesController extends Controller
             ->join('routes', 'routes.id', '=', 'route_driver_cars.route_id')
             ->join('carriages', 'carriages.id', '=', 'route_driver_cars.car_id')
             ->join('users', 'users.id', '=', 'route_driver_cars.driver_id')
-            ->select('buses.id', 'routes.name as route_name', 'routes.id as route_id', 'buses.departure_time', 'routes.time', 'routes.distance', 'route_driver_cars.price', 'carriages.license_plate', 'users.name as driver_name')
+            ->select('buses.id', 'routes.name as route_name', 'routes.id as route_id', 'buses.departure_time', 'routes.time', 'routes.distance', 'buses.price', 'carriages.license_plate', 'users.name as driver_name')
             ->get();
         return DataTables::of($data)
             ->addColumn('date', function ($object) {
@@ -50,12 +56,25 @@ class BusesController extends Controller
                 return $date;
             })
             ->addColumn('edit', function ($object) {
-                return route('admin.carriages.edit', $object);
+                return route('admin.buses.edit', $object);
             })
             ->addColumn('delete', function ($object) {
-                return route('admin.carriages.destroy', $object);
+                return route('admin.buses.destroy', $object);
             })
             ->make(true);
+    }
+
+    public function apiGetPrice(Request $request)
+    {
+        $route_id = $request->get('route_id');
+        $car_id = $request->get('car_id');
+        $driver_id = $request->get('driver_id');
+        return DB::table('route_driver_cars')
+            ->where('route_id', $route_id)
+            ->where('car_id', $car_id)
+            ->where('driver_id', $driver_id)
+            ->select('price')
+            ->first();
     }
 
     /**
@@ -65,7 +84,10 @@ class BusesController extends Controller
      */
     public function index()
     {
-        return view('admin.' . $this->table . '.index');
+        $breadcumbs = Breadcrumbs::render('buses');
+        return view('admin.' . $this->table . '.index', [
+            'breadcumbs' => $breadcumbs,
+        ]);
     }
 
     /**
@@ -75,7 +97,10 @@ class BusesController extends Controller
      */
     public function create()
     {
-        return view('admin.' . $this->table . '.create');
+        $breadcumbs = Breadcrumbs::render('buses.create');
+        return view('admin.' . $this->table . '.create', [
+            'breadcumbs' => $breadcumbs,
+        ]);
     }
 
     /**
@@ -88,8 +113,7 @@ class BusesController extends Controller
     {
         try {
             // get route_driver_car
-            $start_city_id = $request->get('to');
-            $end_city_id = $request->get('from');
+            $route = $request->get('route');
             $driver = $request->get('driver');
             $car = $request->get('car');
 
@@ -102,11 +126,7 @@ class BusesController extends Controller
 
             // create new buses
             $departure_time = new DateTime($date . ' ' . $time);
-            $route = ModelsRoute::query()->where('city_start_id', $start_city_id)->where('city_end_id', $end_city_id)->first()->id;
             $route_driver_car_id = Route_driver_car::query()->where('route_id', $route)->where('driver_id', $driver)->where('car_id', $car)->first()->id;
-            if ($route_driver_car_id == null) {
-                return $this->responseError('Không tìm thấy tuyến đường này');
-            }
             $this->model->create([
                 'route_driver_car_id' => $route_driver_car_id,
                 'departure_time' => $departure_time,
@@ -116,7 +136,7 @@ class BusesController extends Controller
             // return view index
             return redirect()->route('admin.' . $this->table . '.index')->with('success', 'Thêm mới thành công');
         } catch (\Exception $e) {
-            return redirect()->route('admin.' . $this->table . '.create')->with('error', 'Thêm mới thất bại');
+            return redirect()->back()->with('error', 'Thêm mới thất bại');
         }
     }
 
@@ -139,7 +159,22 @@ class BusesController extends Controller
      */
     public function edit(Buses $buses)
     {
-        //
+        $RDC = Route_driver_car::query()->where('id', $buses['route_driver_car_id'])->first();
+        $route = ModelsRoute::query()->where('id', $RDC['route_id'])->first();
+        $cityStart = City::query()->where('id', $route['city_start_id'])->first();
+        $cityEnd = City::query()->where('id', $route['city_end_id'])->first();
+        $driver = User::query()->where('id', $RDC['driver_id'])->first();
+        $car = Carriage::query()->where('id', $RDC['car_id'])->first();
+        $breadcumbs = Breadcrumbs::render('buses.edit', $buses);
+        return view('admin.' . $this->table . '.edit', [
+            'buses' => $buses,
+            'route' => $route,
+            'from' => $cityStart,
+            'to' => $cityEnd,
+            'driver' => $driver,
+            'car' => $car,
+            'breadcumbs' => $breadcumbs,
+        ]);
     }
 
     /**
@@ -151,7 +186,30 @@ class BusesController extends Controller
      */
     public function update(UpdateBusesRequest $request, Buses $buses)
     {
-        //
+        try {
+            // get route_driver_car
+            $route = $request->get('route');
+            $driver = $request->get('driver');
+            $car = $request->get('car');
+
+            // get departure_time
+            $date = $request->get('date');
+            $time = $request->get('time');
+            // get price
+            $price = $request->get('price');
+            // update buses
+            $departure_time = new DateTime($date . ' ' . $time);
+            $route_driver_car_id = Route_driver_car::query()->where('route_id', $route)->where('driver_id', $driver)->where('car_id', $car)->first()->id;
+            $buses->update([
+                'route_driver_car_id' => $route_driver_car_id,
+                'departure_time' => $departure_time,
+                'price' => $price,
+            ]);
+            // return view index
+            return redirect()->back()->with('success', 'Cập nhật thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Cập nhật thất bại');
+        }
     }
 
     /**
@@ -162,6 +220,19 @@ class BusesController extends Controller
      */
     public function destroy(Buses $buses)
     {
-        //
+        try {
+            $buses->delete();
+            return response()->json([
+                'heading' => 'success',
+                'text' => 'Xóa thành công',
+                'icon' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'heading' => 'error',
+                'text' => 'Xóa thất bại',
+                'icon' => 'error',
+            ]);
+        }
     }
 }

@@ -13,7 +13,7 @@ class UpdateBusesRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,14 @@ class UpdateBusesRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'route' => 'required',
+            'car' => 'required',
+            'driver' => 'required',
+            'from' => 'required',
+            'to' => 'required',
+            'date' => 'required',
+            'time' => 'required',
+            'price' => 'required',
         ];
     }
 }

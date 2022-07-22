@@ -65,3 +65,21 @@ Breadcrumbs::for('carriage.edit', function ($trail, $carriage) {
     $trail->parent('carriage');
     $trail->push('Sửa', route('admin.carriages.edit', $carriage->id));
 });
+
+// Trang Chủ > Chuyến xe
+Breadcrumbs::for('buses', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Chuyến xe', route('admin.buses.index'));
+});
+
+// Trang Chủ > Chuyến xe > Thêm
+Breadcrumbs::for('buses.create', function ($trail) {
+    $trail->parent('buses');
+    $trail->push('Thêm', route('admin.buses.create'));
+});
+
+// Trang Chủ > Chuyến xe > Sửa
+Breadcrumbs::for('buses.edit', function ($trail, $bus) {
+    $trail->parent('buses');
+    $trail->push('Sửa', route('admin.buses.edit', $bus->id));
+});

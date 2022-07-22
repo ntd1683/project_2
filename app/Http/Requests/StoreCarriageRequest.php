@@ -46,6 +46,22 @@ class StoreCarriageRequest extends FormRequest
                 'min:10',
                 'max:100',
             ],
+            'from' => [
+                'required',
+                'integer',
+            ],
+            'to' => [
+                'required',
+                'integer',
+            ],
+            'driver' => [
+                'required',
+                'integer',
+            ],
+            'price' => [
+                'required',
+                'integer',
+            ],
         ];
     }
 

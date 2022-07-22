@@ -7,9 +7,14 @@ use App\Enums\SeatTypeEnum;
 use App\Models\Carriage;
 use App\Http\Requests\StoreCarriageRequest;
 use App\Http\Requests\UpdateCarriageRequest;
+use App\Models\City;
+use App\Models\Route as ModelsRoute;
+use App\Models\Route_driver_car;
+use App\Models\User;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\View;
@@ -32,9 +37,9 @@ class CarriageController extends Controller
         $route = Str::before($current_path_1, '/');
 
         // Load seat type enum
-        $seatTypes = SeatTypeEnum::asArray();
+        $seatTypes = SeatTypeEnum::getArrayView();
         // Load category enum
-        $categories = CarriageCategoryEnum::asArray();
+        $categories = CarriageCategoryEnum::getArrayView();
 
         View::share([
             'title' => ucwords($this->table),
@@ -46,7 +51,14 @@ class CarriageController extends Controller
 
     public function api()
     {
-        return DataTables::of($this->model)
+        $data = $this->model;
+        // ->join('route_driver_cars', 'route_driver_cars.car_id', '=', 'carriages.id')
+        // ->join('routes', 'routes.id', '=', 'route_driver_cars.route_id')
+        // ->join('users', 'users.id', '=', 'route_driver_cars.driver_id')
+        // ->select('carriages.id', 'routes.name as route_name', 'routes.id as route_id', 'carriages.license_plate', 'carriages.seat_type', 'carriages.category', 'users.name as driver_name', 'carriages.default_number_seat')
+        // ->distinct()
+        // ->get();
+        return DataTables::of($data)
             ->editColumn('seat_type', function ($model) {
                 return SeatTypeEnum::getKeyByValue($model->seat_type);
             })
@@ -64,11 +76,24 @@ class CarriageController extends Controller
 
     public function apiNameCarriages(Request $request)
     {
+        if ($request->get('route_id') != null && $request->get('driver_id') == null) {
+            return $this->model->join('route_driver_cars', 'route_driver_cars.car_id', '=', 'carriages.id')
+                ->where('route_driver_cars.route_id', $request->get('route_id'))
+                ->where('carriages.license_plate', 'like', '%' . $request->get('q') . '%')
+                ->get();
+        } else if ($request->get('route_id') != null && $request->get('driver_id') != null) {
+            return $this->model->join('route_driver_cars', 'route_driver_cars.car_id', '=', 'carriages.id')
+                ->where('route_driver_cars.route_id', $request->get('route_id'))
+                ->where('route_driver_cars.driver_id', $request->get('driver_id'))
+                ->where('carriages.license_plate', 'like', '%' . $request->get('q') . '%')
+                ->get();
+        }
         return $this->model->where('license_plate', 'like', '%' . $request->get('q') . '%')->get();
     }
 
     public function apiNumberSeats(Request $request)
     {
+
         return $this->model->where('default_number_seat', 'like', '%' . $request->get('q') . '%')->distinct()->orderBy('default_number_seat', 'desc')->get('default_number_seat');
     }
 
@@ -91,18 +116,66 @@ class CarriageController extends Controller
     public function store(StoreCarriageRequest $request)
     {
         try {
-            $this->model->create($request->except('_token'));
-            return redirect()->route('admin.carriages.index')->with('success', 'Thêm mới thành công');
+            // create carriage
+            $license_plate = $request->get('license_plate');
+            $category = $request->get('category');
+            $seat_type = $request->get('seat_type');
+            $default_number_seat = $request->get('default_number_seat');
+            // create route_driver_car
+            $from = $request->get('from');
+            $to = $request->get('to');
+            $route1_id = ModelsRoute::query()->where('city_start_id', $from)->where('city_end_id', $to)->first()->id;
+            $route2_id = ModelsRoute::query()->where('city_start_id', $to)->where('city_end_id', $from)->first()->id;
+            $driver_id = $request->get('driver');
+            $price = $request->get('price');
+
+            $this->model->create([
+                'license_plate' => $license_plate,
+                'category' => $category,
+                'seat_type' => $seat_type,
+                'default_number_seat' => $default_number_seat,
+            ]);
+
+            $carriage_id = $this->model->where('license_plate', $license_plate)->first()->id;
+            try {
+                Route_driver_car::create([
+                    'route_id' => $route1_id,
+                    'driver_id' => $driver_id,
+                    'car_id' => $carriage_id,
+                    'price' => $price,
+                ]);
+                Route_driver_car::create([
+                    'route_id' => $route2_id,
+                    'driver_id' => $driver_id,
+                    'car_id' => $carriage_id,
+                    'price' => $price,
+                ]);
+            } catch (\Exception $e) {
+                // hard delete carriage
+                DB::table('carriages')->where('id', $carriage_id)->delete();
+                return redirect()->back()->with('error', 'Có lỗi xảy ra, vui lòng thử lại');
+            }
+            return redirect()->route('admin.' . $this->table . '.index')->with('success', 'Thêm mới thành công');
         } catch (\Exception $e) {
-            return redirect()->route('admin.carriages.index')->with('error', 'Thêm mới thất bại');
+            return redirect()->back()->with('error', 'Thêm mới thất bại');
         }
     }
 
     public function edit(Carriage $carriage)
     {
+        $RDC = Route_driver_car::query()->where('car_id', $carriage->id)->first();
+        $route = ModelsRoute::query()->where('id', $RDC->route_id)->first();
+        $cityStart = City::query()->where('id', $route['city_start_id'])->first();
+        $cityEnd = City::query()->where('id', $route['city_end_id'])->first();
+        $driver = User::query()->where('id', $RDC['driver_id'])->first();
         $breadcumbs = Breadcrumbs::render('carriage.edit', $carriage);
         return view('admin.carriage.edit', [
             'carriage' => $carriage,
+            'RDC' => $RDC,
+            'route' => $route,
+            'from' => $cityStart,
+            'to' => $cityEnd,
+            'driver' => $driver,
             'breadcumbs' => $breadcumbs,
         ]);
     }
@@ -111,10 +184,41 @@ class CarriageController extends Controller
     public function update(UpdateCarriageRequest $request, Carriage $carriage)
     {
         try {
-            $carriage->update($request->except('_token'));
-            return redirect()->route('admin.carriages.index')->with('success', 'Cập nhật thành công');
+            // update carriage
+            $license_plate = $request->get('license_plate');
+            $category = $request->get('category');
+            $seat_type = $request->get('seat_type');
+            $default_number_seat = $request->get('default_number_seat');
+            $carriage->update([
+                'license_plate' => $license_plate,
+                'category' => $category,
+                'seat_type' => $seat_type,
+                'default_number_seat' => $default_number_seat,
+            ]);
+
+            // update route_driver_car
+            $from = $request->get('from');
+            $to = $request->get('to');
+            $route1_id = ModelsRoute::query()->where('city_start_id', $from)->where('city_end_id', $to)->first()->id;
+            $route2_id = ModelsRoute::query()->where('city_start_id', $to)->where('city_end_id', $from)->first()->id;
+            $driver_id = $request->get('driver');
+            $price = $request->get('price');
+            $carriage_id = $carriage->id;
+            $RDC = Route_driver_car::where('car_id', $carriage_id)->get();
+            $RDC[0]->update([
+                'route_id' => $route1_id,
+                'driver_id' => $driver_id,
+                'price' => $price,
+            ]);
+            $RDC[1]->update([
+                'route_id' => $route2_id,
+                'driver_id' => $driver_id,
+                'price' => $price,
+            ]);
+
+            return redirect()->back()->with('success', 'Cập nhật thành công');
         } catch (\Exception $e) {
-            return redirect()->route('admin.carriages.index')->with('error', 'Cập nhật thất bại');
+            return redirect()->back()->with('error', 'Cập nhật thất bại');
         }
     }
 

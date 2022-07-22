@@ -72,8 +72,8 @@ Route::group([
 
     //    api
     Route::get('/api', [CarriageController::class, 'api'])->name('api');
-    Route::get('/apiNameCarriages', [CarriageController::class, 'apiNameCarriages'])->name('api.name_carriages');
-    Route::get('/apiNumberSeats', [CarriageController::class, 'apiNumberSeats'])->name('api.number_seat');
+    Route::get('/apiNameCarriages', [CarriageController::class, 'apiNameCarriages'])->name('api.nameCarriages');
+    Route::get('/apiNumberSeats', [CarriageController::class, 'apiNumberSeats'])->name('api.numberSeats');
 });
 Route::group([
     'as' => 'routes.',
@@ -95,6 +95,7 @@ Route::group([
     Route::get('/apiCityEnd', [RouteController::class, 'apiCityEnd'])->name('api.city_end');
     Route::get('/apiNameCheck', [RouteController::class, 'apiNameCheck'])->name('api.apiNameCheck');
     Route::get('/apiGetCityByRoute', [RouteController::class, 'apiGetCityByRoute'])->name('api.apiGetCityByRoute');
+    Route::get('/apiGetRouteByCity', [RouteController::class, 'apiGetRouteByCity'])->name('api.apiGetRouteByCity');
 });
 
 //city
@@ -125,4 +126,5 @@ Route::group([
 
     //    api
     Route::get('/api', [BusesController::class, 'api'])->name('api');
+    Route::get('/apiGetPrice', [BusesController::class, 'apiGetPrice'])->name('api.apiGetPrice');
 });

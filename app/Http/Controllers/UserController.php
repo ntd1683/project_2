@@ -107,7 +107,21 @@ class UserController extends Controller
     }
     public function apiNameDrivers(Request $request)
     {
-        return $this->model->where('name', 'like', '%' . $request->get('q') . '%')->where('level', UserLevelEnum::getKeyByValue('DRIVER'))->get();
+        if ($request->get('route_id') != null && $request->get('car_id') == null) {
+            return $this->model->join('route_driver_cars', 'route_driver_cars.driver_id', '=', 'users.id')
+                ->where('route_driver_cars.route_id', $request->get('route_id'))
+                ->where('users.name', 'like', '%' . $request->get('q') . '%')
+                ->where('users.level', UserLevelEnum::DRIVER)
+                ->get();
+        } else if ($request->get('route_id') != null && $request->get('car_id') != null) {
+            return $this->model->join('route_driver_cars', 'route_driver_cars.driver_id', '=', 'users.id')
+                ->where('route_driver_cars.route_id', $request->get('route_id'))
+                ->where('route_driver_cars.car_id', $request->get('car_id'))
+                ->where('users.name', 'like', '%' . $request->get('q') . '%')
+                ->where('users.level', UserLevelEnum::DRIVER)
+                ->get();
+        }
+        return $this->model->where('name', 'like', '%' . $request->get('q') . '%')->where('level', UserLevelEnum::DRIVER)->get();
     }
 
     public function apiProvinces(Request $request)
