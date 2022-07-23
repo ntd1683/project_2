@@ -206,6 +206,7 @@
             }
 {{--            Load city--}}
             $(document).ready(async function () {
+                console.log('3');
                 $("#city_start_id").select2({tags: true});
                 $("#select-city").select2({tags: true});
                 $("#city_end_id").select2({tags: true});

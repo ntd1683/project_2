@@ -27,6 +27,6 @@ if(!function_exists('number_shorten')){
 
         // We found our match, or there were no matches.
         // Either way, use the last defined value for $divisor.
-        return number_format($number / $divisor, $precision) . $shorthand;
+        return (int)number_format($number / $divisor, $precision) . $shorthand;
     }
 }
