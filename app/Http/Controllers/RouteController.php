@@ -139,13 +139,8 @@ class RouteController extends Controller
 
     public function store(StoreRouteRequest $request)
     {
-<<<<<<< HEAD
-        try{
-=======
-
         //        dd($request->name);
         try {
->>>>>>> car_route_dri-buses
             $city_start = $request->get('city_start_id');
             $city_end = $request->get('city_end_id');
             //            dd(1,$request);
@@ -163,17 +158,11 @@ class RouteController extends Controller
             $arr['city_start_id'] = $city_start_id;
             $arr['city_end_id'] = $city_end_id;
             // @todo cài thư viện image nha php artisan storage:link
-<<<<<<< HEAD
             if(isset($request->images)){
                 $arr['images'] = optional($request->file('images'))->store('route_images', ['disk' => 'upload']);
-=======
-            if (isset($request->images)) {
-                $arr['images'] = optional($request->file('images'))->store('route_images');
->>>>>>> car_route_dri-buses
             }
             //            dd($arr);
             $this->model->create($arr);
-<<<<<<< HEAD
 //            Tạo tuyến ngược lại
 
             if($request->get('reverse')==='on'){
@@ -204,12 +193,6 @@ class RouteController extends Controller
         }
         catch(Throwable $e){
             return redirect()->route('admin.routes.create')->with('error','Bạn thêm thất bại rồi, vui lòng thử lại sau !!!');
-=======
-            return redirect()->route('admin.routes.index')->with('success', 'Bạn thêm thành công !!!');
-        } catch (Throwable $e) {
-            //            dd(2,$request);
-            return redirect()->route('admin.routes.create')->with('error', 'Bạn thêm thất bại rồi, vui lòng thử lại sau !!!');
->>>>>>> car_route_dri-buses
         }
     }
 
@@ -238,7 +221,6 @@ class RouteController extends Controller
 
     public function edit(Route $route)
     {
-<<<<<<< HEAD
         $breadcumbs = Breadcrumbs::render('edit_route',$route);
         $city_start = City::where('id',$route->city_start_id)->FirstOrFail();
         $city_start_name = $city_start->name;
@@ -251,12 +233,6 @@ class RouteController extends Controller
             'city_start_name'=>$city_start_name,
             'city_end_name'=>$city_end_name,
             'images'=>$images
-=======
-        $breadcumbs = Breadcrumbs::render('edit_route', $route);
-        return view('admin.route.edit', [
-            'user' => $route,
-            'breadcumbs' => $breadcumbs,
->>>>>>> car_route_dri-buses
         ]);
     }
 
