@@ -196,8 +196,8 @@ class HomePageController extends Controller
         dd($request);
         try{
             $district = $request->get('district');
-            $province = $request->get('province');
-            $address = $request->get('address');
+            $province = $request->get('city');
+            $address = $request->get('city');
             $address1 = $address .','. $district. ',' . $province;
             $arr = $request->only([
                 "name",

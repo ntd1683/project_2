@@ -154,12 +154,12 @@
             @foreach($routes as $route)
             <div class="col-md-4 ftco-animate">
                 <div class="project-wrap">
-                    <a href="{{route('applicant.book_ticket')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}" class="img"
+                    <a href="{{route('applicant.book_ticket')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}#id_book_ticket" class="img"
                        style="background-image:url({{asset($route->img)}})"></a>
                     <div class="text p-4">
-                        <a href="{{route('applicant.book_ticket')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}"><span class="price" style="text-align:center">Từ {{$route->price}} Đ/Vé</span></a>
+                        <a href="{{route('applicant.book_ticket')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}#id_book_ticket"><span class="price" style="text-align:center">Từ {{$route->price}} Đ/Vé</span></a>
 {{--                        <span class="days">Ngày Thường</span>--}}
-                        <h3><a href="{{route('applicant.book_ticket')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}">{{$route->name}}</a></h3>
+                        <h3><a href="{{route('applicant.book_ticket')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}#id_book_ticket">{{$route->name}}</a></h3>
                         <p class="location" style="display:inline-block"><span class="fas fa-location-arrow"></span> {{$route->distance}}km</p>
                         <p class="location" style="display:inline-block;margin-left: 10px;"><span class="fas fa-stopwatch"></span> {{$route->distance}}h</p>
                         <ul>
