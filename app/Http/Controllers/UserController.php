@@ -56,7 +56,6 @@ class UserController extends Controller
     {
         $level_user = Auth::user()->level;
         $user = UserLevelEnum::getKeyByValue($level_user);
-<<<<<<< HEAD
         $customer_counters = Customer::query()->count();
         $driver_counters = $this->model->where('level','0')->count();
         $car_counters = Carriage::query()->count();
@@ -73,14 +72,6 @@ class UserController extends Controller
             'driver_counters'=>$driver_counters,
             'car_counters'=>$car_counters,
             'revenue'=>$revenue,
-=======
-        $title = 'Chào ' . $user . ', chúc bạn một ngày tốt lành !!!';
-        // chỉ riêng trang này ko có title
-        return view('admin.index', [
-            'breadcumbs' => null,
-            'title' => NULL,
-            'title_index' => $title,
->>>>>>> car_route_dri-buses
         ]);
     }
 
@@ -249,13 +240,6 @@ class UserController extends Controller
             return redirect()->route('admin.users.create')->with('error', 'Bạn sửa thất bại rồi,vui lòng thử lại sau !!!');
         }
     }
-
-<<<<<<< HEAD
-//    profile
-    public function changePassword(ChangePassword $request){
-        $id = Auth::id();
-        $user = $this->model->find($id);
-=======
     //    profile
     public function changePassword(Request $request)
     {
@@ -271,7 +255,6 @@ class UserController extends Controller
             'confirm_password.required' => 'Mật khẩu mới nhập không được bỏ trống',
             'confirm_password.same' => 'Mật khẩu nhập không giống nhau',
         ]);
->>>>>>> car_route_dri-buses
         $password_old = $request->get('old_password');
         if (Hash::check($password_old, $user->password)) {
             $password_new = Hash::make($request->get('new_password'));
