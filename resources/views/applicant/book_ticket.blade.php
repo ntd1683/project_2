@@ -335,7 +335,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="search-wrap-1 ftco-animate p-4" style="border-radius:15px;box-shadow: 5px 5px #847979c4;">
+                    <div class="search-wrap-1 ftco-animate p-4" style="border-radius:15px;box-shadow: 5px 5px #847979c4;" id="id_book_ticket">
                         <form action="{{route('applicant.book_ticket')}}" method="get" class="search-property-1">
                             <input type="hidden" name="step" value="2">
                             <div class="row">
