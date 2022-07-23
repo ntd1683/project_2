@@ -1,7 +1,9 @@
 @extends('layout.master')
 @push('css')
     <style>
-
+        .f-w-700{
+            font-weight:700 !important;
+        }
     </style>
 @endpush
 @section('content')
@@ -16,7 +18,7 @@
                    class="icon-video popup-vimeo d-flex align-items-center justify-content-center mb-4">
                     <span class="ion-ios-play"></span>
                 </a>
-                <h1 data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">Tôi sẽ cho bạn một chuyến đi thoải mái và an toàn</h1>
+                <h1 data-scrollax="properties: { translateY: '30%', opacity: 1.6 }" class="f-w-700">Tôi sẽ cho bạn một chuyến đi thoải mái và an toàn</h1>
             </div>
         </div>
     </div>
@@ -28,7 +30,7 @@
             <div class="col-md-12">
                 <div class="search-wrap-1 ftco-animate p-4" style="border-radius:15px;box-shadow: 5px 5px #847979c4;">
                     <form action="{{route('applicant.book_ticket')}}" method="get" class="search-property-1">
-                        <input type="hidden" name="step" value="1">
+                        <input type="hidden" name="step" value="2">
                         <div class="row">
                             <div class="col-lg align-items-end">
                                 <div class="form-group">

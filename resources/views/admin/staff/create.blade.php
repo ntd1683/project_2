@@ -205,7 +205,7 @@
                             required:"Không được bỏ trống",
                         }
                     },
-                    submitHandler: function (form) {S
+                    submitHandler: function (form) {
                         form.submit();
                     }
                 });
