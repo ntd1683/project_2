@@ -11,6 +11,7 @@
         "php": "^7.4|^8.0",
         "bensampo/laravel-enum": "^4.2",
         "diglactic/laravel-breadcrumbs": "^7.2",
+        "doctrine/dbal": "^3.3",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.75",

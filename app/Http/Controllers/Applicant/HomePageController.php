@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Str;
 
 class HomePageController extends Controller
 {
@@ -125,51 +126,88 @@ class HomePageController extends Controller
             $request->step = 2;
             $city_start = (int)$request->city_start;
             $city_end = (int)$request->city_end;
-            $departure_time = '10-10-2022';
+            $departure_time = $request->departure_time;
             $departure_time = date("Y-m-d", strtotime($departure_time));
-            $route_id = Route::query()->where('city_start_id',$city_start)->where('city_end_id',$city_end)->pluck('id')[0];
-            $arr_route = Route::query()->where('id',$route_id)->get()->toArray()[0];
+            try{
+                $route_id = Route::query()->where('city_start_id',$city_start)->where('city_end_id',$city_end)->pluck('id')[0];
+//            dd($route_id);
+                $arr_route = Route::query()->where('id',$route_id)->get()->toArray()[0];
 //            dd($arr_route['name']);
-            $route_driver_cars = Route_driver_car::query()->with('driver_name','car_name')
-                ->where('route_id',$route_id)
-                ->get()
-                ->map(function ($each) use ($departure_time) {
-                    $each->name_driver = ($each->driver_name->pluck('name'))[0];
-                    $each->license_plate_car = ($each->car_name->pluck('license_plate'))[0];
-                    $each->category_car = CarriageCategoryEnum::getKeyByValue(($each->car_name->pluck('category'))[0]);
-                    $each->number_seat = ($each->car_name->pluck('default_number_seat'))[0];
-                    $each->seat_type_car = SeatTypeEnum::getKeyByValue(($each->car_name->pluck('seat_type'))[0]);
-                    $each->departure_time = Buses::query()->where('route_driver_car_id',$each->id)
-                        ->where('status',1)
-//                    ->whereDate('departure_time','=',$departure_time)
-                        ->pluck('departure_time');
-                    unset($each->driver_name);
-                    unset($each->car_name);
-                    unset($each->route);
-                    if(!$each->departure_time->isEmpty()) {
+                $arr_bus = Buses::query()->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
+                    ->join('routes', 'routes.id', '=', 'route_driver_cars.route_id')
+                    ->join('carriages', 'carriages.id', '=', 'route_driver_cars.car_id')
+                    ->whereDate('departure_time','=',$departure_time)
+                    ->where('routes.city_start_id','=',$city_start)
+                    ->where('routes.city_end_id','=',$city_end)
+                    ->get()->map(function($each){
+                        $each->category_car = CarriageCategoryEnum::getKeyByValue(($each->category));
+                        $each->seat_type_car = SeatTypeEnum::getKeyByValue(($each->seat_type));
+                        $each->number_seat = $each ->default_number_seat;
+                        $each->license_plate_car = $each ->license_plate;
+                        $each->route_name = $each ->name;
+                        unset($each->category, $each->seat_type,$each->deleted_at,$each -> pin,$each ->default_number_seat,$each ->license_plate,$each->name);
                         return $each;
-                    }
-                });
-            $i =0;
-            foreach($route_driver_cars as $each){
-                if($each != null){
-                    $arr_bus[$i++] = $each;
-                }
-            }
-            $select_locations = Location::query()->where('city_id',$city_start)->get()->toArray();
+                    });
+                $select_locations = Location::query()->where('city_id',$city_start)->get()->toArray();
 //            dd($select_locations);
-            foreach($select_locations as $each){
-                if($each['name'] == null){
-                    $arr_location[$each['id']] ='';
-                }else{
-                    $arr_location[$each['id']] = $each['name'] . ' - ';
+                foreach($select_locations as $each){
+                    if($each['name'] == null){
+                        $arr_location[$each['id']] ='';
+                    }else{
+                        $arr_location[$each['id']] = $each['name'] . ' - ';
+                    }
+                    $arr_location[$each['id']] .= $each['address'].' - '.$each['district'];
                 }
-                $arr_location[$each['id']] .= $each['address'].' - '.$each['district'];
             }
-//            dd($arr_location);
+            catch(\Throwable $e){
+                $request->step = 1;
+                $routes = Route::query()->with('city_start')->with('city_end')
+                    ->selectRaw("routes.*,sum(route_driver_cars.pin) as pin")
+                    ->leftJoin('route_driver_cars','routes.id','=','route_driver_cars.route_id')
+                    ->groupBy("id")
+                    ->orderBy("pin","desc")
+                    ->get()
+                    ->map(function ($each) {
+                        $each->city_start_name = $each->city_start->pluck('name')[0];
+                        $each->city_end_name = $each->city_end->pluck('name')[0];
+                        $each->img = "upload/" . $each->images;
+                        if(isset($each->pin)){
+                            $price = Route_driver_car::query()
+                                ->selectRaw("route_id,MIN(price) as price")
+                                ->where('route_id','=',$each->id)
+                                ->groupBy('route_id')
+                                ->pluck('price')
+                                ->toArray();
+                            $each->price = number_shorten($price[0]);
+                        }else{
+                            $each->price = null;
+                        }
+                        unset($each->city_start);
+                        unset($each->city_end);
+                        unset($each->images);
+                        return $each;
+                    });
+                $i = 0;
+                foreach ($routes as $each){
+                    $arr['city_start'][$each->city_start_id] = $each->city_start_name;
+                    $arr['city_end'][$each->city_end_id] = $each->city_end_name;
+                    if($each->pin == 0||$each->pin===null){
+                        unset($routes[$i]);
+                    }
+                    $i ++;
+                }
+
+                for($i =0 ; $i<=2;$i++){
+                    $arr_routes[$i] = $routes[$i];
+                }
+
+                $array['city_start'] = array_unique($arr['city_start']);
+                $array['city_end'] = array_unique($arr['city_end']);
+                $request->session()->flash('error', 'Không tim thấy tuyến xe hoặc nhà xe không có chuyến');
+            }
+
         }
         $array = New Fluent($array);
-//        dd(date("H:i", strtotime($arr_bus[0]->departure_time[0])));
         return view('applicant/book_ticket',[
             'city_start' => $array['city_start'],
             'city_end' => $array['city_end'],
@@ -193,6 +231,15 @@ class HomePageController extends Controller
 
     public function store_info_customer(StoreInfoCustomerRequest $request)
     {
+//        bill
+        $arr_bill = $request->only([
+            "price",
+            "payment_method",
+            "birthdate",
+            "email",
+            "password",
+            "level"
+        ]);
         dd($request);
         try{
             $district = $request->get('district');

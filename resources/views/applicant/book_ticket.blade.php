@@ -2,6 +2,7 @@
 @push('css')
         <link rel="stylesheet" href="{{asset('plugins/bootstrap/css/bootstrap.min.css')}}">
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="{{asset('css/jquery.toast.min.css')}}">
         @if($request->step == 3)
 {{--            <link rel="stylesheet" href="{{asset('css/b00274d.css')}}">--}}
             <link rel="stylesheet" href="{{asset('css/2196462.css')}}">
@@ -414,15 +415,9 @@
     <section class="ftco-section" style="padding:0px !important;text-align:center">
         <div class="route-option" data-v-008a65cb="" id="select_route_{{$check_tmp}}">
             <div class="header" data-v-008a65cb="">
-                <p>Các giờ xuất phát : {{date("H:i", strtotime($each_bus->departure_time[0]))}}
-                    @foreach($each_bus->departure_time as $key=>$value)
-                        @if($key != 0)
-                        - {{date("H:i", strtotime($each_bus->departure_time[$key]))}}
-                        @endif
-                    @endforeach
-                     </p>
-{{--                <img alt="fromto" width="28" height="7" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAAOCAYAAAB6pd+uAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAOKADAAQAAAABAAAADgAAAAAjNiV1AAABjklEQVRIDWNgGGQgraTRO7OiXZBazmKilkHUMuffPwaFX39+ZaSXN+lTw8xB50FGRgYmxn8MbH9//w9ILmoMLezr46TEo4POg/8ZgV6EAiBD68uTL5nAJKsEEyOVZiZVA63VG1nYWzIwMHIg2cP+7+9ffWMrRw4/d4eHBw4c+IckR5A56GIQGGtY3fT/P4PFk0+MqSlVreIEfYWkAKthSPJ0ZyInUSyWizH+/JuaVNJk+f//f3hSxqIOLjToPMgALGTgrsPCAHqMmenff7fUsubY3IYGPixKUITwGoaikk4cYAlKnJv+/lf88YUxM7W8SRuf04gzDJ8JVJYjkERRbPv/j4Hj/+//IamFjYG5kyaxo0hCOYwpRY312CSGntj/j0ysHOtmdVY8Qnb7oItBZMeRxmbk//f7ZyKwceAcumoVvPobRh6EBAewaLXhP3kjOa24QQQkwmxk6egAkRqcJDBP/mcAImDpCkQgBgMom/4DYmBFAaorgMUSAwMEMzL+BSr5BxTkBNabeqZ2Tp8BQTlvqFxYe+QAAAAASUVORK5CYII=" data-v-008a65cb="">--}}
-{{--                20:15--}}
+                <p>Các giờ xuất phát : {{date("H:i", strtotime($each_bus->departure_time))}}
+                <img alt="fromto" width="28" height="7" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAAOCAYAAAB6pd+uAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAOKADAAQAAAABAAAADgAAAAAjNiV1AAABjklEQVRIDWNgGGQgraTRO7OiXZBazmKilkHUMuffPwaFX39+ZaSXN+lTw8xB50FGRgYmxn8MbH9//w9ILmoMLezr46TEo4POg/8ZgV6EAiBD68uTL5nAJKsEEyOVZiZVA63VG1nYWzIwMHIg2cP+7+9ffWMrRw4/d4eHBw4c+IckR5A56GIQGGtY3fT/P4PFk0+MqSlVreIEfYWkAKthSPJ0ZyInUSyWizH+/JuaVNJk+f//f3hSxqIOLjToPMgALGTgrsPCAHqMmenff7fUsubY3IYGPixKUITwGoaikk4cYAlKnJv+/lf88YUxM7W8SRuf04gzDJ8JVJYjkERRbPv/j4Hj/+//IamFjYG5kyaxo0hCOYwpRY312CSGntj/j0ysHOtmdVY8Qnb7oItBZMeRxmbk//f7ZyKwceAcumoVvPobRh6EBAewaLXhP3kjOa24QQQkwmxk6egAkRqcJDBP/mcAImDpCkQgBgMom/4DYmBFAaorgMUSAwMEMzL+BSr5BxTkBNabeqZ2Tp8BQTlvqFxYe+QAAAAASUVORK5CYII=" data-v-008a65cb="">
+                    {{add_hour(date("H:i", strtotime($each_bus->departure_time)),$each_bus->time)}}</p>
                 <div class="utilities" data-v-008a65cb="">
                     <img alt="water utilitie" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAhUExURUdwTKOstKKstKOss6OrtKOttKOstKautaOttaazuqKrs9iuYewAAAAKdFJOUwBTqMbYepIsaxVu35VTAAAAaUlEQVQoz2NgIBIICgpKIvMZV61atQJdYCmyAKexsbE5fkOFlJQCkPkcXqtWuSILaAENXWWAagmKNWxggcUIASawwBI8AhxggWUIAXawwEI8hrKCBRbRQssiUpxOtgCSwzgFQUCcyGgHAESfV/tGvoBwAAAAAElFTkSuQmCC" width="16" height="16" data-v-008a65cb="">
                     <img alt="tissue utilitie" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAbUExURUdwTKSttKOstqevuKKstKOstKOstKOstKKrs1QBF0QAAAAIdFJOUwBxUB7irc+RSBqH+QAAAHtJREFUKM9jYKAFUFJSRnCMlJQYOjraDGB85oyODqBAh6MgFIh1QARQAEMEKr+VgR1VIIDBA0QVKSkpqYMFWhgg6kBAAmKGCJBoBAuYgfiODKZwAQagKzqCwVqgAmA9mAIYWjAMxbAWw2EYTsfwHIb3sQQQWhBiBDItAABMgnXv5SJBWwAAAABJRU5ErkJggg==" width="16" height="16" data-v-008a65cb="">
@@ -460,16 +455,8 @@
                     <input type="hidden" name="step" value="3">
                     <input type="hidden" name="city_start" value="{{$request->city_start}}">
                     <input type="hidden" name="city_end" value="{{$request->city_end}}">
+                    <input type="hidden" name="departure_time" value="{{$request->departure_time}}">
                     <div class="col-md-10" style="width:100%;">
-                        <div class="input-group">
-                            <label class="col-form-label col-md-2">Giờ Xuất Phát : </label>
-                            <select name="departure_time" class="form-control">
-                                @foreach($each_bus->departure_time as $key=>$value)
-                                    <option value="{{$each_bus->departure_time[$key]}}">{{date("H:i", strtotime($each_bus->departure_time[$key]))}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <br>
                         <div class="input-group">
                             <label class="col-form-label col-md-2">Địa điểm đón : </label>
                             <select name="address" class="form-control">
@@ -583,12 +570,13 @@
                                     <label data-v-46797034="" for="terms-policies-checkbox" class="terms-label">
                   <span data-v-46797034=""class="term-text" id="id-term-text">
                     Chấp nhận
-                    <span data-v-46797034="" href="" class="link">điều khoản đặt vé</span>
+                    <a data-v-46797034="" href="#rules"
+                       data-bs-toggle="modal" data-bs-target="#rules" class="edit-link link">điều khoản đặt vé</a>
                     của Thu Đức BusLines
                   </span></label></div>
                             </div>
                         </div>
-                        <div data-v-b57fbcc0="" class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div data-v-b57fbcc0="" class="col-lg-6 col-md-6 col-sm-12 col-xs-12" >
                             <div data-v-468abc57="" data-v-b57fbcc0="" class="notes-container">
                                 <p data-v-468abc57="" class="title">ĐIỀU KHOẢN &amp; LƯU Ý</p>
                                 <p data-v-468abc57="" class="txt">
@@ -632,12 +620,77 @@
         </section>
         </form>
         <br>
+        <div class="modal fade" id="rules" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content" style="width:85%">
+                    <div class="modal-header">
+                        <h5 class="modal-title">ĐIỀU KHOẢN &amp; LƯU Ý</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p data-v-468abc57="" class="txt">
+                            (*) Quý khách vui lòng mang email có chứa mã vé đến văn phòng để đổi vé lên xe trước giờ xuất bến ít
+                            nhất
+                            <span data-v-468abc57="" class="high-light">60 phút</span>
+                            để chúng tôi trung chuyển.
+                        </p>
+                        <p data-v-468abc57="" class="txt">(*) Thông tin hành khách phải chính xác, nếu không sẽ không thể lên xe
+                            hoặc hủy/đổi vé.</p>
+                        <p data-v-468abc57="" class="txt">
+                            (*) Quý khách không được đổi/trả vé vào các ngày Lễ Tết (ngày thường quý khách được quyền chuyển đổi
+                            hoặc hủy vé
+                            <span data-v-468abc57="" class="high-light">một lần</span>
+                            duy nhất trước giờ xe chạy 24 giờ), phí hủy vé 10%.
+                        </p>
+                        <p data-v-468abc57="" class="txt">
+                            (*) Nếu quý khách có nhu cầu trung chuyển, vui lòng liên hệ số điện thoại
+                            <a data-v-468abc57="" href="tel:1900 6067" class="high-light">1900 6067</a>
+                            trước khi đặt vé. Chúng tôi không đón/trung chuyển tại những điểm xe trung chuyển không thể tới được.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endif
     @push('js')
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
-        <script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script><script src="{{asset('js/jquery.toast.min.js')}}"></script>
+            <script>
+                $(function() {
+                    @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                    $.toast({
+                        heading: 'Error',
+                        text: '{{ $error }}',
+                        icon: 'error',
+                        position: 'top-right',
+                        showHideTransition: 'slide',
+                    });
+                    @endforeach
+                    @endif
+                    @if (session()->has('success'))
+                    $.toast({
+                        heading: 'Import Success',
+                        text: '{{session()->get('success')}}',
+                        icon: 'success',
+                        position: 'top-right',
+                        showHideTransition: 'slide',
+                    });
+                    @endif
+                    @if (session()->has('error'))
+                    $.toast({
+                        heading: 'Error',
+                        text: '{{session()->get('error')}}',
+                        icon: 'error',
+                        position: 'top-right',
+                        showHideTransition: 'slide',
+                    });
+                    @endif
+                });
             function select_checkbox(key){
                 let id_text = 'select_text_bus_'+key;
                 let id_img = 'select_img_bus_'+key;

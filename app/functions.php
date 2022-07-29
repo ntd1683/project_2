@@ -30,3 +30,16 @@ if(!function_exists('number_shorten')){
         return (int)number_format($number / $divisor, $precision) . $shorthand;
     }
 }
+if(!function_exists('add_hour')){
+    function add_hour($time,$hour): string
+    {
+
+        $explodedTime = explode(':', $time );
+        $sum = $explodedTime[0] + $hour;
+        if($sum > 24){
+            $sum -= 24;
+        }
+
+        return $sum . ':' . $explodedTime[1];
+    }
+}

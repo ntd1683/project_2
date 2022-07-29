@@ -79,35 +79,6 @@ class TestController extends Controller
 
     public function test1()
     {
-        $city_start = 28;
-        $city_end = 24;
-        $departure_time = '10-10-2022';
-        $departure_time = date("Y-m-d", strtotime($departure_time));
-        $route_id = Route::query()->where('city_start_id',$city_start)->where('city_end_id',$city_end)->pluck('id')[0];
-        $route_driver_cars = Route_driver_car::query()->with('driver_name','car_name','route')
-            ->where('route_id',$route_id)
-            ->get()
-            ->map(function ($each) use ($departure_time) {
-                $each->name_driver = ($each->driver_name->pluck('name'))[0];
-                $each->license_plate_car = ($each->car_name->pluck('license_plate'))[0];
-                $each->category_car = CarriageCategoryEnum::getKeyByValue(($each->car_name->pluck('category'))[0]);
-                $each->seat_type_car = SeatTypeEnum::getKeyByValue(($each->car_name->pluck('seat_type'))[0]);
-                $each->departure_time = Buses::query()->where('route_driver_car_id',$each->id)
-                    ->where('status',1)
-//                    ->whereDate('departure_time','=',$departure_time)
-                    ->pluck('departure_time');
-                unset($each->driver_name);
-                unset($each->car_name);
-                if(!$each->departure_time->isEmpty()) {
-                    return $each;
-                }
-            });
-        $i =0;
-        foreach($route_driver_cars as $each){
-            if($each != null){
-                $arr[$i++] = $each;
-            }
-        }
-        return $arr;
+
     }
 }

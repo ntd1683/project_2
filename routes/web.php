@@ -17,11 +17,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomePageController::class, 'index'])->name('index');
+
+//book_ticket
 Route::get('/mua-ve/', [HomePageController::class, 'book_ticket'])->name('applicant.book_ticket');
 Route::post('/info_customer/', [HomePageController::class, 'store_info_customer'])->name('applicant.info_customer');
 
-
+//test
 Route::get('/test/', [TestController::class, 'test1'])->name('test');
-
-
-//Route::get('edit_1/{user}',[UserController::class,'edit'])->name('edit_1');
