@@ -9,6 +9,14 @@ class Bill extends Model
 {
     use HasFactory;
 
+    protected $fillable =[
+        "customer_id",
+        "code",
+        "price",
+        "payment_method",
+        "status",
+    ];
+
     public function customer_name()
     {
         return $this->hasOne(Customer::class,'id','customer_id');

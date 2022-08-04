@@ -9,16 +9,16 @@ use BenSampo\Enum\Enum;
  * @method static static OptionTwo()
  * @method static static OptionThree()
  */
-final class SeatTypeEnum extends Enum
+final class StatusBillEnum extends Enum
 {
-    public const ATM = 0;
-    public const BED_CHAIR = 1;
+    public const UNPAID = 0;
+    public const PAID = 1;
 
     public static function getArrayView(): array
     {
         return [
-            'Ghế ngồi' => self::SEAT,
-            'Giường nằm' => self::BED_CHAIR,
+            'Chưa thanh toán' => self::UNPAID,
+            'Đã thanh toán' => self::PAID,
         ];
     }
 
