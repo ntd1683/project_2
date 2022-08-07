@@ -98,6 +98,15 @@
         });
         @endif
     });
+    function notify(response) {
+        $.toast({
+            heading: response.success ? 'Thành công' : 'Lỗi',
+            text: response.message,
+            position: 'top-right',
+            icon: response.success ? 'success' : 'error',
+            showHideTransition: 'slide',
+        });
+    };
 </script>
 @stack('js')
 </body>

@@ -223,10 +223,10 @@
                             datatype: 'json',
                             success: function(response){
                                 $.toast({
-                                    heading: response.heading,
-                                    text: response.text,
-                                    icon: response.icon,
+                                    heading: response.success ? 'Thành công' : 'Lỗi',
+                                    text: response.message,
                                     position: 'top-right',
+                                    icon: response.success ? 'success' : 'error',
                                     showHideTransition: 'slide',
                                 });
                                 // reload table with page present

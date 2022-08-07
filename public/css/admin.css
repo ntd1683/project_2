@@ -3942,6 +3942,9 @@ input[type="file"] {
 .fc-day-grid-event .fc-time {
 	font-family: 'Roboto', sans-serif;
 }
+.fc-day-grid-event .fc-title {
+	font-family: 'CircularStd-Book', sans-serif; /*CircularStd*/
+}
 .fc-day {
 	background: #fff;
 }
@@ -4007,13 +4010,13 @@ input[type="file"] {
 	background: #fff;
 }
 .fc-event {
-	border-radius: 2px;
+	border-radius: 2px !important;
 	border: none;
 	color: #fff !important;
 	cursor: move;
-	font-size: 13px;
-	margin: 1px 7px;
-	padding: 5px 5px;
+	font-size: 13px !important;
+	margin: 1px 7px !important;
+	padding: 5px 5px !important;
 	text-align: center;
 }
 .fc-basic-view td.fc-week-number span {

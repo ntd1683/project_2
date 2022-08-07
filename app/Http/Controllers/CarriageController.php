@@ -76,25 +76,31 @@ class CarriageController extends Controller
 
     public function apiNameCarriages(Request $request)
     {
-        if ($request->get('route_id') != null && $request->get('driver_id') == null) {
-            return $this->model->join('route_driver_cars', 'route_driver_cars.car_id', '=', 'carriages.id')
-                ->where('route_driver_cars.route_id', $request->get('route_id'))
-                ->where('carriages.license_plate', 'like', '%' . $request->get('q') . '%')
-                ->get();
-        } else if ($request->get('route_id') != null && $request->get('driver_id') != null) {
-            return $this->model->join('route_driver_cars', 'route_driver_cars.car_id', '=', 'carriages.id')
-                ->where('route_driver_cars.route_id', $request->get('route_id'))
-                ->where('route_driver_cars.driver_id', $request->get('driver_id'))
-                ->where('carriages.license_plate', 'like', '%' . $request->get('q') . '%')
-                ->get();
-        }
-        return $this->model->where('license_plate', 'like', '%' . $request->get('q') . '%')->get();
+        $route_id = $request->get('route_id');
+        return $this->model
+            ->select('carriages.id', 'carriages.license_plate')
+            ->where('license_plate', 'like', '%' . $request->get('q') . '%')
+            ->join('route_driver_cars', 'route_driver_cars.car_id', '=', 'carriages.id')
+            ->where('route_driver_cars.route_id', $route_id)
+            ->groupBy('carriages.id')
+            ->get();
     }
 
     public function apiNumberSeats(Request $request)
     {
 
         return $this->model->where('default_number_seat', 'like', '%' . $request->get('q') . '%')->distinct()->orderBy('default_number_seat', 'desc')->get('default_number_seat');
+    }
+
+    public function apiGetCarriagesByRoute(Request $request)
+    {
+        $route_id = $request->get('route_id');
+        return $this->model
+            ->select('carriages.id', 'carriages.license_plate')
+            ->join('route_driver_cars', 'route_driver_cars.car_id', '=', 'carriages.id')
+            ->where('route_driver_cars.route_id', $route_id)
+            ->groupBy('carriages.id')
+            ->get();
     }
 
     public function index()

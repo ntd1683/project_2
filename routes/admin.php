@@ -60,6 +60,7 @@ Route::group([
     Route::get('/apiNameUsers', [UserController::class, 'apiNameUsers'])->name('api.name_users');
     Route::get('/apiNameDrivers', [UserController::class, 'apiNameDrivers'])->name('api.name_drivers');
     Route::get('/apiProvinces', [UserController::class, 'apiProvinces'])->name('api.provinces');
+    Route::get('/apiGetDriverByCar', [UserController::class, 'apiGetDriverByCar'])->name('apiGetDriverByCar');
 });
 
 Route::group([
@@ -78,12 +79,14 @@ Route::group([
     Route::get('/api', [CarriageController::class, 'api'])->name('api');
     Route::get('/apiNameCarriages', [CarriageController::class, 'apiNameCarriages'])->name('api.nameCarriages');
     Route::get('/apiNumberSeats', [CarriageController::class, 'apiNumberSeats'])->name('api.numberSeats');
+    Route::get('/apiGetCarriagesByRoute', [CarriageController::class, 'apiGetCarriagesByRoute'])->name('api.apiGetCarriagesByRoute');
+
 });
 //route
 Route::group([
     'as' => 'routes.',
     'prefix' => 'routes',
-    'middleware' => CheckStaffMiddleware::class,
+    // 'middleware' => CheckStaffMiddleware::class,
 ], function () {
     Route::get('/', [RouteController::class, 'index'])->name('index');
     Route::get('/show/{route}', [RouteController::class, 'show'])->name('show');
@@ -99,8 +102,7 @@ Route::group([
     Route::get('/apiCityStart', [RouteController::class, 'apiCityStart'])->name('api.city_start');
     Route::get('/apiCityEnd', [RouteController::class, 'apiCityEnd'])->name('api.city_end');
     Route::get('/apiNameCheck', [RouteController::class, 'apiNameCheck'])->name('api.apiNameCheck');
-    Route::get('/apiGetCityByRoute', [RouteController::class, 'apiGetCityByRoute'])->name('api.apiGetCityByRoute');
-    Route::get('/apiGetRouteByCity', [RouteController::class, 'apiGetRouteByCity'])->name('api.apiGetRouteByCity');
+    Route::get('/apiGetFirstRoute', [RouteController::class, 'apiGetFirstRoute'])->name('api.apiGetFirstRoute');
 });
 
 //city
@@ -119,7 +121,7 @@ Route::group([
 Route::group([
     'as' => 'route_driver_car.',
     'prefix' => 'route_driver_car',
-    'middleware' => CheckStaffMiddleware::class,
+    // 'middleware' => CheckStaffMiddleware::class,
 ], function () {
     //    api
     Route::get('/api/{id}', [RouteDriverCarController::class, 'api'])->name('api');
@@ -129,7 +131,7 @@ Route::group([
 Route::group([
     'as' => 'bills.',
     'prefix' => 'bills',
-    'middleware' => CheckStaffMiddleware::class,
+    // 'middleware' => CheckStaffMiddleware::class,
 ], function () {
     //    api
     Route::post('/api', [BillController::class, 'apiRevenue'])->name('api.revenue');
@@ -140,7 +142,7 @@ Route::group([
 Route::group([
     'as' => 'bill_details.',
     'prefix' => 'bill_details',
-    'middleware' => CheckStaffMiddleware::class,
+    // 'middleware' => CheckStaffMiddleware::class,
 ], function () {
     //    api
     Route::get('/apiRouteCommons', [BillDetailController::class, 'apiRouteCommons'])->name('api.route_commons');
@@ -150,7 +152,8 @@ Route::group([
     'prefix' => 'buses',
     // 'middleware' => CheckStaffMiddleware::class,
 ], function () {
-    Route::get('/', [BusesController::class, 'index'])->name('index');
+    Route::get('/index', [BusesController::class, 'index'])->name('index');
+    Route::get('/', [BusesController::class, 'calendar'])->name('calendar');
     Route::delete('/show/{buses}', [BusesController::class, 'show'])->name('show');
     Route::get('/create', [BusesController::class, 'create'])->name('create');
     Route::post('/store', [BusesController::class, 'store'])->name('store');
@@ -160,5 +163,6 @@ Route::group([
 
     //    api
     Route::get('/api', [BusesController::class, 'api'])->name('api');
+    Route::get('/apiCalendar', [BusesController::class, 'apiCalendar'])->name('api.calendar');
     Route::get('/apiGetPrice', [BusesController::class, 'apiGetPrice'])->name('api.apiGetPrice');
 });

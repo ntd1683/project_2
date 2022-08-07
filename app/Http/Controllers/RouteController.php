@@ -98,10 +98,7 @@ class RouteController extends Controller
 
     public function apiNameRoutes(Request $request)
     {
-        if ($request->get('id') == null)
-            return $this->model->where('name', 'like', '%' . $request->get('q') . '%')->get();
-        else
-            return $this->model->where('name', 'like', '%' . $request->get('q') . '%')->where('id', $request->get('id'))->get();
+        return $this->model->where('name', 'like', '%' . $request->get('q') . '%')->get();
     }
 
     public function apiCityStart(Request $request)
