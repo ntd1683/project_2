@@ -1,23 +1,22 @@
 {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "terminal.integrated.profiles.windows": {
-        "PowerShell": {
-            "source": "PowerShell",
-            "icon": "terminal-powershell"
-        },
-        "Command Prompt": {
-            "path": ["${env:windir}\\Sysnative\\cmd.exe", "${env:windir}\\System32\\cmd.exe"],
-            "args": [],
-            "icon": "terminal-cmd"
-        },
-        "Git Bash": {
-            "source": "Git Bash"
-        },
-        "laragon": {
-            "path": "D:\\Workspace\\laragon\\bin\\cmder\\cmder.bat",
-            "args": ["."]
-        }
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "icon": "terminal-powershell"
     },
-    "terminal.integrated.defaultProfile.windows": "laragon"
+    "Command Prompt": {
+      "path": ["${env:windir}\\Sysnative\\cmd.exe", "${env:windir}\\System32\\cmd.exe"],
+      "args": [],
+      "icon": "terminal-cmd"
+    },
+    "Git Bash": {
+      "source": "Git Bash"
+    },
+    "laragon": {
+      "path": "D:\\Workspace\\laragon\\bin\\cmder\\cmder.bat",
+      "args": ["."]
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "laragon"
 }
