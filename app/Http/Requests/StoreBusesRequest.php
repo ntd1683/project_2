@@ -24,9 +24,7 @@ class StoreBusesRequest extends FormRequest
     public function rules()
     {
         return [
-            'to' => 'required',
-            'from' => 'required',
-            'driver' => 'required',
+            'route' => 'required',
             'car' => 'required',
             'date' => 'required',
             'time' => 'required',
@@ -37,9 +35,7 @@ class StoreBusesRequest extends FormRequest
     public function messages()
     {
         return [
-            'to.required' => 'Bạn chưa chọn điểm đi',
-            'from.required' => 'Bạn chưa chọn điểm đến',
-            'driver.required' => 'Bạn chưa chọn tài xế',
+            'route.required' => 'Bạn chưa chọn tuyến xe',
             'car.required' => 'Bạn chưa chọn xe',
             'date.required' => 'Bạn chưa chọn ngày',
             'time.required' => 'Bạn chưa chọn giờ',

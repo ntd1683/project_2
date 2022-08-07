@@ -35,26 +35,20 @@
     </div>
     {{--  Add  --}}
     <div class="card filter-card" id="add_show" style="display: none;" >
-        <div class="card-body pb-0">
-            <div class="row text-center">
-                <div class="col-md-2"></div>
-                <div class="col-md-2"></div>
-                <div class="col-md-2"></div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <a href="{{route('admin.buses.create')}}"><button type="button" class="btn btn-primary btn-lg" style="font-size: 15px;">Tạo môt chuyến xe bất kỳ</button></a>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <a href="#"><button type="button" class="btn btn-primary btn-lg" style="font-size: 15px;">Tạo nhanh theo tuyến đường</button></a>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <a href="#"><button type="button" class="btn btn-primary btn-lg" style="font-size: 15px;">Tạo nhanh tháng tiếp theo</button></a>
-                    </div>
-                </div>
+        <div class="card-body">
+            <div class="justify-content-center text-center">
+                <a href="{{route('admin.buses.create')}}">
+                    <button type="button" class="btn btn-primary btn-lg submit-btn">
+                    Tạo Mới</button>
+                </a>
+                <a href="#">
+                    <button type="button" class="btn btn-info btn-lg submit-btn" style="color: #ffffff;">
+                    Tạo Nhanh</button>
+                </a>
+                <a href="#">
+                    <button type="button" class="btn btn-success btn-lg submit-btn">
+                    Tạo Tự Động</button>
+                </a>
             </div>
         </div>
     </div>
@@ -120,6 +114,17 @@
         </div>
     </div>
     {{-- End Filter --}}
+
+    {{-- nav tab --}}
+    <ul class="nav nav-tabs menu-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('admin.buses.calendar')}}">Lịch trình</a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{route('admin.buses.index')}}">Danh sách</a>
+        </li>
+    </ul>
+    {{-- End nav tab --}}
 
     <div class="row">
         <div class="col-md-12">
@@ -199,7 +204,7 @@
                             };
                         }
                     },
-                    placeholder: 'Nhập tên chuyến đi',
+                    placeholder: 'Tuyến đường',
                     allowClear:true
                 });
 
@@ -279,7 +284,8 @@
                                 // render: function(data, type, row) {
                                 //     return moment(data).format('DD/MM/YYYY');
                                 // }
-                            },{ 
+                            },
+                            { 
                                 data: 'departure_time', 
                                 // convert time to string
                                 render: function(data, type, row) {
