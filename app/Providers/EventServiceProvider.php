@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\ApplicantOrderEvent;
 use App\Events\UserCreateEvent;
 use App\Listeners\SendMailCreateUserNotification;
+use App\Listeners\SendMailOrderNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -22,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
 //        ],
         UserCreateEvent::class => [
             SendMailCreateUserNotification::class,
+        ],
+        ApplicantOrderEvent::class => [
+            SendMailOrderNotification::class,
         ],
     ];
 

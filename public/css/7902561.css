@@ -22439,10 +22439,6 @@ table {
     border-spacing: 0
 }
 
-td, th {
-    padding: 0
-}
-
 /*! Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css */
 @media print {
     *, :after, :before {
@@ -24068,10 +24064,6 @@ pre code {
     .col-lg-offset-0 {
         margin-left: 0
     }
-}
-
-table {
-    background-color: transparent
 }
 
 caption {

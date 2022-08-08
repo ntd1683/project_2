@@ -81,4 +81,8 @@ class TestController extends Controller
     {
         return 'B'.strtoupper(Str::random(8));
     }
+    public function test2()
+    {
+        return view('test1');
+    }
 }

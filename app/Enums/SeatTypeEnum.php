@@ -11,7 +11,7 @@ use BenSampo\Enum\Enum;
  */
 final class SeatTypeEnum extends Enum
 {
-    public const ATM = 0;
+    public const SEAT = 0;
     public const BED_CHAIR = 1;
 
     public static function getArrayView(): array

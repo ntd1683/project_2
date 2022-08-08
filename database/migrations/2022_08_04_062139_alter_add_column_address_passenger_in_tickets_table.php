@@ -15,7 +15,7 @@ class AlterAddColumnAddressPassengerInTicketsTable extends Migration
     {
         if(!Schema::hasColumn('tickets','address_passenger_id')){
             Schema::table('tickets',function(Blueprint $table){
-                $table->foreignId('address_passenger_id')->constrained('locations');
+                $table->foreignId('address_passenger_id')->nullable()->constrained('locations');
             });
         }
     }

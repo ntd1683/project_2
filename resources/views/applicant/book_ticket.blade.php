@@ -10,6 +10,51 @@
         @endif
     <style>
         @charset "UTF-8";
+        @if($request->step == 2)
+        .filter-container[data-v-008a65cb] {
+            margin-bottom: 35px;
+            display: flex;
+        }
+        .custom-select.filter-select[data-v-008a65cb] {
+            margin-right: 20px;
+            height: 40px;
+            width: 156px;
+            border: none;
+            padding: 0 16px;
+            border-radius: 20px;
+            background-color: rgba(99,114,128,.1);
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            font-size: 15px;
+        }
+        select.custom-select[data-v-008a65cb] {
+            background-image: linear-gradient(45deg,transparent 50%,grey 0),linear-gradient(135deg,grey 50%,transparent 0);
+            background-position: calc(100% - 24px) calc(1em + 2px),calc(100% - 18px) calc(1em + 2px);
+            background-size: 6px 6px,6px 6px;
+            background-repeat: no-repeat;
+        }
+        select {
+            transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+        .custom-select {
+            display: inline-block;
+            width: 100%;
+            height: calc(1.5em + 0.75rem + 2px);
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057;
+            vertical-align: middle;
+            background: #fff url(data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E) right 0.75rem center/8px 10px no-repeat;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        @endif
         @if($request->step == 3)
             #terms-policies-checkbox:hover,#id-terms-and-policies:hover,#id-term-text:hover{
                 cursor: pointer;
@@ -414,6 +459,50 @@
     @endif
 {{--    {{dd($request->step==2)}}--}}
     @if($request->step===2&&!empty($arr_bus))
+        <section class="ftco-section" style="padding:0px !important;">
+            <form action="{{route('applicant.book_ticket')}}" method="get">
+                <input type="hidden" name="step" value="2">
+                <input type="hidden" name="city_start" value="{{$request->city_start}}">
+                <input type="hidden" name="city_end" value="{{$request->city_end}}">
+                <input type="hidden" name="departure_time" value="{{$request->departure_time}}">
+                <div class="filter-container" data-v-008a65cb="">
+                    <select class="custom-select filter-select" data-v-008a65cb="" style="margin-left:15px;" name="filter_price">
+                        <option value="" selected="selected" data-v-008a65cb="">Giá</option>
+                        <option value="asc" data-v-008a65cb="" @if($request->filter_price=='asc')
+                        selected
+                            @endif>Thấp - Cao</option>
+                        <option value="desc" data-v-008a65cb=""@if($request->filter_price=='desc')
+                        selected
+                            @endif>Cao - Thấp</option>
+                    </select>
+                    <select class="custom-select filter-select" data-v-008a65cb="" name="filter_seat_type">
+                        <option value="" selected="selected" data-v-008a65cb="">Loại xe</option>
+                        @foreach($seatTypes as $key =>$value)
+                            <option value="{{$value}}" data-v-008a65cb="" @if($request->filter_seat_type==$value)
+                                selected
+                                @endif
+                            >{{$key}}</option>
+                        @endforeach
+                    </select>
+                    <select class="custom-select filter-select" data-v-008a65cb="" name="filter_hour">
+                        <option value="" selected="selected" data-v-008a65cb="">Giờ</option>
+                        <option value="1" data-v-008a65cb="" @if($request->filter_hour=='1')
+                        selected
+                            @endif>0h - 6h</option>
+                        <option value="2" data-v-008a65cb="" @if($request->filter_hour=='2')
+                        selected
+                            @endif>6h - 12h</option>
+                        <option value="3" data-v-008a65cb="" @if($request->filter_hour=='3')
+                        selected
+                            @endif>12h - 18h</option>
+                        <option value="4" data-v-008a65cb="" @if($request->filter_hour=='4')
+                        selected
+                            @endif>18h - 24h</option>
+                    </select>
+                    <input type="submit" class="btn btn-success btn-block" value="Bắt Đầu Lọc">
+                </div>
+            </form>
+        </section>
     <?php $check_tmp = 0 ?>
     @foreach($arr_bus as $each_bus)
     <section class="ftco-section" style="padding:0px !important;text-align:center">
@@ -676,6 +765,12 @@
             <link rel="stylesheet" href="{{asset('css/7902561.css')}}">
             <link rel="stylesheet" href="{{asset('css/70657ea.css')}}">
             <link rel="stylesheet" href="{{asset('css/7c328b71.css')}}">
+            <style>
+                body{
+                    font-family: "Roboto", Arial, sans-serif !important;
+                    font-size: 16px !important;
+                }
+            </style>
         @endpush
         <div data-v-45436248="" class="child">
             <div data-v-45436248="">
@@ -729,7 +824,7 @@
                                         <div data-v-e65218d2="" class="col-xs-12 field">
                                             <div data-v-e65218d2="" class="col-xs-4 sub-tit">Điểm lên xe:</div>
                                             <div data-v-e65218d2="" class="col-xs-8">
-                                                <p data-v-e65218d2="">{{$request->address_location}}
+                                                <p data-v-e65218d2="">{{$request->address_location_name}}
                                                 </p>
                                             </div>
                                         </div>
@@ -756,7 +851,8 @@
                                 TIỀN</p>
                             <p data-v-60883350="" class="footer-price">
                                 {{$request->route_price * $request->slot}} <sup data-v-60883350="">₫</sup></p></div>
-                    </div> <!----></div>
+                    </div> <!---->
+                </div>
                 <div data-v-636bcda4="">
                     <div data-v-636bcda4="" class="title">CHỌN CÁCH THANH TOÁN</div>
                     <div data-v-636bcda4="" class="payment-item-list">
@@ -900,7 +996,13 @@
                             <input type="hidden" name="arr_customer[district]" value="{{$request->district}}">
                             <input type="hidden" name="arr_bus[id]" value="{{$request->bus['id']}}">
                             <input type="hidden" name="arr_bus[quantity]" value="{{$request->slot}}">
+                            <input type="hidden" name="arr_bus[route_name]" value="{{$request->bus['route_name']}}">
+                            <input type="hidden" name="arr_bus[departure_time]" value="{{$request->bus['departure_time']}}">
                             <input type="hidden" name="location" value="{{$request->address_location}}">
+                            <input type="hidden" name="location_name" value="{{$request->address_location_name}}">
+                            <input type="hidden" name="driver[name]" value="{{$request->driver_name}}">
+                            <input type="hidden" name="driver[phone]" value="{{$request->driver_phone}}">
+{{--                            <input type="hidden" name="location" value="{{$request->address_location}}">--}}
                             <input type="hidden" name="payment_method" id="payment_method" value="">
 {{--                            dùng tạm--}}
 {{--                            <input type="hidden" name="arr_bus['price']" value="{{$request->bus['price']}}">--}}

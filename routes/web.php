@@ -25,3 +25,4 @@ Route::post('/thanh-toan/', [HomePageController::class, 'payment'])->name('appli
 
 //test
 Route::get('/test/', [TestController::class, 'test1'])->name('test');
+Route::get('/test1/', [TestController::class, 'test2'])->name('test');
