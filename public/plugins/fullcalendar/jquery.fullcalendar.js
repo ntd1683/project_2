@@ -100,11 +100,33 @@
                 form.find("select[name='car'] option[value='" + car_id + "']").attr("selected", "selected");
             }
         });
+        $.ajax({
+            url: "http://project_2.test/admin/users/apiGetDriverByCar",
+            type: "GET",
+            dataType: "json",
+            data: {
+                route_id: $this.$route.val(),
+                car_id: car_id,
+            },
+            success: function(response) {
+                form.find("input[name='driver']").val(response.name);
+            }
+        });
+        $.ajax({
+            url: "http://project_2.test/admin/buses/apiGetPrice",
+            type: 'GET',
+            data: {
+                route_id: $this.$route.val(),
+                car_id: car_id,
+            },
+            success: function(response) {
+                form.find("input[name='price']").val(response.price);
+            }
+        });
         // load driver by car
         $(document).ready(function(){
             $("#car").change(function() {
                 var car = $(this).val();
-                console.log(car);
                 $.ajax({
                     url: "http://project_2.test/admin/users/apiGetDriverByCar",
                     type: "GET",
