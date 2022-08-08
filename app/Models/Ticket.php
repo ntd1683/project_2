@@ -10,11 +10,11 @@ class Ticket extends Model
     use HasFactory;
 
     protected $fillable =[
-        "city_start_id",
-        "city_end_id",
-        "name",
-        "time",
-        "distance",
-        "images",
+        "bill_detail_id",
+        "code",
+        "name_passenger",
+        "phone_passenger",
+        "email_passenger",
+        "address_passenger_id",
     ];
 }

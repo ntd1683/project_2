@@ -41,6 +41,41 @@
     @stack('css')
 </head>
 <body>
+
+{{--Plugin facebook lỗi @todo Lỗi Plugin Messenger--}}
+<!-- Messenger Plugin chat Code -->
+<div id="fb-root"></div>
+
+<!-- Your Plugin chat code -->
+<div id="fb-customer-chat" class="fb-customerchat">
+</div>
+
+<script>
+    var chatbox = document.getElementById('fb-customer-chat');
+    chatbox.setAttribute("page_id", "105358328948144");
+    chatbox.setAttribute("attribution", "biz_inbox");
+</script>
+
+<!-- Your SDK code -->
+<script>
+    window.fbAsyncInit = function() {
+        FB.init({
+            xfbml            : true,
+            version          : 'v14.0'
+        });
+    };
+
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+</script>
+
+{{--End plugin messenger--}}
+
 <!-- sidebar -->
 @include('layout.sidebar')
 <!-- endsidebar -->
@@ -58,6 +93,7 @@
     </svg></div>
 <script src="{{asset('js/jquery-3.6.0.min.js')}}"></script>
 <script src="{{asset('js/jquery-migrate-3.0.1.min.js%2bpopper.min.js%2bbootstrap.min.js.pagespeed.jc.g-lWZkHh9S.js')}}"></script>
+
 <script>eval(mod_pagespeed_$690NsqoNN);</script>
 <script>eval(mod_pagespeed_MP7PV5OAj7);</script>
 <script>eval(mod_pagespeed_82gjmm9SQg);</script>

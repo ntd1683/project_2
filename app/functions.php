@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Str;
+
 if(!function_exists('number_shorten')){
     function number_shorten($number, $precision = 3, $divisors = null) {
 
@@ -30,6 +32,7 @@ if(!function_exists('number_shorten')){
         return (int)number_format($number / $divisor, $precision) . $shorthand;
     }
 }
+
 if(!function_exists('add_hour')){
     function add_hour($time,$hour): string
     {
@@ -41,5 +44,19 @@ if(!function_exists('add_hour')){
         }
 
         return $sum . ':' . $explodedTime[1];
+    }
+}
+
+if(!function_exists('encode_phone')){
+    function encode_phone($phone): string
+    {
+        return substr($phone, 0, 3).'xxxx'.substr($phone, -3);
+    }
+}
+
+if(!function_exists('encode_email')){
+    function encode_email($mail): string
+    {
+        return substr($mail, 0, 3) . 'xxxxxxxxxxxx@' . Str::after($mail, '@');
     }
 }

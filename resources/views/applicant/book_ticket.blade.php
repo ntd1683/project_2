@@ -10,6 +10,51 @@
         @endif
     <style>
         @charset "UTF-8";
+        @if($request->step == 2)
+        .filter-container[data-v-008a65cb] {
+            margin-bottom: 35px;
+            display: flex;
+        }
+        .custom-select.filter-select[data-v-008a65cb] {
+            margin-right: 20px;
+            height: 40px;
+            width: 156px;
+            border: none;
+            padding: 0 16px;
+            border-radius: 20px;
+            background-color: rgba(99,114,128,.1);
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            font-size: 15px;
+        }
+        select.custom-select[data-v-008a65cb] {
+            background-image: linear-gradient(45deg,transparent 50%,grey 0),linear-gradient(135deg,grey 50%,transparent 0);
+            background-position: calc(100% - 24px) calc(1em + 2px),calc(100% - 18px) calc(1em + 2px);
+            background-size: 6px 6px,6px 6px;
+            background-repeat: no-repeat;
+        }
+        select {
+            transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+        .custom-select {
+            display: inline-block;
+            width: 100%;
+            height: calc(1.5em + 0.75rem + 2px);
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057;
+            vertical-align: middle;
+            background: #fff url(data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E) right 0.75rem center/8px 10px no-repeat;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        @endif
         @if($request->step == 3)
             #terms-policies-checkbox:hover,#id-terms-and-policies:hover,#id-term-text:hover{
                 cursor: pointer;
@@ -26,6 +71,10 @@
 
         .error{
             color: red;
+        }
+
+        .font-size-18 {
+            font-size: 18px;
         }
 
         input{
@@ -266,7 +315,7 @@
                      @endif
                     @if($request->step == 2)
                     <h2 class="mb-4">Xác Nhận Lộ Trình</h2>
-                    <p>{{$arr_route['name']}}</p>
+                    <h5>{{$arr_route['name']}}</h5>
                      @endif
                     @if($request->step == 3)
                     <h2 class="mb-4">Thông Tin Khách Hàng</h2>
@@ -410,6 +459,50 @@
     @endif
 {{--    {{dd($request->step==2)}}--}}
     @if($request->step===2&&!empty($arr_bus))
+        <section class="ftco-section" style="padding:0px !important;">
+            <form action="{{route('applicant.book_ticket')}}" method="get">
+                <input type="hidden" name="step" value="2">
+                <input type="hidden" name="city_start" value="{{$request->city_start}}">
+                <input type="hidden" name="city_end" value="{{$request->city_end}}">
+                <input type="hidden" name="departure_time" value="{{$request->departure_time}}">
+                <div class="filter-container" data-v-008a65cb="">
+                    <select class="custom-select filter-select" data-v-008a65cb="" style="margin-left:15px;" name="filter_price">
+                        <option value="" selected="selected" data-v-008a65cb="">Giá</option>
+                        <option value="asc" data-v-008a65cb="" @if($request->filter_price=='asc')
+                        selected
+                            @endif>Thấp - Cao</option>
+                        <option value="desc" data-v-008a65cb=""@if($request->filter_price=='desc')
+                        selected
+                            @endif>Cao - Thấp</option>
+                    </select>
+                    <select class="custom-select filter-select" data-v-008a65cb="" name="filter_seat_type">
+                        <option value="" selected="selected" data-v-008a65cb="">Loại xe</option>
+                        @foreach($seatTypes as $key =>$value)
+                            <option value="{{$value}}" data-v-008a65cb="" @if($request->filter_seat_type==$value)
+                                selected
+                                @endif
+                            >{{$key}}</option>
+                        @endforeach
+                    </select>
+                    <select class="custom-select filter-select" data-v-008a65cb="" name="filter_hour">
+                        <option value="" selected="selected" data-v-008a65cb="">Giờ</option>
+                        <option value="1" data-v-008a65cb="" @if($request->filter_hour=='1')
+                        selected
+                            @endif>0h - 6h</option>
+                        <option value="2" data-v-008a65cb="" @if($request->filter_hour=='2')
+                        selected
+                            @endif>6h - 12h</option>
+                        <option value="3" data-v-008a65cb="" @if($request->filter_hour=='3')
+                        selected
+                            @endif>12h - 18h</option>
+                        <option value="4" data-v-008a65cb="" @if($request->filter_hour=='4')
+                        selected
+                            @endif>18h - 24h</option>
+                    </select>
+                    <input type="submit" class="btn btn-success btn-block" value="Bắt Đầu Lọc">
+                </div>
+            </form>
+        </section>
     <?php $check_tmp = 0 ?>
     @foreach($arr_bus as $each_bus)
     <section class="ftco-section" style="padding:0px !important;text-align:center">
@@ -425,8 +518,10 @@
                 </div>
             </div>
             <div class="label" data-v-008a65cb="">
-                {{number_shorten($each_bus->price)}} <span class="dot" data-v-008a65cb=""></span>
-                {{$each_bus->seat_type_car}} <span class="dot" data-v-008a65cb=""></span> <span data-v-008a65cb="">Còn {{$each_bus->number_seat}} chỗ</span>
+{{--                {{number_shorten($each_bus->price)}} <span class="dot" data-v-008a65cb=""></span>--}}
+{{--                tạm thời --}}
+                {{number_shorten($each_bus->route_price)}} <span class="dot" data-v-008a65cb=""></span>
+                {{$each_bus->seat_type_car}} <span class="dot" data-v-008a65cb=""></span> <span data-v-008a65cb="">Còn {{$each_bus->remaining_seats}} chỗ</span>
             </div>
             <div class="route-line-container" data-v-008a65cb="">
                 <div class="route-line-list" data-v-008a65cb="">
@@ -456,6 +551,8 @@
                     <input type="hidden" name="city_start" value="{{$request->city_start}}">
                     <input type="hidden" name="city_end" value="{{$request->city_end}}">
                     <input type="hidden" name="departure_time" value="{{$request->departure_time}}">
+                    <input type="hidden" name="route_price" value="{{$each_bus->route_price}}">
+                    <input type="hidden" name="bus" value="{{$each_bus}}">
                     <div class="col-md-10" style="width:100%;">
                         <div class="input-group">
                             <label class="col-form-label col-md-2">Địa điểm đón : </label>
@@ -464,8 +561,12 @@
                                     <option value="{{$key}}">{{$value}}</option>
                                 @endforeach
                             </select>
+                        </div>
+                        <div class="input-group">
+                            <label class="col-form-label col-md-2">số lượng ghế : </label>
+                            <input type="number" class="form-control" name="slot">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="submit">Tiếp Theo</button>
+                                <button class="btn btn-primary" type="submit" style="background-color: #0d6efd !important;border:1px solid #0d6efd !important;">Tiếp Theo</button>
                             </div>
                         </div>
                     </div>
@@ -496,11 +597,14 @@
     @endif
 {{--    step 3 --}}
     @if($request->step == 3 && empty($arr_bus))
-        <form data-v-46398b4b="" id="form-steps" method="post" action="{{route('applicant.info_customer')}}">
+        <form data-v-46398b4b="" id="form-steps" method="post" action="{{route('applicant.payment')}}">
             <input type="hidden" name="city_start" value="{{$request->city_start}}">
             <input type="hidden" name="city_end" value="{{$request->city_end}}">
             <input type="hidden" name="departure_time" value="{{$request->departure_time}}">
+            <input type="hidden" name="route_price" value="{{$request->route_price}}">
             <input type="hidden" name="address_location" value="{{$request->address}}">
+            <input type="hidden" name="slot" value="{{$request->slot}}">
+            <input type="hidden" name="bus" value="{{$request->bus}}">
         <section class="ftco-section" style="padding:0px !important;text-align:center">
             <br>
             <div class="child" data-v-45436248="">
@@ -528,10 +632,10 @@
                                         </p>
                                         <div style="text-align:left;font-size:20px;">
                                             <label for="gender_male" style="margin-right:10px;">Nam </label>
-                                            <input placeholder="Nhập email" type="radio" id="gender_male" name="gender"
+                                            <input type="radio" id="gender_male" name="gender"
                                                    required="required" class="input full" checked value="1">
                                             <label for="gender_female" style="margin-right:10px;">Nữ </label>
-                                            <input placeholder="Nhập email" type="radio" id="gender_female" name="gender"
+                                            <input type="radio" id="gender_female" name="gender"
                                                                                         required="required" class="input full" value="0">
                                         </div>
                                         <p data-v-46398b4b="" class="input-title">
@@ -655,11 +759,286 @@
             </div>
         </div>
     @endif
+    @if($request->step==4)
+        @push('css')
+            <link rel="stylesheet" href="{{asset('css/19cfcbc.css')}}">
+            <link rel="stylesheet" href="{{asset('css/7902561.css')}}">
+            <link rel="stylesheet" href="{{asset('css/70657ea.css')}}">
+            <link rel="stylesheet" href="{{asset('css/7c328b71.css')}}">
+            <style>
+                body{
+                    font-family: "Roboto", Arial, sans-serif !important;
+                    font-size: 16px !important;
+                }
+            </style>
+        @endpush
+        <div data-v-45436248="" class="child">
+            <div data-v-45436248="">
+                <div data-v-60883350="" id="ticket-infomation-container" class="buy-info-container">
+                    <div data-v-60883350="" class="title-bar-bg"><p data-v-60883350="" class="title-txt">THÔNG TIN MUA
+                            VÉ</p></div>
+                    <div data-v-2d0d5948="" data-v-60883350="" class="customer-info-container">
+                        <div data-v-2d0d5948="" class="title-bar"><p data-v-2d0d5948="" class="title-txt" style="font-weight: bold !important;">Thông tin hành
+                                khách</p></div>
+                        <div data-v-2d0d5948="" class="container mt-2">
+                            <div data-v-2d0d5948="" class="row">
+                                <div data-v-2d0d5948="" class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-ms-12 font-size-18">
+                                    <div data-v-2d0d5948="" class="col-xs-12 field">
+                                        <div data-v-2d0d5948="" class="col-xs-4 sub-tit">Họ tên:</div>
+                                        <div data-v-2d0d5948="" class="col-xs-8 text-right">{{$request->name}}</div>
+                                    </div>
+                                    <div data-v-2d0d5948="" class="col-xs-12 field">
+                                        <div data-v-2d0d5948="" class="col-xs-4 sub-tit">Số điện thoại:</div>
+                                        <div data-v-2d0d5948="" class="col-xs-8 text-right">{{encode_phone($request->phone)}}</div>
+                                    </div>
+                                    <div data-v-2d0d5948="" class="col-xs-12 field">
+                                        <div data-v-2d0d5948="" class="col-xs-4 sub-tit">Email:</div>
+                                        <div data-v-2d0d5948="" class="col-xs-8 text-right">{{encode_email($request->email)}}
+                                        </div>
+                                    </div>
+                                </div> <!---->
+                                <div data-v-2d0d5948="" class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-ms-12"><!---->
+                                    <!----> <!----></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-v-e65218d2="" data-v-60883350="">
+                        <div data-v-e65218d2="" class="ticket-info-container">
+                            <div data-v-e65218d2="" class="title-bar">
+                                <div data-v-e65218d2="" class="title-txt" ><p data-v-e65218d2="" style="font-weight: bold !important;">Thông tin chuyến: {{$request->bus['route_name']}}</p></div>
+                            </div>
+                            <div data-v-e65218d2="" class="container">
+                                <div data-v-e65218d2="" class="row">
+                                    <div data-v-e65218d2="" class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-ms-12">
+                                        <div data-v-e65218d2="" class="col-xs-12 field">
+                                            <div data-v-e65218d2="" class="col-xs-4 sub-tit">Tuyến xe:</div>
+                                            <div data-v-e65218d2="" class="col-xs-8"><span data-v-e65218d2="">{{$request->bus['route_name']}}</span>
+                                            </div>
+                                        </div>
+                                        <div data-v-e65218d2="" class="col-xs-12 field">
+                                            <div data-v-e65218d2="" class="col-xs-4 sub-tit">Thời gian:</div>
+                                            <div data-v-e65218d2="" class="col-xs-8">
+                                                <span data-v-e65218d2="" class="orange-value green">{{$request->bus['departure_time']}}</span>
+                                            </div>
+                                        </div>
+                                        <div data-v-e65218d2="" class="col-xs-12 field">
+                                            <div data-v-e65218d2="" class="col-xs-4 sub-tit">Điểm lên xe:</div>
+                                            <div data-v-e65218d2="" class="col-xs-8">
+                                                <p data-v-e65218d2="">{{$request->address_location_name}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div data-v-e65218d2="" class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-ms-12">
+                                        <div data-v-e65218d2="" class="col-xs-12 field">
+                                            <div data-v-e65218d2="" class="col-xs-4 sub-tit">Số lượng ghế:</div>
+                                            <div data-v-e65218d2="" class="col-xs-8">{{$request->slot}}</div>
+                                        </div>
+{{--                                        <div data-v-e65218d2="" class="col-xs-12 field">--}}
+{{--                                            <div data-v-e65218d2="" class="col-xs-4 sub-tit">Số ghế:</div>--}}
+{{--                                            <div data-v-e65218d2="" class="col-xs-8 orange-value green">--}}
+{{--                                                <span data-v-e65218d2=""> B01 </span>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+                                        <div data-v-e65218d2="" class="col-xs-12 field"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-v-60883350="" class="footer-bar">
+                        <div data-v-60883350="" class="total-info"><p data-v-60883350="" class="footer-title">TỔNG
+                                TIỀN</p>
+                            <p data-v-60883350="" class="footer-price">
+                                {{$request->route_price * $request->slot}} <sup data-v-60883350="">₫</sup></p></div>
+                    </div> <!---->
+                </div>
+                <div data-v-636bcda4="">
+                    <div data-v-636bcda4="" class="title">CHỌN CÁCH THANH TOÁN</div>
+                    <div data-v-636bcda4="" class="payment-item-list">
+                        <div data-v-4fa16e21="" data-v-636bcda4="" class="payment-item-container">
+                            <button data-v-4fa16e21="" id="international_card" class="normal btn-payment" onclick="payment('international_card')">
+                                <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg"
+                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="23"
+                                     viewBox="0 0 22 23" class="check checked">
+                                    <defs data-v-4fa16e21="">
+                                        <circle data-v-4fa16e21="" id="huxf6b78oa" cx="11" cy="11" r="11"></circle>
+                                    </defs>
+                                    <g data-v-4fa16e21="" fill="none" fill-rule="evenodd">
+                                        <g data-v-4fa16e21=""
+                                           transform="translate(-518 -791) translate(252 741) translate(0 43) translate(266 8)">
+                                            <mask data-v-4fa16e21="" id="9unrvtawmb" fill="#fff">
+                                                <use data-v-4fa16e21="" xlink:href="#huxf6b78oa"></use>
+                                            </mask>
+                                            <use data-v-4fa16e21="" fill="#EF5222" fill-rule="nonzero"
+                                                 xlink:href="#huxf6b78oa"></use>
+                                            <path data-v-4fa16e21="" fill-rule="nonzero" stroke="#FFF"
+                                                  stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                  d="M6 11.125L9.058 14.25 15.375 8" mask="url(#9unrvtawmb)"></path>
+                                        </g>
+                                    </g>
+                                </svg>
+                                <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg" width="22" height="23"
+                                     viewBox="0 0 22 23" class="check not-check">
+                                    <g data-v-4fa16e21="" fill="none" fill-rule="evenodd" stroke-opacity=".63">
+                                        <g data-v-4fa16e21="" fill-rule="nonzero" stroke="#637280" stroke-width="1.2">
+                                            <g data-v-4fa16e21=""
+                                               transform="translate(-838 -791) translate(252 741) translate(320 43) translate(266 8)">
+                                                <circle data-v-4fa16e21="" cx="11" cy="11" r="10.4"></circle>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </svg>
+                                <div data-v-4fa16e21="" class="icons"><img data-v-4fa16e21=""
+                                                                           src="{{asset('img/icon/jcb.99dcd7f.png')}}"
+                                                                           alt="Cybersource" class="icon"><img
+                                        data-v-4fa16e21="" src="{{asset('img/icon/master.f966244.png')}}" alt="Cybersource"
+                                        class="icon"><img data-v-4fa16e21="" src="{{asset('img/icon/visa.af41b0e.png')}}"
+                                                          alt="Cybersource" class="icon"></div>
+                                <p data-v-4fa16e21="" class="text">Thẻ Quốc tế Visa/Master/JCB</p></button>
+                        </div>
+                        <div data-v-4fa16e21="" data-v-636bcda4="" class="payment-item-container">
+                            <button data-v-4fa16e21="" id="atm" class="normal btn-payment" onclick="payment('atm')">
+                                <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg"
+                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="23"
+                                     viewBox="0 0 22 23" class="check checked">
+                                    <defs data-v-4fa16e21="">
+                                        <circle data-v-4fa16e21="" id="huxf6b78oa" cx="11" cy="11" r="11"></circle>
+                                    </defs>
+                                    <g data-v-4fa16e21="" fill="none" fill-rule="evenodd">
+                                        <g data-v-4fa16e21=""
+                                           transform="translate(-518 -791) translate(252 741) translate(0 43) translate(266 8)">
+                                            <mask data-v-4fa16e21="" id="9unrvtawmb" fill="#fff">
+                                                <use data-v-4fa16e21="" xlink:href="#huxf6b78oa"></use>
+                                            </mask>
+                                            <use data-v-4fa16e21="" fill="#EF5222" fill-rule="nonzero"
+                                                 xlink:href="#huxf6b78oa"></use>
+                                            <path data-v-4fa16e21="" fill-rule="nonzero" stroke="#FFF"
+                                                  stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                  d="M6 11.125L9.058 14.25 15.375 8" mask="url(#9unrvtawmb)"></path>
+                                        </g>
+                                    </g>
+                                </svg>
+                                <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg" width="22" height="23"
+                                     viewBox="0 0 22 23" class="check not-check">
+                                    <g data-v-4fa16e21="" fill="none" fill-rule="evenodd" stroke-opacity=".63">
+                                        <g data-v-4fa16e21="" fill-rule="nonzero" stroke="#637280" stroke-width="1.2">
+                                            <g data-v-4fa16e21=""
+                                               transform="translate(-838 -791) translate(252 741) translate(320 43) translate(266 8)">
+                                                <circle data-v-4fa16e21="" cx="11" cy="11" r="10.4"></circle>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </svg>
+                                <div data-v-4fa16e21="" class="icons"><img data-v-4fa16e21=""
+                                                                           src="{{asset('img/icon/napas.e513efd.png')}}"
+                                                                           alt="Napas" class="icon"></div>
+                                <p data-v-4fa16e21="" class="text">Thẻ ATM Nội địa</p></button>
+                        </div>
+                        <div data-v-4fa16e21="" data-v-636bcda4="" class="payment-item-container">
+                            <button data-v-4fa16e21="" id="momo" class="normal btn-payment" onclick="payment('momo')">
+                                <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg"
+                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="23"
+                                     viewBox="0 0 22 23" class="check checked">
+                                    <defs data-v-4fa16e21="">
+                                        <circle data-v-4fa16e21="" id="huxf6b78oa" cx="11" cy="11" r="11"></circle>
+                                    </defs>
+                                    <g data-v-4fa16e21="" fill="none" fill-rule="evenodd">
+                                        <g data-v-4fa16e21=""
+                                           transform="translate(-518 -791) translate(252 741) translate(0 43) translate(266 8)">
+                                            <mask data-v-4fa16e21="" id="9unrvtawmb" fill="#fff">
+                                                <use data-v-4fa16e21="" xlink:href="#huxf6b78oa"></use>
+                                            </mask>
+                                            <use data-v-4fa16e21="" fill="#EF5222" fill-rule="nonzero"
+                                                 xlink:href="#huxf6b78oa"></use>
+                                            <path data-v-4fa16e21="" fill-rule="nonzero" stroke="#FFF"
+                                                  stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                  d="M6 11.125L9.058 14.25 15.375 8" mask="url(#9unrvtawmb)"></path>
+                                        </g>
+                                    </g>
+                                </svg>
+                                <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg" width="22" height="23"
+                                     viewBox="0 0 22 23" class="check not-check">
+                                    <g data-v-4fa16e21="" fill="none" fill-rule="evenodd" stroke-opacity=".63">
+                                        <g data-v-4fa16e21="" fill-rule="nonzero" stroke="#637280" stroke-width="1.2">
+                                            <g data-v-4fa16e21=""
+                                               transform="translate(-838 -791) translate(252 741) translate(320 43) translate(266 8)">
+                                                <circle data-v-4fa16e21="" cx="11" cy="11" r="10.4"></circle>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </svg>
+                                <div data-v-4fa16e21="" class="icons"><img data-v-4fa16e21=""
+                                                                           src="{{asset('img/icon/momo.fc16949.png')}}" alt="Momo"
+                                                                           class="icon"></div>
+                                <p data-v-4fa16e21="" class="text">Ví MoMo</p></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="booking-nav-buttons" data-v-3f93c73c="" data-v-45436248="">
+                    <div class="left-btns" data-v-3f93c73c="">
+                        <a href="{{ url()->previous() }}" class="btn btn-primary btn-block" style="display: block;width: 100%;">
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAASKADAAQAAAABAAAASAAAAACQMUbvAAACSklEQVR4Ae3aT07CQBQGcKrAyh22cAiDngGix/BwHMOoW9eohygV1iRAqO/FEppaoJH58435utDpFN7M/CxD5zmtFg8KUIACFKAABShAAQpQgAIUoAAFKPCvBKKQRjMYDOLVavWofe52u5M0Tb9s9z8YoCRJbjebzVOe54miRFGUCtLQNtKl7b+AifiKs16vXyRWXIp3td1uZ8vl8q1UZ7x4YTyi4YAlnJ7h0I3CQQMdw5GPWKbzUKNRnvEiWKBjODLeebvdvrc9/6gr5CR9CqfT6YyzLHs/48Zo/FY4ICQcuDsIDQcKCBEHBggVBwIIGcc7EDqOV6AQcLwBhYKjQM4Xq3Ec38mqXBeedWurucuHQAU4dTh9UCxwnqVTQeAonjOgEHGcAYWK4wSo3+8nkib9lMbKyS5tWw+4OeenW/uf7X3RTkkygZpDrsWR+pGsyj/stGwmqot8UH6gq5F8Y7lo/0Dzzaqtd1CzfpL9m9V0p6d5Zn0mqrkGU2UdSLN+kv17kBHPa0YNj+Tsa17ulGHxn4nrGqhF8YA4rbnmtcoZkI4yRCSnQCEiOQcKDckLUEhI3oBCQfIKFAKSdyB0JAggZCQYIFQkKCBEJDggNCRIoBLSq5Tr8tfO1m6wQKeQig1UN7b3CFlPd+hA/3roHiBZ5Y/k/YtqDN3MudvxWr1m8hwaSAdaII2l+AvJJMShWPBA2nFBmmq+SD9Wu4FIWbcBT3bntn5Dz0HVQfvYSF7tA88pQAEKUIACFKAABShAAQpQgAIUoEDgAt/KjWWzclDJlgAAAABJRU5ErkJggg==" alt="back" width="24" height="24" class="icon" data-v-3f93c73c="">
+                            Quay lại
+                        </a>
+                    </div>
+                    <div data-v-3f93c73c="" class="right-btns">
+                        <form action="{{route('applicant.order')}}" method="post" id="form_payment" style="display:flex;width:100%;">
+                            @csrf
+                            <input type="hidden" name="arr_customer[name]" value="{{$request->name}}">
+                            <input type="hidden" name="arr_customer[phone]" value="{{$request->phone}}">
+                            <input type="hidden" name="arr_customer[email]" value="{{$request->email}}">
+                            <input type="hidden" name="arr_customer[gender]" value="{{$request->gender}}">
+                            <input type="hidden" name="arr_customer[birthdate]" value="{{$request->birthdate}}">
+                            <input type="hidden" name="arr_customer[address]" value="{{$request->address}}">
+                            <input type="hidden" name="arr_customer[city]" value="{{$request->city}}">
+                            <input type="hidden" name="arr_customer[district]" value="{{$request->district}}">
+                            <input type="hidden" name="arr_bus[id]" value="{{$request->bus['id']}}">
+                            <input type="hidden" name="arr_bus[quantity]" value="{{$request->slot}}">
+                            <input type="hidden" name="arr_bus[route_name]" value="{{$request->bus['route_name']}}">
+                            <input type="hidden" name="arr_bus[departure_time]" value="{{$request->bus['departure_time']}}">
+                            <input type="hidden" name="location" value="{{$request->address_location}}">
+                            <input type="hidden" name="location_name" value="{{$request->address_location_name}}">
+                            <input type="hidden" name="driver[name]" value="{{$request->driver_name}}">
+                            <input type="hidden" name="driver[phone]" value="{{$request->driver_phone}}">
+{{--                            <input type="hidden" name="location" value="{{$request->address_location}}">--}}
+                            <input type="hidden" name="payment_method" id="payment_method" value="">
+{{--                            dùng tạm--}}
+{{--                            <input type="hidden" name="arr_bus['price']" value="{{$request->bus['price']}}">--}}
+                            <input type="hidden" name="arr_bus[price]" value="{{$request->route_price * $request->slot}}">
+                        <button data-v-3f93c73c="" class="btn btn-success" type="submit" >
+                            Tiếp tục
+                            <img data-v-3f93c73c="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAASKADAAQAAAABAAAASAAAAACQMUbvAAABnklEQVR4Ae3a4W3CMBCGYdIVUBkDmKGDdIkyUffoEizRUtoZ0u8QkSrrcjE0DTh+LUWQu2AnTy4/cLxY0BBAAAEEEEAAAQQQQAABBBBAAIFZCTRTXE3bto8a5/k81mvTNMcpxi1iDMPR9q6tawd92RRx8lOcpDBeOplfn1+lID1MgeSMsVTsrRQk5/zHCwnBHjF7rLxWTCWNJ+L0JJm1NsPwGkhmJhlDOnpCioEEkvNoeSEqyVNJYiAlIN4uSJ5KEgMpAfF2QfJUkhhICYi3C5KnksQykLbJT+rbBSnjnoMEUoZAxiEDlfSp/Cqjm3kfMoC0+++rv9WM4iXXZS8W+l4utJd0NLtjVT0bbX0TbR/K2duSOtsAjk28reuU0VWDE9x6cMAJBIIUlQNOIBCkqBxwAoEgReWAEwgEKSoHnEAgSFE51+PYv/Wq/3gOLaCqF8eKStXhrVFU+DTPc/c4t5pR/Jbdk5YD74Mns46UKsVbBnz3ldPdnb653i4/yqchqSMWko+iSScIIIAAAggggAACCCCAAAIIIIDAnwR+AARz1rJJfntoAAAAAElFTkSuQmCC" alt="back" width="24" height="24" class="icon">
+                        </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+    @endif
     @push('js')
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script><script src="{{asset('js/jquery.toast.min.js')}}"></script>
             <script>
+                let check_payment_method = false;
+                @if($request->step == 4)
+                function payment(key){
+                    let class_btn = document.getElementsByClassName('btn-payment');
+                    let length_btn = class_btn.length;
+                    for(let tmp=0;tmp<length_btn;tmp++){
+                        class_btn[tmp].classList.remove('selected');
+                    }
+                    let button_payment = document.getElementById(key);
+                    button_payment.classList.toggle("selected");
+                    let payment_method = document.getElementById('payment_method');
+                    payment_method.value = key;
+                    check_payment_method = true;
+                }
+                @endif
+
                 $(function() {
                     @if ($errors->any())
                     @foreach ($errors->all() as $error)
@@ -709,6 +1088,7 @@
                 select_route_2.classList.toggle("selected");
                 select_route_2.classList.toggle("div-block");
             }
+
             function book_ticket(city_start_id, city_end_id){
                 let city_start = document.getElementById('city_start');
                 let city_end = document.getElementById('city_end');
@@ -740,6 +1120,8 @@
             }
             $(document).ready(async function () {
                 $("#select-city").select2({tags: true});
+                // $("#city_start").select2({tags: true});
+                // $("#city_end").select2({tags: true});
                 const response = await fetch('{{ asset('locations/index.json') }}');
                 const cities = await response.json();
                 $.each(cities, function (index, each) {
@@ -814,6 +1196,26 @@
                             form.submit();
                         } else {
                             alert("Bạn chưa chấp nhận điều khoản đặt vé của chúng tôi !");
+                        }
+                    }
+                });
+
+                $("#form_payment").validate({
+                    rules: {
+                        payment_method :{
+                          required: true,
+                        },
+                    },
+                    messages:{
+                        payment_method:{
+                            required:"Không được bỏ trống phương thức thanh toán",
+                        }
+                    },
+                    submitHandler: function (form) {
+                        if(check_payment_method){
+                            form.submit();
+                        }else{
+                            alert('Bạn chưa chọn phương thức đăng nhập');
                         }
                     }
                 });

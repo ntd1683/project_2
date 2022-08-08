@@ -20,7 +20,9 @@ Route::get('/', [HomePageController::class, 'index'])->name('index');
 
 //book_ticket
 Route::get('/mua-ve/', [HomePageController::class, 'book_ticket'])->name('applicant.book_ticket');
-Route::post('/info_customer/', [HomePageController::class, 'store_info_customer'])->name('applicant.info_customer');
+Route::post('/order/', [HomePageController::class, 'order'])->name('applicant.order');
+Route::post('/thanh-toan/', [HomePageController::class, 'payment'])->name('applicant.payment');
 
 //test
 Route::get('/test/', [TestController::class, 'test1'])->name('test');
+Route::get('/test1/', [TestController::class, 'test2'])->name('test');
