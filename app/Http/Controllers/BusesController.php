@@ -47,14 +47,9 @@ class BusesController extends Controller
             ->join('routes', 'routes.id', '=', 'route_driver_cars.route_id')
             ->join('carriages', 'carriages.id', '=', 'route_driver_cars.car_id')
             ->join('users', 'users.id', '=', 'route_driver_cars.driver_id')
-            ->select('buses.id', 'routes.name as route_name', 'routes.id as route_id', 'buses.departure_time', 'routes.time', 'routes.distance', 'buses.price', 'carriages.license_plate', 'users.name as driver_name')
+            ->select('buses.id', 'routes.name as route_name', 'routes.id as route_id','routes.images as images', 'buses.departure_time', 'routes.time', 'routes.distance', 'buses.price', 'carriages.license_plate', 'users.name as driver_name')
             ->get();
         return DataTables::of($data)
-            ->addColumn('date', function ($object) {
-                // get date from departure_time
-                $date = date('d/m/Y', strtotime($object->departure_time));
-                return $date;
-            })
             ->addColumn('edit', function ($object) {
                 return route('admin.buses.edit', $object);
             })
