@@ -68,7 +68,7 @@ class BusesController extends Controller
     {
         $route_id = $request->get('route_id');
         $car_id = $request->get('car_id');
-        return DB::table('route_driver_cars')
+        return Route_driver_car::query()
             ->where('route_id', $route_id)
             ->where('car_id', $car_id)
             ->select('price')

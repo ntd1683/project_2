@@ -79,7 +79,6 @@ Route::group([
     Route::get('/api', [CarriageController::class, 'api'])->name('api');
     Route::get('/apiNameCarriages', [CarriageController::class, 'apiNameCarriages'])->name('api.nameCarriages');
     Route::get('/apiNumberSeats', [CarriageController::class, 'apiNumberSeats'])->name('api.numberSeats');
-    Route::get('/apiGetCarriagesByRoute', [CarriageController::class, 'apiGetCarriagesByRoute'])->name('api.apiGetCarriagesByRoute');
 
 });
 //route

@@ -98,10 +98,16 @@ class RouteController extends Controller
 
     public function apiNameRoutes(Request $request)
     {
-        if ($request->get('id') == null)
-            return $this->model->where('name', 'like', '%' . $request->get('q') . '%')->get();
-        else
-            return $this->model->where('name', 'like', '%' . $request->get('q') . '%')->where('id', $request->get('id'))->get();
+        $id = $request->get('id');
+        $q = $request->get('q');
+        $query = $this->model;
+        $query->when($id, function ($query, $id) {
+            return $query->where('id', '!=', $id);
+        });
+        $query->when($q, function ($query, $q) {
+            return $query->where('name', 'like', '%' . $q . '%');
+        });
+        return $query->get();
     }
 
     public function apiCityStart(Request $request)
@@ -114,7 +120,7 @@ class RouteController extends Controller
         return City::where('name', 'like', '%' . $request->get('q') . '%')->get();
     }
 
-    public function apiGetFirstRoute(Request $request)
+    public function apiGetFirstRoute()
     {
         return $this->model->first();
     }
