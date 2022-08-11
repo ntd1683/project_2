@@ -243,9 +243,12 @@
                     route_name = $(this).find(':selected').text();
                     route_event.text('').val('');
                     route_event.text(route_name).val(route_id);
+                    if(route_id == null){
+                        route_id = 0;
+                    }
                     // load ajax carriages
                     $.ajax({
-                        url: "{{route('admin.carriages.api.apiGetCarriagesByRoute')}}",
+                        url: "{{route('admin.carriages.api.nameCarriages')}}",
                         dataType: 'json',
                         data: {
                             route_id: route_id,

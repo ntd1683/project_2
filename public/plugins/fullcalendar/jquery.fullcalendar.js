@@ -10,7 +10,8 @@
         this.$modal = $('#my_event'),
         this.$saveCategoryBtn = $('.save-category'),
         this.$calendarObj = null,
-        this.$route = $('#route')
+        this.$route = $('#route'),
+        this.$domain = "http://project_2.test/"
     };
 
     /* validate event form on keyup and submit */
@@ -74,7 +75,7 @@
         $this.$modal.modal({
             backdrop: 'static'
         });
-        var form = $("<form action='http://project_2.test/admin/buses/store') }} method='POST'></form>");
+        var form = $("<form action='"+this.$domain+"admin/buses/store') }} method='POST'></form>");
         form.append("<div class='event-inputs'></div>");
         form.find(".event-inputs")
             .append("<div class='form-group row'><label class='col-form-label col-md-2'>Xe</label><div class='col-md-10'><select class='form-control' name='car' id='car'></select></div></div>")
@@ -85,7 +86,7 @@
         
                 // load carriages by route
         $.ajax({
-            url: "http://project_2.test/admin/carriages/apiGetCarriagesByRoute",
+            url: this.$domain+"admin/carriages/apiNameCarriages",
             type: "GET",
             dataType: "json",
             data: {
@@ -101,7 +102,7 @@
             }
         });
         $.ajax({
-            url: "http://project_2.test/admin/users/apiGetDriverByCar",
+            url: this.$domain+"admin/users/apiGetDriverByCar",
             type: "GET",
             dataType: "json",
             data: {
@@ -113,7 +114,7 @@
             }
         });
         $.ajax({
-            url: "http://project_2.test/admin/buses/apiGetPrice",
+            url: this.$domain+"admin/buses/apiGetPrice",
             type: 'GET',
             data: {
                 route_id: $this.$route.val(),
@@ -127,8 +128,9 @@
         $(document).ready(function(){
             $("#car").change(function() {
                 var car = $(this).val();
+                var $domain = CalendarApp.$domain;
                 $.ajax({
-                    url: "http://project_2.test/admin/users/apiGetDriverByCar",
+                    url: $domain +"admin/users/apiGetDriverByCar",
                     type: "GET",
                     dataType: "json",
                     data: {
@@ -140,7 +142,7 @@
                     }
                 });
                 $.ajax({
-                    url: "http://project_2.test/admin/buses/apiGetPrice",
+                    url:  $domain +"admin/buses/apiGetPrice",
                     type: 'GET',
                     data: {
                         route_id: $this.$route.val(),
@@ -218,7 +220,7 @@
         var day = calEvent.start.format('YYYY-MM-DD');
         var time = calEvent.start.format('HH:mm');
         var price = calEvent.price;
-        var form = $("<form action='http://project_2.test/admin/buses/update/" + calEvent._id + "') }} method='POST'></form>");
+        var form = $("<form action='"+this.$domain+"admin/buses/update/" + calEvent._id + "') }} method='POST'></form>");
         form.append("<div class='event-inputs'></div>");
         form.find(".event-inputs")
             .append("<div class='form-group row'><label class='col-form-label col-md-2'>Xe</label><div class='col-md-10'><select class='form-control' name='car' id='car'></select></div></div>")
@@ -229,7 +231,7 @@
         
         // load carriages by route
         $.ajax({
-            url: "http://project_2.test/admin/carriages/apiGetCarriagesByRoute",
+            url: this.$domain+"admin/carriages/apiNameCarriages",
             type: "GET",
             dataType: "json",
             data: {
@@ -248,8 +250,9 @@
         $(document).ready(function(){
             $("#car").change(function() {
                 var car = $(this).val();
+                $domain = CalendarApp.$domain;
                 $.ajax({
-                    url: "http://project_2.test/admin/users/apiGetDriverByCar",
+                    url:  $domain +"admin/users/apiGetDriverByCar",
                     type: "GET",
                     dataType: "json",
                     data: {
@@ -271,7 +274,7 @@
         $this.$modal.find('.delete-event').show().end().find('.save-event').show().end().find('.create-event').hide().end().find('.modal-body').empty().prepend(form).end().find('.delete-event').unbind('click').click(function () {
             let confirm_delete = confirm('Bạn có chắc chắn muốn xóa?');
             if (confirm_delete) {
-                var form_delete = $("<form action='http://project_2.test/admin/buses/destroy/" + calEvent._id + "') }} method='POST'></form>");
+                var form_delete = $("<form action='"+this.$domain+"/admin/buses/destroy/" + calEvent._id + "') }} method='POST'></form>");
                 form_delete.append("<input type='hidden' name='_method' value='DELETE' />");
                 $.ajax({
                     url: form_delete.attr('action'),
