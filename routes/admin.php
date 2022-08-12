@@ -74,6 +74,7 @@ Route::group([
     Route::delete('/destroy/{carriage}', [CarriageController::class, 'destroy'])->name('destroy');
     Route::get('/edit/{carriage}', [CarriageController::class, 'edit'])->name('edit');
     Route::post('/update/{carriage}', [CarriageController::class, 'update'])->name('update');
+    Route::post('/updateRouteCar/{carriage}', [CarriageController::class, 'updateRouteCar'])->name('updateRouteCar');
 
     //    api
     Route::get('/api', [CarriageController::class, 'api'])->name('api');

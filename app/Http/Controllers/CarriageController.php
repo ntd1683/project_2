@@ -7,6 +7,7 @@ use App\Enums\SeatTypeEnum;
 use App\Models\Carriage;
 use App\Http\Requests\StoreCarriageRequest;
 use App\Http\Requests\UpdateCarriageRequest;
+use App\Http\Requests\UpdateRoute_driver_carRequest;
 use App\Models\City;
 use App\Models\Route as ModelsRoute;
 use App\Models\Route_driver_car;
@@ -123,7 +124,7 @@ class CarriageController extends Controller
                 $route1_id = ModelsRoute::query()->where('city_start_id', $from)->where('city_end_id', $to)->first()->id;
                 $route2_id = ModelsRoute::query()->where('city_start_id', $to)->where('city_end_id', $from)->first()->id;
             } catch (\Exception $e) {
-                redirect()->back()->with('error', 'Không tìm thấy tuyến đường');
+                return ['success' => false, 'message' => 'Không tìm thấy tuyến đường'];
             }
 
             $carriage_id=$this->model->create([
@@ -151,11 +152,11 @@ class CarriageController extends Controller
             } catch (\Exception $e) {
                 // hard delete carriage
                 $this->model->withTrashed()->where('id', $carriage_id)->forceDelete();
-                return redirect()->back()->with('error', 'Liên kết tuyến đường bị lỗi');
+                return ['success' => false, 'message' => 'Liên kết tuyến đường bị lỗi'];
             }
-            return redirect()->route('admin.' . $this->table . '.index')->with('success', 'Thêm mới thành công');
+            return ['success' => true, 'message' => 'Thêm xe thành công'];
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Thêm mới thất bại');
+            return ['success' => false, 'message' => 'Thêm xe thất bại'];
         }
     }
 
@@ -193,12 +194,24 @@ class CarriageController extends Controller
                 'seat_type' => $seat_type,
                 'default_number_seat' => $default_number_seat,
             ]);
+            return ['success' => true, 'message' => 'Cập nhật xe thành công'];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => 'Cập nhật xe thất bại'];
+        }
+    }
 
+    public function updateRouteCar(UpdateRoute_driver_carRequest $request, Carriage $carriage)
+    {
+        try {
             // update route_driver_car
             $from = $request->get('from');
             $to = $request->get('to');
-            $route1_id = ModelsRoute::query()->where('city_start_id', $from)->where('city_end_id', $to)->first()->id;
-            $route2_id = ModelsRoute::query()->where('city_start_id', $to)->where('city_end_id', $from)->first()->id;
+            try {
+                $route1_id = ModelsRoute::query()->where('city_start_id', $from)->where('city_end_id', $to)->first()->id;
+                $route2_id = ModelsRoute::query()->where('city_start_id', $to)->where('city_end_id', $from)->first()->id;
+            } catch (\Exception $e) {
+                return ['success' => false, 'message' => 'Không tìm thấy tuyến đường'];
+            }
             $driver_id = $request->get('driver');
             $price = $request->get('price');
             $carriage_id = $carriage->id;
@@ -214,9 +227,9 @@ class CarriageController extends Controller
                 'price' => $price,
             ]);
 
-            return redirect()->back()->with('success', 'Cập nhật thành công');
+            return ['success' => true, 'message' => 'Cập nhật liên kết thành công'];
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Cập nhật thất bại');
+            return ['success' => false, 'message' => 'Cập nhật liên kết thất bại'];
         }
     }
 
