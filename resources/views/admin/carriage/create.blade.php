@@ -21,7 +21,7 @@
                     <h4 class="card-title">Thêm Xe</h4>
                 </div>
                     <div class="card-body">
-                        <form action="{{route('admin.carriages.store')}}" id="form-create-post" method="post">
+                        <form action="{{route('admin.carriages.store')}}" id="form" method="post">
                             @csrf
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2">Biển số xe</label>
@@ -104,7 +104,7 @@
                     return value.trim().match(regex);
                 });
 
-                $("#form-create-post").validate({
+                $("#form").validate({
                     rules: {
                         license_plate: {
                             required: true,
@@ -170,7 +170,37 @@
                         },
                     },
                     submitHandler: function (form) {
-                        form.submit();
+                        //check license plate in softdelete
+
+                        //check 2 route exist from 2 city
+
+                        // submit form
+                        $.ajax({
+                            url: form.action,
+                            type: form.method,
+                            data: $(form).serialize(),
+                            success: function(response) {
+                                notify(response);
+                                if(response.success){
+                                    setTimeout(function(){
+                                        window.location.href = "{{route('admin.carriages.index')}}";
+                                    }, 3000);
+                                };
+                            },
+                            error: function(response) {
+                                // get key and value in response object
+                                var errors = response.responseJSON.errors;
+                                $.each(errors, function (key, value) {
+                                    $.toast({
+                                        heading: 'Lỗi',
+                                        text: value,
+                                        icon: 'error',
+                                        position: 'top-right',
+                                        showHideTransition: 'slide',
+                                    });
+                                });
+                            }
+                        });
                     }
                 });
 

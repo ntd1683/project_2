@@ -35,26 +35,20 @@
     </div>
     {{--  Add  --}}
     <div class="card filter-card" id="add_show" style="display: none;" >
-        <div class="card-body pb-0">
-            <div class="row text-center">
-                <div class="col-md-2"></div>
-                <div class="col-md-2"></div>
-                <div class="col-md-2"></div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <a href="{{route('admin.buses.create')}}"><button type="button" class="btn btn-primary btn-lg" style="font-size: 15px;">Tạo môt chuyến xe bất kỳ</button></a>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <a href="#"><button type="button" class="btn btn-primary btn-lg" style="font-size: 15px;">Tạo nhanh theo tuyến đường</button></a>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <a href="#"><button type="button" class="btn btn-primary btn-lg" style="font-size: 15px;">Tạo nhanh tháng tiếp theo</button></a>
-                    </div>
-                </div>
+        <div class="card-body">
+            <div class="justify-content-center text-center">
+                <a href="{{route('admin.buses.create')}}">
+                    <button type="button" class="btn btn-primary btn-lg submit-btn">
+                    Tạo Mới</button>
+                </a>
+                <a href="#">
+                    <button type="button" class="btn btn-info btn-lg submit-btn" style="color: #ffffff;">
+                    Tạo Nhanh</button>
+                </a>
+                <a href="#">
+                    <button type="button" class="btn btn-success btn-lg submit-btn">
+                    Tạo Tự Động</button>
+                </a>
             </div>
         </div>
     </div>
@@ -121,25 +115,35 @@
     </div>
     {{-- End Filter --}}
 
+    {{-- nav tab --}}
+    <ul class="nav nav-tabs menu-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('admin.buses.calendar')}}">Lịch trình</a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{route('admin.buses.index')}}">Danh sách</a>
+        </li>
+    </ul>
+    {{-- End nav tab --}}
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <!-- thiếu class datatable-->
                         <table class="table table-hover table-center mb-0" id="table-index" style="text-align: center">
                             <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Sửa</th>
                                 <th>Tuyến đường</th>
-                                <th>Ngày khởi hành</th>
-                                <th>Giờ đi</th>
-                                <th>Thời gian</th>
-                                <th>Khoảng cách</th>
-                                <th>Giá vé</th>
                                 <th>Xe</th>
                                 <th>Tài xế</th>
-                                <th>Sửa</th>
+                                <th>Ngày đi</th>
+                                <th>Giờ đi</th>
+                                <th>Giá vé</th>
+                                <th>Thời gian</th>
+                                <th>Quãng đường</th>
                                 <th>Xoá</th>
                             </tr>
                             </thead>
@@ -153,12 +157,13 @@
     @push('js')
         <script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
         <script>
+            var minDate, maxDate;
             // Extend dataTables search
             $.fn.dataTable.ext.search.push(
                 function( settings, data, dataIndex ) {
-                    var min = new Date($('#min').val());
-                    var max = new Date($('#max').val());
-                    var date = new Date( data[2] );
+                    var min = minDate.val();
+                    var max = maxDate.val();
+                    var date = new Date( data[5] );
             
                     if (
                         ( min === null && max === null ) ||
@@ -199,7 +204,7 @@
                             };
                         }
                     },
-                    placeholder: 'Nhập tên chuyến đi',
+                    placeholder: 'Tuyến đường',
                     allowClear:true
                 });
 
@@ -225,7 +230,7 @@
                             };
                         }
                     },
-                    placeholder: 'Nhập tên tài xế',
+                    placeholder: 'Tài xế',
                     allowClear:true
                 });
                 
@@ -252,7 +257,7 @@
                             };
                         }
                     },
-                    placeholder: 'Chọn bảng số xe',
+                    placeholder: 'Bảng số xe',
                     allowClear:true,
                 });
                 
@@ -261,29 +266,54 @@
                         dom: 'ltrp',
                         select: true,
                         lengthMenu:[5,10,20,25,50,100],
+                        pageLength: 10,
                         processing: true,
                         serverSide: true,
                         ajax: '{!! route('admin.buses.api') !!}',
                         columns: [
                             { data: 'id', name: 'id' },
+                            {   
+                                data: 'edit',
+                                orderable: false,
+                                searchable: false,
+                                render: function (data, type, row, meta) {
+                                    return `<a class="btn btn-sm bg-success-light mr-2" href="${data}"><i class="far fa-edit mr-1"></i>Edit</a>`;
+                                }
+                            },
+                            // { 
+                            //     data: 'images',
+                            //     orderable: false,
+                            //     searchable: false,
+                            //     render: function (data, type, row, meta) {
+                            //         return `<img class="rounded service-img mr-1" src="${data}" width="50" height="50">`;
+                            //     }
+                            // }
                             { 
-                                data: 'route_name',
+                                data: 'route_name', 
                                 render: function (data, type, row) {
-                                    return `<a href="#">${data}</a>`
+                                    return `<a href="#">${data}</a>` 
+                                }
+                            },
+                            { data: 'license_plate', name: 'license_plate' },
+                            { data: 'driver_name', name: 'driver_name' },
+                            { 
+                                data: 'departure_time', 
+                                // convert date to string
+                                render: function(data, type, row) {
+                                    return moment(data).format('DD/MM/YYYY');
                                 }
                             },
                             { 
-                                data: 'date',
-                                name:'date',
-                                // convert date to string
-                                // render: function(data, type, row) {
-                                //     return moment(data).format('DD/MM/YYYY');
-                                // }
-                            },{ 
                                 data: 'departure_time', 
                                 // convert time to string
                                 render: function(data, type, row) {
                                     return moment(data).format('hh:mm A');
+                                }
+                            },
+                            { 
+                                data: 'price',
+                                render: function(data,type,row){
+                                    return `${data} <sup>đ</sup>`;
                                 }
                             },
                             { 
@@ -298,22 +328,6 @@
                                     return data + 'km';
                                 }
                             },
-                            { 
-                                data: 'price',
-                                render: function(data,type,row){
-                                    return `${data} <sup>đ</sup>`;
-                                }
-                            },
-                            { data: 'license_plate', name: 'license_plate' },
-                            { data: 'driver_name', name: 'driver_name' },
-                            {   
-                                data: 'edit',
-                                orderable: false,
-                                searchable: false,
-                                render: function (data, type, row, meta) {
-                                    return `<a class="btn btn-success" href="${data}" style="color:white!important;">Edit</a>`;
-                                }
-                            },
                             {                             
                                 data: 'delete',
                                 orderable: false,
@@ -322,7 +336,7 @@
                                     return `<form action="${data}" method="post">
                                         @csrf
                                         @method('DELETE')
-                                    <button type='button' class="btn btn-danger" id="btn-delete" >Delete</button>
+                                    <button type='button' class="btn btn-sm bg-danger-light mr-2 delete_review_comment" id="btn-delete" ><i class="far fa-trash-alt mr-1"></i>Delete</button>
                                     </form>`;
                                 }
                             },
@@ -330,19 +344,21 @@
                 });
                 // filter
                 $('#route').change(function() {
-                    table.column(1).search(this.value).draw();
+                    table.column(2).search(this.value).draw();
                 });
                 $('#license-plate').change(function() {
-                    table.column(7).search(this.value).draw();
+                    table.column(3).search(this.value).draw();
                 });
                 $('#driver').change(function() {
-                    table.column(8).search(this.value).draw();
+                    table.column(4).search(this.value).draw();
                 });
                 $('#min, #max').change(function() {
+                    minDate = $('#min').val();
+                    maxDate = $('#max').val();
                     table.draw();
                 });
                 $('#time').change(function() {
-                    table.column(3).search(this.value).draw();
+                    table.column(6).search(this.value).draw();
                 });
 
                  // Delete element on table by ajax

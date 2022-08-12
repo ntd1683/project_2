@@ -21,22 +21,12 @@
                     <h4 class="card-title">Thêm Chuyến Xe</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{route('admin.buses.store')}}" id="form-create-post" method="post">
+                    <form action="{{route('admin.buses.store')}}" id="form" method="post">
                         @csrf
                         <div class="form-group row">
-                            <div class="col-md-4 mb-3">
-                                <label class="col-form-label">Tuyến đường</label>
-                                <select class="form-control" name="route" id="route" value="{{old('route')}}">
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="col-form-label">Điểm đi</label>
-                                <select class="form-control" name="from" id="from">
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="col-form-label">Điểm đến</label>
-                                <select class="form-control" name="to" id="to">
+                            <label class="col-form-label col-md-2">Tuyến đường</label>
+                            <div class="col-md-10">
+                                <select class="form-control" name="route" id="route">
                                 </select>
                             </div>
                         </div>
@@ -50,8 +40,7 @@
                         <div class="form-group row">
                             <label class="col-form-label col-md-2">Tài xế</label>
                             <div class="col-md-10">
-                                <select class="form-control" name="driver" id="driver">
-                                </select>
+                                <input class="form-control" name="driver" id="driver" disabled>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -73,7 +62,7 @@
                             </div>
                         </div>
                         <div class="mt-4 text-center">
-                            <button class="btn btn-primary" type="submit" onclick="alert('Vui lòng chờ 5s !!! Cảm ơn')">Thêm Chuyến Xe</button>
+                            <button class="btn btn-primary" type="submit">Thêm Chuyến Xe</button>
                             <a href="{{route('admin.buses.index')}}" class="btn btn-link">Quay Lại</a>
                         </div>
                     </form>
@@ -82,6 +71,7 @@
         </div>
     </div>
     @push('js')
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
         <script>
             $(document).ready(function() {
                 $('#route').select2({
@@ -110,323 +100,8 @@
                     allowClear:true
                 });
 
-                $('#driver').select2({
-                    ajax: {
-                        url: "{{route('admin.users.api.name_drivers')}}",
-                        dataType: 'json',
-                        data: function (params) {
-                            return {
-                                q: params.term, // search term
-                            };
-                        },
-                        processResults: function (data, params) {
-                            params.page = params.page || 1;
-
-                            return {
-                                results: $.map(data, function (item) {
-                                    return {
-                                        text: item.name,
-                                        id: item.id,
-                                    }
-                                })
-                            };
-                        }
-                    },
-                    placeholder: 'Nhập tên tài xế',
-                    allowClear:true
-                });
-                
-                $('#license-plate').select2({
-                    ajax: {
-                        url: "{{route('admin.carriages.api.nameCarriages')}}",
-                        dataType: 'json',
-                        delay: 250,
-                        data: function (params) {
-                            return {
-                                q: params.term, // search term
-                            };
-                        },
-                        processResults: function (data, params) {
-                            params.page = params.page || 1;
-
-                            return {
-                                results: $.map(data, function (item) {
-                                    return {
-                                        text: item.license_plate,
-                                        id: item.id,
-                                    }
-                                })
-                            };
-                        }
-                    },
-                    placeholder: 'Chọn bảng số xe',
-                    allowClear:true,
-                });
-
-                $('#from').select2({
-                    ajax: {
-                        url: "{{route('admin.cities.api.city')}}",
-                        dataType: 'json',
-                        delay: 250,
-                        data: function (params) {
-                            return {
-                                q: params.term, // search term
-                            };
-                        },
-                        processResults: function (data, params) {
-                            params.page = params.page || 1;
-
-                            return {
-                                results: $.map(data, function (item) {
-                                    return {
-                                        text: item.name,
-                                        id: item.id,
-                                    }
-                                })
-                            };
-                        }
-                    },
-                    placeholder: 'Điểm đi',
-                    allowClear:true,
-                });
-
-                $('#to').select2({
-                    ajax: {
-                        url: "{{route('admin.cities.api.city')}}",
-                        dataType: 'json',
-                        delay: 250,
-                        data: function (params) {
-                            return {
-                                q: params.term, // search term
-                            };
-                        },
-                        processResults: function (data, params) {
-                            params.page = params.page || 1;
-
-                            return {
-                                results: $.map(data, function (item) {
-                                    return {
-                                        text: item.name,
-                                        id: item.id,
-                                    }
-                                })
-                            };
-                        }
-                    },
-                    placeholder: 'Điểm đến',
-                    allowClear:true,
-                });
-
-                // parent change and child change
                 $('#route').change(function() {
                     let route_id = $(this).val();
-                    $.ajax({
-                        url: "{{route('admin.routes.api.apiGetCityByRoute')}}",
-                        type: 'GET',
-                        data: {
-                            route_id: route_id,
-                        },
-                        success: function(data) {
-                            // 'from' select2 change
-                            $('#from').select2({
-                                ajax: {
-                                    url: "{{route('admin.cities.api.city')}}",
-                                    dataType: 'json',
-                                    delay: 250,
-                                    data: function (params) {
-                                        return {
-                                            q: params.term, // search term
-                                            city_id: (data[0] != null) ? data[0].city_start_id : null,
-                                        };
-                                    },
-                                    processResults: function (data, params) {
-                                        params.page = params.page || 1;
-
-                                        return {
-                                            results: $.map(data, function (item) {
-                                                return {
-                                                    text: item.name,
-                                                    id: item.id,
-                                                }
-                                            })
-                                        };
-                                    }
-                                },
-                                placeholder: 'Điểm đi',
-                                allowClear:true,
-                            });
-
-                            // 'to' select2 change data
-                            $('#to').select2({
-                                ajax: {
-                                    url: "{{route('admin.cities.api.city')}}",
-                                    dataType: 'json',
-                                    delay: 250,
-                                    data: function (params) {
-                                        return {
-                                            q: params.term, // search term
-                                            city_id: (data[0] != null) ? data[0].city_end_id : null,
-                                        };
-                                    },
-                                    processResults: function (data, params) {
-                                        params.page = params.page || 1;
-
-                                        return {
-                                            results: $.map(data, function (item) {
-                                                return {
-                                                    text: item.name,
-                                                    id: item.id,
-                                                }
-                                            })
-                                        };
-                                    }
-                                },
-                                placeholder: 'Điểm đến',
-                                allowClear:true,
-                            });
-
-                            // 'carriage' select2 change url data
-                            $('#license-plate').select2({
-                                ajax: {
-                                    url: "{{route('admin.carriages.api.nameCarriages')}}",
-                                    dataType: 'json',
-                                    delay: 250,
-                                    data: function (params) {
-                                        return {
-                                            q: params.term, // search term
-                                            route_id: route_id,
-                                        };
-                                    },
-                                    processResults: function (data, params) {
-                                        params.page = params.page || 1;
-
-                                        return {
-                                            results: $.map(data, function (item) {
-                                                return {
-                                                    text: item.license_plate,
-                                                    id: item.id,
-                                                }
-                                            })
-                                        };
-                                    }
-                                },
-                                placeholder: 'Chọn bảng số xe',
-                                allowClear:true,
-                            });
-
-                            // 'driver' select2 change url data
-                            $('#driver').select2({
-                                ajax: {
-                                    url: "{{route('admin.users.api.name_drivers')}}",
-                                    dataType: 'json',
-                                    delay: 250,
-                                    data: function (params) {
-                                        return {
-                                            q: params.term, // search term
-                                            route_id: route_id,
-                                        };
-                                    },
-                                    processResults: function (data, params) {
-                                        params.page = params.page || 1;
-
-                                        return {
-                                            results: $.map(data, function (item) {
-                                                return {
-                                                    text: item.name,
-                                                    id: item.id,
-                                                }
-                                            })
-                                        };
-                                    }
-                                },
-                                placeholder: 'Nhập tên tài xế',
-                                allowClear:true,
-                            });
-
-                        }
-                    });
-                });
-
-                $('#from, #to').change(function(){
-                    let from = $('#from').val();
-                    let to = $('#to').val();
-                    $.ajax({
-                        url: "{{route('admin.routes.api.apiGetRouteByCity')}}",
-                        type: 'GET',
-                        data: {
-                            city_start_id: from,
-                            city_end_id: to,
-                        },
-                        success: function(data) {
-                            // 'route' select2 change url data
-                            $('#route').select2({
-                                ajax: {
-                                    url: "{{route('admin.routes.api.name_routes')}}",
-                                    dataType: 'json',
-                                    delay: 250,
-                                    data: function (params) {
-                                        return {
-                                            q: params.term, // search term
-                                            id: (data[0] != null) ? data[0].id : null,
-                                        };
-                                    },
-                                    processResults: function (data, params) {
-                                        params.page = params.page || 1;
-
-                                        return {
-                                            results: $.map(data, function (item) {
-                                                return {
-                                                    text: item.name,
-                                                    id: item.id,
-                                                }
-                                            })
-                                        };
-                                    }
-                                },
-                                placeholder: 'Chọn tuyến đường',
-                                allowClear:true,
-                            });
-                        }
-                    });
-                });
-
-                $('#license-plate').change(function() {
-                    let car_id = $(this).val();
-                    let route_id = $('#route').val();
-
-                    $('#driver').select2({
-                        ajax: {
-                            url: "{{route('admin.users.api.name_drivers')}}",
-                            dataType: 'json',
-                            delay: 250,
-                            data: function (params) {
-                                return {
-                                    q: params.term, // search term
-                                    route_id: route_id,
-                                    car_id: car_id,
-                                };
-                            },
-                            processResults: function (data, params) {
-                                params.page = params.page || 1;
-
-                                return {
-                                    results: $.map(data, function (item) {
-                                        return {
-                                            text: item.name,
-                                            id: item.id,
-                                        }
-                                    })
-                                };
-                            }
-                        },
-                        placeholder: 'Nhập tên tài xế',
-                        allowClear:true,
-                    });
-                });
-
-                $('#driver').change(function() {
-                    let driver_id = $(this).val();
-                    let route_id = $('#route').val();
                     $('#license-plate').select2({
                         ajax: {
                             url: "{{route('admin.carriages.api.nameCarriages')}}",
@@ -436,7 +111,6 @@
                                 return {
                                     q: params.term, // search term
                                     route_id: route_id,
-                                    driver_id: driver_id,
                                 };
                             },
                             processResults: function (data, params) {
@@ -457,19 +131,85 @@
                     });
                 });
 
-                $('#time').change(function(){
+                $('#license-plate').change(function() {
+                    var car_id = $(this).val();
+                    var route_id = $('#route').val();
+                    $.ajax({
+                        url: "{{route('admin.users.apiGetDriverByCar')}}",
+                        type: "GET",
+                        delay: 250,
+                        data: {
+                            car_id: car_id,
+                            route_id: route_id,
+                        },
+                        success: function(response) {
+                            $('#driver').val(response.name);
+                        },
+                    });
                     $.ajax({
                         url: "{{route('admin.buses.api.apiGetPrice')}}",
                         type: 'GET',
+                        delay: 250,
                         data: {
-                            route_id: $('#route').val(),
-                            driver_id: $('#driver').val(),
-                            car_id: $('#license-plate').val(),
+                            car_id: car_id,
+                            route_id: route_id,
                         },
-                        success: function(data) {
-                            $('#price').val(data.price);
-                        }
-                    })
+                        success: function(response) {
+                            $('#price').val(response.price);
+                        },
+                    });
+                });
+                //validation
+                $("#form").validate({
+                    rules: {
+                        route: {
+                            required: true,
+                        },
+                        car: {
+                            required: true,
+                        },
+                        date: {
+                            required: true,
+                        },
+                        time: {
+                            required: true,
+                        },
+                        price: {
+                            required: true,
+                        },
+                    },
+                    messages:{
+                        route: {
+                            required: 'Vui lòng chọn tuyến đường',
+                        },
+                        car: {
+                            required: 'Vui lòng chọn xe',
+                        },
+                        date: {
+                            required: 'Vui lòng chọn ngày khởi hành',
+                        },
+                        time: {
+                            required: 'Vui lòng chọn giờ đi',
+                        },
+                        price: {
+                            required: 'Vui lòng nhập giá',
+                        },
+                    },
+                    submitHandler: function(form) {
+                        $.ajax({
+                            url: form.action,
+                            type: form.method,
+                            data: $(form).serialize(),
+                            success: function(response) {
+                                notify(response);
+                                if(response.success){
+                                    setTimeout(function(){
+                                        window.location.href = "{{route('admin.buses.index')}}";
+                                    }, 3000);
+                                };
+                            },
+                        });
+                    }
                 });
             });
         </script>

@@ -18,10 +18,10 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Sửa thông tin Xe</h4>
+                    <h4 class="card-title">Thông tin xe</h4>
                 </div>
                     <div class="card-body">
-                        <form action="{{route('admin.carriages.update',$carriage)}}" id="form-create-post" method="post">
+                        <form action="{{route('admin.carriages.update',$carriage)}}" id="form" method="post">
                             @csrf
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2">Biển số xe</label>
@@ -65,7 +65,24 @@
                                     <input type="number" class="form-control" name="default_number_seat" value="{{$carriage->default_number_seat}}">
                                 </div>
                             </div>
-
+                            <div class="mt-4 text-center">
+                                <button class="btn btn-primary" type="submit">Sửa Thông Tin</button>
+                                <a href="{{route('admin.carriages.index')}}" class="btn btn-link">Quay Lại</a>
+                            </div>
+                        </form>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Tuyến đường liên kết</h4>
+                </div>
+                    <div class="card-body">
+                        <form action="{{route('admin.carriages.updateRouteCar',$carriage)}}" id="form-route" method="post">
+                            @csrf
                             <div class="form-group row">
                                 <div class="col-md-2">
                                     <label class="col-form-label">Tuyến đường</label>
@@ -81,7 +98,6 @@
                                     </select>
                                 </div>
                             </div>
-
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2" for="select-seat-type">Tài xế</label>
                                 <div class="col-md-10">
@@ -107,6 +123,30 @@
     @push('js')
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
         <script>
+            function submitForm(form){
+                $.ajax({
+                    url: form.action,
+                    type: form.method,
+                    data: $(form).serialize(),
+                    success: function(response) {
+                        notify(response);
+                    },
+                    error: function(response) {
+                        // get key and value in response object
+                        var errors = response.responseJSON.errors;
+                        $.each(errors, function (key, value) {
+                            $.toast({
+                                heading: 'Lỗi',
+                                text: value,
+                                icon: 'error',
+                                position: 'top-right',
+                                showHideTransition: 'slide',
+                            });
+                        });
+                    }
+                });
+            }
+
             $(document).ready(async function() {
                 //validation
                 jQuery.validator.addMethod('valid_license_plate', function (value) {
@@ -116,7 +156,7 @@
 
                 $('#price').val({{$RDC->price}});
                 
-                $("#form-create-post").validate({
+                $("#form").validate({
                     rules: {
                         license_plate: {
                             required: true,
@@ -151,7 +191,31 @@
                             number: "Vui lòng nhập số",
                             min: "Số lượng ghế phải lớn hơn 10",
                             max: "Số lượng ghế phải nhỏ hơn 100",
-                        },                        
+                        },    
+                    },
+                    submitHandler: function (form) {
+                        submitForm(form);
+                    }
+                });
+
+                $("#form-route").validate({
+                    rules: {
+                        from: {
+                            required: true,
+                        },
+                        to: {
+                            required: true,
+                        },
+                        driver: {
+                            required: true,
+                        },
+                        price: {
+                            required: true,
+                            number: true,
+                            min: 0,
+                        },
+                    },
+                    messages: {                       
                         from: {
                             required: "Vui lòng chọn địa điểm đi",
                         },
@@ -168,7 +232,7 @@
                         },
                     },
                     submitHandler: function (form) {
-                        form.submit();
+                        submitForm(form);
                     }
                 });
 

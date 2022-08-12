@@ -30,11 +30,7 @@ class CityController extends Controller
 
     public function apiCity(Request $request)
     {
-        $city_id = $request->get('city_id');
-        if ($city_id == null) {
-            return $this->model->where('name', 'like', '%' . $request->get('q') . '%')->get();
-        }
-        return $this->model->where('name', 'like', '%' . $request->get('q') . '%')->where('id', $request->get('city_id'))->get();
+        return $this->model->where('name', 'like', '%' . $request->get('q') . '%')->get();
     }
 
     public function store(Request $request): JsonResponse

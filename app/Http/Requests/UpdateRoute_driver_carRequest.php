@@ -13,7 +13,7 @@ class UpdateRoute_driver_carRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**

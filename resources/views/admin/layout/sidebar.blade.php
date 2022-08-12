@@ -20,7 +20,7 @@
                 <li @if($route === 'routes')
                     class="active"
                     @endif>
-                    <a href="{{route('admin.routes.index')}}"><i class="fas fa-shuttle-van"></i> <span> Quản Lý Tuyến Đi</span></a>
+                    <a href="{{route('admin.routes.index')}}"><i class="fas fa-road"></i> <span> Quản Lý Tuyến Đường</span></a>
                 <li @if($route === 'carriages')
                     class="active"
                     @endif>
@@ -29,7 +29,7 @@
                 <li @if($route === 'buses')
                     class="active"
                     @endif>
-                    <a href="{{route('admin.buses.index')}}"><i class="fas fa-shuttle-van"></i> <span> Quản Lý Chuyến Xe</span></a>
+                    <a href="{{route('admin.buses.calendar')}}"><i class="fas fa-shuttle-van"></i> <span> Quản Lý Chuyến Xe</span></a>
                 </li>
             </ul>
         </div>

@@ -26,9 +26,6 @@ class UpdateBusesRequest extends FormRequest
         return [
             'route' => 'required',
             'car' => 'required',
-            'driver' => 'required',
-            'from' => 'required',
-            'to' => 'required',
             'date' => 'required',
             'time' => 'required',
             'price' => 'required',
