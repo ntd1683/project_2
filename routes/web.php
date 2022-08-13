@@ -22,7 +22,10 @@ Route::get('/', [HomePageController::class, 'index'])->name('index');
 Route::get('/mua-ve/', [HomePageController::class, 'book_ticket'])->name('applicant.book_ticket');
 Route::post('/order/', [HomePageController::class, 'order'])->name('applicant.order');
 Route::post('/thanh-toan/', [HomePageController::class, 'payment'])->name('applicant.payment');
+Route::get('/lich-trinh/', [HomePageController::class, 'schedule'])->name('applicant.schedule');
+
+//api
+Route::get('/api-schedule', [HomePageController::class, 'api_schedule'])->name('api.schedule');
 
 //test
-Route::get('/test/', [TestController::class, 'test1'])->name('test');
-Route::get('/test1/', [TestController::class, 'test2'])->name('test');
+Route::get('/test/', [TestController::class, 'test'])->name('test');
