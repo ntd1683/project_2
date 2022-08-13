@@ -128,9 +128,10 @@
         $(document).ready(function(){
             $("#car").change(function() {
                 var car = $(this).val();
-                var $domain = CalendarApp.$domain;
+                var domain = $.CalendarApp.$domain;
+                console.log(domain)
                 $.ajax({
-                    url: $domain +"admin/users/apiGetDriverByCar",
+                    url: domain +"admin/users/apiGetDriverByCar",
                     type: "GET",
                     dataType: "json",
                     data: {
@@ -142,7 +143,7 @@
                     }
                 });
                 $.ajax({
-                    url:  $domain +"admin/buses/apiGetPrice",
+                    url:  domain +"admin/buses/apiGetPrice",
                     type: 'GET',
                     data: {
                         route_id: $this.$route.val(),
@@ -250,9 +251,9 @@
         $(document).ready(function(){
             $("#car").change(function() {
                 var car = $(this).val();
-                $domain = CalendarApp.$domain;
+                var domain = $.CalendarApp.$domain;
                 $.ajax({
-                    url:  $domain +"admin/users/apiGetDriverByCar",
+                    url:  domain +"admin/users/apiGetDriverByCar",
                     type: "GET",
                     dataType: "json",
                     data: {
