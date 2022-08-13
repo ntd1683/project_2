@@ -24,65 +24,48 @@ class TestController extends Controller
 
     public function __construct()
     {
-        $this->model = (new Bill_detail())->query();
-        $this->table = (New Bill_detail())->getTable();
+        $this->model = (new Route())->query();
+        $this->table = (new Route())->getTable();
     }
 
     public function test()
     {
-
-    }
-
-    public function apiRevenueTest(Request $request)
-    {
-        $arr = [];
-        $data = $request->data;
-        if($data == 1){
-            $price = Bill::query()
-                ->selectRaw("DATE_FORMAT(created_at,'%d-%m-%Y') as date")
-                ->selectRaw("SUM(price) as revenue")
-                ->groupBy('date')
-                ->orderBy('date', 'desc')
-                ->where('created_at', '>', now()->subDays(30)->endOfDay())
-                ->get()->toArray();
-            foreach ($price as $each){
-                $arr[$each['date']] = (float)$each['revenue'];
-            }
-        }
-        else if($data == 2){
-            $price = Bill::query()
-                ->selectRaw("DATE_FORMAT(created_at,'%m-%Y') as date")
-                ->selectRaw("SUM(price) as revenue")
-                ->groupBy('date')
-                ->orderBy('date', 'desc')
-                ->where('created_at', '>', now()->subMonths(12)->endOfMonth())
-                ->get()->toArray();
-            foreach ($price as $each){
-                $arr[$each['date']] = (float)$each['revenue'];
-            }
-        }
-        return $arr;
-    }
-
-    public function apiTest()
-    {
-        return DataTables::of($this->model)
-            ->addColumn('edit', function ($model) {
-                // return route('admin.carriage.edit', $model->id);
-            })
-            ->addColumn('delete', function ($model) {
-                // return route('admin.carriage.destroy', $model->id);
-            })
-            ->rawColumns(['edit', 'delete'])
-            ->make(true);
-    }
-
-    public function test1()
-    {
-        return 'B'.strtoupper(Str::random(8));
-    }
-    public function test2()
-    {
-        return view('test1');
+//        $test = Bill_detail::query()
+//            ->selectRaw("routes.name,COUNT('id') as count")
+//            ->leftJoin('buses', 'bill_details.buses_id', '=', 'buses.id')
+//            ->leftJoin('route_driver_cars', 'buses.route_driver_car_id', '=', 'route_driver_cars.id')
+//            ->leftJoin('routes', 'route_driver_cars.route_id', '=', 'routes.id')
+//            ->groupBy('routes.name')
+//            ->orderBy('count','desc')
+//            ->get();
+//        dd($test);
+//        $mytime = date('d/m/y');
+//        dd($mytime);
+        $route_model = $this->model->with('city_start')->with('city_end')
+            ->get()
+            ->map(function($each){
+                $arr_route_driver_car = Route_driver_car::query()->with('car_name')
+                    ->select('car_id','route_id')
+                    ->where('route_id',$each->id)
+                    ->get()
+                    ->map(function ($each1){
+                        $each1->category_car = CarriageCategoryEnum::getKeyByValue(($each1->car_name->pluck('category'))[0]);
+                        $each1->seat_type_car = SeatTypeEnum::getKeyByValue(($each1->car_name->pluck('seat_type'))[0]);
+                        unset($each1->driver_name,$each1->car_name);
+                        return $each1;
+                    })->toArray();
+                $arr_category_car = [];
+                $arr_seat_type_car = [];
+                foreach ($arr_route_driver_car as $key => $value){
+                    $arr_category_car[$key]= $value['category_car'];
+                    $arr_seat_type_car[$key]= $value['seat_type_car'];
+                }
+                $arr_category_car = array_unique($arr_category_car);
+                $each->category_car = implode(', ', $arr_category_car);
+                $arr_seat_type_car = array_unique($arr_seat_type_car);
+                $each->seat_type_car = implode(', ', $arr_seat_type_car);
+                return $each;
+            });
+        dd($route_model);
     }
 }
