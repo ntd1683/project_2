@@ -11,7 +11,8 @@
         this.$saveCategoryBtn = $('.save-category'),
         this.$calendarObj = null,
         this.$route = $('#route'),
-        this.$domain = "http://project_2.test/"
+        this.$domain = "http://project_2.test:8080/"
+        // this.$domain = window.location.hostname
     };
 
     /* validate event form on keyup and submit */
@@ -83,7 +84,7 @@
             .append("<div class='form-group row'><label class='col-form-label col-md-2'>Ngày</label><div class='col-md-10'><input class='form-control' name='date' type=date value='" + day + "'/></div></div>")
             .append("<div class='form-group row'><label class='col-form-label col-md-2'>Giờ</label><div class='col-md-10'><input class='form-control' name='time' type=time value='" + time + "'/></div></div>")
             .append("<div class='form-group row'><label class='col-form-label col-md-2'>Giá</label><div class='col-md-10'><input class='form-control' name='price' type=text /></div></div>");
-        
+
                 // load carriages by route
         $.ajax({
             url: this.$domain+"admin/carriages/apiNameCarriages",
@@ -154,7 +155,7 @@
                     }
                 });
             });
-            
+
         });
         $this.$modal.modal('show');
 
@@ -189,14 +190,14 @@
                             end: moment(departure_time).add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
                             title: license_plate,
                             className: 'bg-info',
-                        }, true);  
+                        }, true);
                         $this.$modal.modal('hide');
                     }
                     $this.notification(response);
                 },
                 error: function (response) {
                     $this.notification(response);
-                } 
+                }
             });
             return false;
         });
@@ -207,7 +208,7 @@
         });
     };
     /* on drop */
-    CalendarApp.prototype.onDrop = function (eventObj, date) { 
+    CalendarApp.prototype.onDrop = function (eventObj, date) {
         var day = moment(date).format('YYYY-MM-DD');
         var time = moment(date).format('HH:mm');
         var car_id = eventObj.attr('value');
@@ -229,7 +230,7 @@
             .append("<div class='form-group row'><label class='col-form-label col-md-2'>Ngày</label><div class='col-md-10'><input class='form-control' name='date' type=date value='" + day + "' /></div></div>")
             .append("<div class='form-group row'><label class='col-form-label col-md-2'>Giờ</label><div class='col-md-10'><input class='form-control' name='time' type=time value='" + time + "' /></div></div>")
             .append("<div class='form-group row'><label class='col-form-label col-md-2'>Giá</label><div class='col-md-10'><input class='form-control' name='price' type=text value='" + price + "' /></div></div>");
-        
+
         // load carriages by route
         $.ajax({
             url: this.$domain+"admin/carriages/apiNameCarriages",
@@ -321,7 +322,7 @@
                 },
                 error: function (response) {
                     $this.notification(response);
-                } 
+                }
             });
             return false;
         });
@@ -365,8 +366,8 @@
             slotDuration: '00:30:00', /* If we want to split day time each 15minutes */
             minTime: '00:00:00',
             maxTime: '24:00:00',
-            defaultView: 'month',  
-            handleWindowResize: true,   
+            defaultView: 'month',
+            handleWindowResize: true,
             header: {
                 left: 'prev,next today',
                 center: 'title',
@@ -380,12 +381,12 @@
             weekNumbers: true,
             navLinks: true,
             drop: function(date) { $this.onDrop($(this), date); },
-            select: function (start, end, allDay) { 
-                $this.onSelect(start, end, allDay); 
+            select: function (start, end, allDay) {
+                $this.onSelect(start, end, allDay);
             },
             eventClick: function(calEvent, jsEvent, view) {
                 $this.onEventClick(calEvent, jsEvent, view);
-            }, 
+            },
         });
 
         //on new event
@@ -402,7 +403,7 @@
 
    //init CalendarApp
     $.CalendarApp = new CalendarApp, $.CalendarApp.Constructor = CalendarApp
-    
+
 }(window.jQuery),
 
 //initializing CalendarApp
