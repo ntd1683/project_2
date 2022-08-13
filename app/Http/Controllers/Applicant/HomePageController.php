@@ -391,10 +391,10 @@ class HomePageController extends Controller
                 return $object->name;
             })
             ->editColumn('city_start', function ($object) {
-                return $object->city_start->pluck('name')->toArray();
+                return $object->city_start->pluck('name')->toArray()[0];
             })
             ->editColumn('city_end', function ($object) {
-                return $object->city_end->pluck('name')->toArray();
+                return $object->city_end->pluck('name')->toArray()[0];
             })
             ->editColumn('distance', function ($object) {
                 return $object->distance_name;
