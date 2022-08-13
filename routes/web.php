@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Applicant\HomePageController;
+use App\Http\Controllers\RouteController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,9 @@ Route::get('/lich-trinh/', [HomePageController::class, 'schedule'])->name('appli
 
 //api
 Route::get('/api-schedule', [HomePageController::class, 'api_schedule'])->name('api.schedule');
+Route::get('/apiCityStart', [RouteController::class, 'apiCityStart'])->name('api.routes.city_start');
+Route::get('/apiCityEnd', [RouteController::class, 'apiCityEnd'])->name('api.routes.city_end');
+Route::get('/apiNameRoutes', [RouteController::class, 'apiNameRoutes'])->name('api.routes.name_routes');
 
 //test
 Route::get('/test/', [TestController::class, 'test'])->name('test');

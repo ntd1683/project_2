@@ -6,6 +6,13 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{asset('css/jquery.toast.min.css')}}">
     <link rel="stylesheet" href="https://futabus.vn/_nuxt/css/7c328b7.css">
+    <style>
+        .select2-container--default .select2-selection--single {
+            background-color: #33313B !important;
+            border: 0px !important;
+            margin-left: 18px !important;
+        }
+    </style>
 @endpush
 @section('content')
     <section class="hero-wrap hero-wrap-2 js-fullheight"
@@ -49,7 +56,7 @@
                                         <label for="#">Điểm Đến</label>
                                         <div class="form-field">
                                             <div class="icon"><span class="ion-ios-search"></span></div>
-                                            <select type="text" class="form-control" placeholder="Chọn nơi đến" id="select-city-start-id"></select>
+                                            <select type="text" class="form-control" placeholder="Chọn nơi đến" id="select-city-end-id"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -77,6 +84,8 @@
                     <table class="table table-hover table-center mb-0" id="table-index" style="text-align: center">
                         <thead>
                         <tr>
+                            <th>Điểm Đi</th>
+                            <th>Điểm Về</th>
                             <th>Tuyến Xe</th>
                             <th>Loại Xe</th>
                             <th>Loại Ghế</th>
@@ -146,7 +155,32 @@
         });
         $("#select-city-start-id").select2({
             ajax: {
-                url: "{{route('admin.routes.api.city_start')}}",
+                url: "{{route('api.routes.city_end')}}",
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        q: params.term, // search term
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: item.name,
+                                id: item.name
+                            }
+                        })
+                    };
+                }
+            },
+            placeholder: 'Nhập tên tỉnh đi',
+            allowClear:true
+        });
+        $("#select-city-end-id").select2({
+            ajax: {
+                url: "{{route('api.routes.city_end')}}",
                 dataType: 'json',
                 data: function (params) {
                     return {
@@ -170,32 +204,6 @@
             allowClear:true
         });
 
-        $("#select-city-end-id").select2({
-            ajax: {
-                url: "{{route('admin.routes.api.city_end')}}",
-                dataType: 'json',
-                data: function (params) {
-                    return {
-                        q: params.term, // search term
-                    };
-                },
-                processResults: function (data, params) {
-                    params.page = params.page || 1;
-
-                    return {
-                        results: $.map(data, function (item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
-                }
-            },
-            placeholder: 'Nhập tên tỉnh về',
-            allowClear:true
-        });
-
         let table = $('#table-index').DataTable({
             destroy: true,
             dom: 'ltrp',
@@ -203,8 +211,11 @@
             select: true,
             processing: true,
             serverSide: true,
+            searchable:false,
             ajax: '{!! route('api.schedule') !!}',
             columns: [
+                {data: 'city_start', name: 'city_start'},
+                {data: 'city_end', name: 'city_end'},
                 {data: 'name', name: 'name'},
                 {data: 'category_car', name: 'category_car'},
                 {data: 'seat_type_car', name: 'seat_type_car'},
@@ -212,11 +223,10 @@
                 {data: 'distance', name: 'distance'},
                 {
                     data: 'show',
-                    targets: 5,
+                    targets: 7,
                     orderable: false,
                     searchable: false,
                     render: function (data, type, row, meta) {
-                        console.log(data);
                         return `<a class="btn btn-primary"
                         href="{{route('applicant.book_ticket')}}?step=2&city_start=${data.city_start_id}&city_end=${data.city_end_id}&departure_time=${data.date_today}">
                         ĐẶT VÉ
@@ -229,8 +239,9 @@
         $('#select-city-start-id').change(function () {
             table.columns(0).search(this.value).draw();
         });
+
         $('#select-city-end-id').change(function () {
-            table.columns(0).search(this.value).draw();
+            table.columns(1).search(this.value).draw();
         });
 
     </script>
