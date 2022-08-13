@@ -25,6 +25,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
+use Yajra\DataTables\DataTables;
 
 class HomePageController extends Controller
 {
@@ -198,6 +199,11 @@ class HomePageController extends Controller
                     $arr_bus=$arr_bus->where('seat_type','=',$filter_seat_type);
 //                    dd();
                 }
+                if($arr_bus->isEmpty()){
+                    $request->session()->flash('error', 'Không tim thấy tuyến xe hoặc nhà xe không có chuyến');
+                    $request->step = 1;
+                    return redirect(Request::url());
+                }
 //                dd($arr_bus);
                 $select_locations = Location::query()->where('city_id',$city_start)->get()->toArray();
 //            dd($select_locations);
@@ -351,44 +357,59 @@ class HomePageController extends Controller
             return redirect()->route('index')->with('success', 'Bạn đã đặt vé thành công !!!');
     }
 
-    public function store_info_customer(StoreInfoCustomerRequest $request)
-    {
-//        bill
-//        $arr_bill = $request->only([
-//            "price",
-//            "payment_method",
-//            "birthdate",
-//            "email",
-//            "password",
-//            "level"
-//        ]);
-        dd($request);
-        try{
-            $district = $request->get('district');
-            $province = $request->get('city');
-            $address = $request->get('city');
-            $address1 = $address .','. $district. ',' . $province;
-            $arr = $request->only([
-                "name",
-                "phone",
-                "gender",
-                "birthdate",
-                "email",
-                "password",
-                "level"
-            ]);
-            $arr['address'] = $address1;
-            $arr['password'] = Hash::make('nhaxethuduc');
-//            dd($arr);
-            $this->model->create($arr);
-            $user = (object) $arr;
-            UserCreateEvent::dispatch($user);
-            return redirect()->route('admin.users.show_users')->with('success','Bạn thêm thành công !!!');
-        }
-        catch(Throwable $e){
-//            dd();
-            return redirect()->route('admin.users.create')->with('error','Bạn thêm thất bại rồi, vui lòng thử lại sau !!!');
-        }
+    public function schedule(){
+        return view('applicant.schedule');
+    }
+
+    public function api_schedule(){
+        $route_model = Route::query()->with('city_start')->with('city_end')->get()
+            ->map(function($each){
+                $arr_route_driver_car = Route_driver_car::query()->with('car_name')
+                    ->select('car_id','route_id')
+                    ->where('route_id',$each->id)
+                    ->get()
+                    ->map(function ($each1){
+                        $each1->category_car = CarriageCategoryEnum::getKeyByValue(($each1->car_name->pluck('category'))[0]);
+                        $each1->seat_type_car = SeatTypeEnum::getKeyByValue(($each1->car_name->pluck('seat_type'))[0]);
+                        unset($each1->driver_name,$each1->car_name);
+                        return $each1;
+                    })->toArray();
+                $arr_category_car = [];
+                $arr_seat_type_car = [];
+                foreach ($arr_route_driver_car as $key => $value){
+                    $arr_category_car[$key]= $value['category_car'];
+                    $arr_seat_type_car[$key]= $value['seat_type_car'];
+                }
+                $arr_category_car = array_unique($arr_category_car);
+                $each->category_car = implode(', ', $arr_category_car);
+                $arr_seat_type_car = array_unique($arr_seat_type_car);
+                $each->seat_type_car = implode(', ', $arr_seat_type_car);
+                return $each;
+            });
+        return DataTables::of($route_model)
+            ->editColumn('name', function ($object) {
+                return $object->name;
+            })
+            ->editColumn('city_start', function ($object) {
+                return $object->city_start->pluck('name')->toArray();
+            })
+            ->editColumn('city_end', function ($object) {
+                return $object->city_end->pluck('name')->toArray();
+            })
+            ->editColumn('distance', function ($object) {
+                return $object->distance_name;
+            })
+            ->editColumn('time', function ($object) {
+                return $object->time_name;
+            })
+            ->addColumn('show', function ($object) {
+                $arr = [];
+                $arr['city_start_id'] = $object->city_start->pluck('id')->toArray();
+                $arr['city_end_id'] = $object->city_end->pluck('id')->toArray();
+                $arr['date_today'] = date('d/m/Y');
+                return $arr;
+            })
+            ->make(true);
     }
 
     /**
