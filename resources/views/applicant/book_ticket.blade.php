@@ -1021,7 +1021,8 @@
     @push('js')
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script><script src="{{asset('js/jquery.toast.min.js')}}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
+        <script src="{{asset('js/jquery.toast.min.js')}}"></script>
             <script>
                 let check_payment_method = false;
                 @if($request->step == 4)
