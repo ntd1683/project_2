@@ -124,7 +124,7 @@ class UserController extends Controller
     {
         return $this->model->where('name', 'like', '%' . $request->get('q') . '%')->where('users.level', UserLevelEnum::DRIVER)->get();
     }
-    
+
     public function apiGetDriverByCar(Request $request)
     {
         $car_id = $request->get('car_id');

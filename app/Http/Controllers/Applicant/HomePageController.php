@@ -23,6 +23,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
@@ -134,6 +135,7 @@ class HomePageController extends Controller
         }else if($request->step == 2){
 //        step2
             // Load seat type enum
+//            dd($request->session());
 //            dd($request);
             $filter_price = ($request->filter_price!='') ? $request->filter_price : '';
             $filter_seat_type = ($request->filter_seat_type!='') ? $request->filter_seat_type : '';
@@ -281,6 +283,7 @@ class HomePageController extends Controller
 
     public function payment(StoreInfoCustomerRequest $request)
     {
+//        dd($request);
         $request->bus = json_decode($request->bus,true);
         $location = Location::query()->with('city')
             ->where('locations.id',$request->address_location)
@@ -305,7 +308,10 @@ class HomePageController extends Controller
 
     public function order(OrderRequest $request)
     {
-//        dd($request);
+        if($request->arr_bus['car_id']){
+            dd(arr_bus['car_id']);
+        }
+        dd($request);
             $arr_customer = $request->arr_customer;
             $address = $arr_customer['address'] .', '.$arr_customer['district'] .', '.$arr_customer['city'];
             $arr_customer['address'] = $address;

@@ -596,7 +596,7 @@
         </div>
     @endif
 {{--    step 3 --}}
-    @if($request->step == 3 && empty($arr_bus))
+    @if($request->step == 3)
         <form data-v-46398b4b="" id="form-steps" method="post" action="{{route('applicant.payment')}}">
             <input type="hidden" name="city_start" value="{{$request->city_start}}">
             <input type="hidden" name="city_end" value="{{$request->city_end}}">
@@ -998,6 +998,7 @@
                             <input type="hidden" name="arr_bus[quantity]" value="{{$request->slot}}">
                             <input type="hidden" name="arr_bus[route_name]" value="{{$request->bus['route_name']}}">
                             <input type="hidden" name="arr_bus[departure_time]" value="{{$request->bus['departure_time']}}">
+                            <input type="hidden" name="arr_bus[car_id]" value="{{$request->bus['car_id']}}">
                             <input type="hidden" name="location" value="{{$request->address_location}}">
                             <input type="hidden" name="location_name" value="{{$request->address_location_name}}">
                             <input type="hidden" name="driver[name]" value="{{$request->driver_name}}">
