@@ -1,11 +1,26 @@
 @extends('layout.master')
 @push('css')
     <link rel="stylesheet" href="{{asset('css/jquery.toast.min.css')}}">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://resources/demos/style.css">
+{{--    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>--}}
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="{{asset('js/datepicker-vi.js')}}" type="text/javascript"></script>
     <style>
         .f-w-700{
             font-weight:700 !important;
         }
     </style>
+    <script>
+        var dateToday = new Date();
+        $(function() {
+            $( "#departure-day" ).datepicker({
+                showButtonPanel: true,
+                minDate: dateToday
+            });
+        });
+        $('#departure-day').datepicker($.datepicker.regional["vi"]);
+    </script>
 @endpush
 @section('content')
 <div class="hero-wrap js-fullheight" style="background-image:url({{asset('images/background_thu_duc.jpg')}})"
@@ -70,7 +85,7 @@
                                     <label for="#">Ngày khởi hành</label>
                                     <div class="form-field">
                                         <div class="icon"><span class="ion-ios-calendar"></span></div>
-                                        <input type="text" id="departure-day" name="departure_time" class="form-control checkout_date" placeholder="Chọn ngày khởi hành">
+                                        <input type="text" id="departure-day" name="departure_time" class="form-control" placeholder="Chọn ngày khởi hành">
                                     </div>
                                 </div>
                             </div>

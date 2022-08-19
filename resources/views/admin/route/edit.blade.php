@@ -78,6 +78,17 @@
                                     <img width="200" src="{{asset($images)}}" alt="Ảnh cũ"/>
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        <label for="pin" id="label-pin">
+                                            <input type="checkbox" name="pin" id="pin" @if($route->pin == 1)
+                                            checked
+                                            @endif> Bạn có muốn ghim tuyến này không ?
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="mt-4 text-center">
                                 <button class="btn btn-primary" type="submit" onclick="alert('Vui lòng chờ 5s !!! Cảm ơn')" id="btn-submit">Sửa Tuyến Xe</button>
                                 <a href="{{route('admin.routes.index')}}" class="btn btn-link">Quay Lại</a>

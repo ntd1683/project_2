@@ -279,7 +279,7 @@
                                                                                     <div data-v-60883350="" class="total-info"><p data-v-60883350="" class="footer-title" style="font-weight: bold;">TỔNG
                                                                                             TIỀN</p>
                                                                                         <p data-v-60883350="" class="footer-price">
-                                                                                            {{$info->arr_bus['price'] * $info->arr_bus['quantity']}} <sup data-v-60883350="">₫</sup></p></div>
+                                                                                            {{$info->arr_bus['price']}} <sup data-v-60883350="">₫</sup></p></div>
                                                                                 </div> <!---->
                                                                             </div>
                                                                         </td>

@@ -135,7 +135,6 @@ class RouteController extends Controller
 
     public function store(StoreRouteRequest $request)
     {
-        //        dd($request->name);
         try {
             $city_start = $request->get('city_start_id');
             $city_end = $request->get('city_end_id');
@@ -153,11 +152,16 @@ class RouteController extends Controller
             ]);
             $arr['city_start_id'] = $city_start_id;
             $arr['city_end_id'] = $city_end_id;
+            if($request->get('pin')==='on'){
+                $arr['pin'] = 1;
+            }else{
+                $arr['pin'] = 0;
+            }
             // @todo cài thư viện image nha php artisan storage:link
             if(isset($request->images)){
                 $arr['images'] = optional($request->file('images'))->store('route_images', ['disk' => 'upload']);
             }
-            //            dd($arr);
+//            dd($arr);
             $this->model->create($arr);
 //            Tạo tuyến ngược lại
 
@@ -223,6 +227,7 @@ class RouteController extends Controller
         $city_end = City::where('id',$route->city_end_id)->FirstOrFail();
         $city_end_name = $city_end->name;
         $images = 'upload/' . $route->images;
+//        dd($route);
         return view('admin.route.edit',[
             'route'=> $route,
             'breadcumbs'=>$breadcumbs,
@@ -254,7 +259,11 @@ class RouteController extends Controller
             if(isset($request->images)){
                 $arr['images'] = optional($request->file('images'))->store('route_images', ['disk' => 'upload']);
             }
-//            dd($route);
+            if($request->get('pin')==='on'){
+                $arr['pin'] = 1;
+            }else{
+                $arr['pin'] = 0;
+            }
             $object = $this->model->find($route);
             $object -> fill($arr);
             $object->save();

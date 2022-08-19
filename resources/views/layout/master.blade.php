@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <script src="{{asset('js/jquery-3.6.0.min.js')}}" id="jquery_js"></script>
     <link rel="stylesheet"
           href="{{asset('css/css_index_customer.css')}}" />
     <script nonce="002d6f1d-ad20-47c0-8ae9-769b96dd12f5">
@@ -91,7 +92,7 @@
         <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
                 stroke="#F96D00" />
     </svg></div>
-<script src="{{asset('js/jquery-3.6.0.min.js')}}"></script>
+{{--<script src="https://code.jquery.com/jquery-3.6.0.js"></script>--}}
 <script src="{{asset('js/jquery-migrate-3.0.1.min.js%2bpopper.min.js%2bbootstrap.min.js.pagespeed.jc.g-lWZkHh9S.js')}}"></script>
 
 <script>eval(mod_pagespeed_$690NsqoNN);</script>
@@ -105,10 +106,11 @@
 <script>eval(mod_pagespeed_3XzuUtEuOv);</script>
 <script
     src="{{asset('js/jquery.magnific-popup.min.js%2baos.js%2bjquery.animateNumber.min.js%2bbootstrap-datepicker.js%2bscrollax.min.js%2bgoogle-map.js.pagespeed.jc.AC1cs65-6O.js')}}"></script>
+{{--<script src="{{asset('js/bootstrap-datetimepicker.min.js')}}"></script>--}}
 <script>eval(mod_pagespeed_RI2BEQZGxq);</script>
 <script>eval(mod_pagespeed_jCfU0WKATb);</script>
 <script>eval(mod_pagespeed_qYprJAbAOR);</script>
-<script>eval(mod_pagespeed_cXP3eADYe3);</script>
+{{--<script id="datepicker_select">eval(mod_pagespeed_cXP3eADYe3);</script>--}}
 <script>eval(mod_pagespeed_PXw0x0BHOQ);</script>
 <script>eval(mod_pagespeed_Iwq$2YFlEZ);</script>
 <script src="{{asset('js/main.js')}}"></script>

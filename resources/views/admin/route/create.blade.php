@@ -32,7 +32,7 @@
                     <h4 class="card-title">Thêm Chuyến Đi</h4>
                 </div>
                     <div class="card-body">
-                        <form action="{{route('admin.routes.store')}}" id="form-create-route" method="post" enctype="multipart/form-data">
+                        <form action="{{route('admin.routes.store')}}" id="form-create-route" method="post" enctype="multipart/form-data" onsubmit="return false">
                             @csrf
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2">Điểm Đến</label>
@@ -165,11 +165,8 @@
                 });
             }
 
-            function test(){
-                console.log($("#select-city").val());
-            }
 
-            console.log('check');
+
             function submitForm() {
                 alert('Vui lòng chờ 5s !!!');
                 const obj = $("#form-create-city");
@@ -206,7 +203,6 @@
             }
 {{--            Load city--}}
             $(document).ready(async function () {
-                console.log('3');
                 $("#city_start_id").select2({tags: true});
                 $("#select-city").select2({tags: true});
                 $("#city_end_id").select2({tags: true});
@@ -313,6 +309,7 @@
                     submitHandler:async function (form) {
                         checkCityStart();
                         checkCityEnd();
+                        console.log('check');
                         if (check === true){
                             form.submit();
                         }

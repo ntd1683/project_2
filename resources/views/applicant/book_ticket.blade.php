@@ -1,6 +1,24 @@
 @extends('layout.master')
 @push('css')
         <link rel="stylesheet" href="{{asset('plugins/bootstrap/css/bootstrap.min.css')}}">
+        @if($request->step == 1)
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="https://resources/demos/style.css">
+        {{--    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>--}}
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+        <script src="{{asset('js/datepicker-vi.js')}}" type="text/javascript"></script>
+        <script>
+            var dateToday = new Date();
+            $(function() {
+                $( "#departure-day" ).datepicker({
+                    showButtonPanel: true,
+                    minDate: dateToday
+                });
+                $('#departure-day').datepicker($.datepicker.regional["vi"]);
+                console.log("1");
+            });
+        </script>
+        @endif
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="{{asset('css/jquery.toast.min.css')}}">
         @if($request->step == 3)
@@ -434,7 +452,7 @@
                                         <label for="#">Ngày khởi hành</label>
                                         <div class="form-field">
                                             <div class="icon"><span class="ion-ios-calendar"></span></div>
-                                            <input type="text" id="departure-day" name="departure_time" class="form-control checkout_date" placeholder="Chọn ngày khởi hành"
+                                            <input type="text" id="departure-day" name="departure_time" class="form-control" placeholder="Chọn ngày khởi hành"
                                             @if(isset($request->departure_time))
                                                 value="{{$request->departure_time}}"
                                             @endif
@@ -520,7 +538,7 @@
             <div class="label" data-v-008a65cb="">
 {{--                {{number_shorten($each_bus->price)}} <span class="dot" data-v-008a65cb=""></span>--}}
 {{--                tạm thời --}}
-                {{number_shorten($each_bus->route_price)}} <span class="dot" data-v-008a65cb=""></span>
+                {{number_shorten($each_bus->price)}} <span class="dot" data-v-008a65cb=""></span>
                 {{$each_bus->seat_type_car}} <span class="dot" data-v-008a65cb=""></span> <span data-v-008a65cb="">Còn {{$each_bus->remaining_seats}} chỗ</span>
             </div>
             <div class="route-line-container" data-v-008a65cb="">
@@ -551,7 +569,7 @@
                     <input type="hidden" name="city_start" value="{{$request->city_start}}">
                     <input type="hidden" name="city_end" value="{{$request->city_end}}">
                     <input type="hidden" name="departure_time" value="{{$request->departure_time}}">
-                    <input type="hidden" name="route_price" value="{{$each_bus->route_price}}">
+                    <input type="hidden" name="price" value="{{$each_bus->price}}">
                     <input type="hidden" name="bus" value="{{$each_bus}}">
                     <div class="col-md-10" style="width:100%;">
                         <div class="input-group">
@@ -601,7 +619,7 @@
             <input type="hidden" name="city_start" value="{{$request->city_start}}">
             <input type="hidden" name="city_end" value="{{$request->city_end}}">
             <input type="hidden" name="departure_time" value="{{$request->departure_time}}">
-            <input type="hidden" name="route_price" value="{{$request->route_price}}">
+            <input type="hidden" name="price" value="{{$request->price}}">
             <input type="hidden" name="address_location" value="{{$request->address}}">
             <input type="hidden" name="slot" value="{{$request->slot}}">
             <input type="hidden" name="bus" value="{{$request->bus}}">
@@ -850,7 +868,7 @@
                         <div data-v-60883350="" class="total-info"><p data-v-60883350="" class="footer-title">TỔNG
                                 TIỀN</p>
                             <p data-v-60883350="" class="footer-price">
-                                {{$request->route_price * $request->slot}} <sup data-v-60883350="">₫</sup></p></div>
+                                {{$request->price * $request->slot}} <sup data-v-60883350="">₫</sup></p></div>
                     </div> <!---->
                 </div>
                 <div data-v-636bcda4="">
@@ -1007,7 +1025,7 @@
                             <input type="hidden" name="payment_method" id="payment_method" value="">
 {{--                            dùng tạm--}}
 {{--                            <input type="hidden" name="arr_bus['price']" value="{{$request->bus['price']}}">--}}
-                            <input type="hidden" name="arr_bus[price]" value="{{$request->route_price * $request->slot}}">
+                            <input type="hidden" name="arr_bus[price]" value="{{$request->price * $request->slot}}">
                         <button data-v-3f93c73c="" class="btn btn-success" type="submit" >
                             Tiếp tục
                             <img data-v-3f93c73c="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAASKADAAQAAAABAAAASAAAAACQMUbvAAABnklEQVR4Ae3a4W3CMBCGYdIVUBkDmKGDdIkyUffoEizRUtoZ0u8QkSrrcjE0DTh+LUWQu2AnTy4/cLxY0BBAAAEEEEAAAQQQQAABBBBAAIFZCTRTXE3bto8a5/k81mvTNMcpxi1iDMPR9q6tawd92RRx8lOcpDBeOplfn1+lID1MgeSMsVTsrRQk5/zHCwnBHjF7rLxWTCWNJ+L0JJm1NsPwGkhmJhlDOnpCioEEkvNoeSEqyVNJYiAlIN4uSJ5KEgMpAfF2QfJUkhhICYi3C5KnksQykLbJT+rbBSnjnoMEUoZAxiEDlfSp/Cqjm3kfMoC0+++rv9WM4iXXZS8W+l4utJd0NLtjVT0bbX0TbR/K2duSOtsAjk28reuU0VWDE9x6cMAJBIIUlQNOIBCkqBxwAoEgReWAEwgEKSoHnEAgSFE51+PYv/Wq/3gOLaCqF8eKStXhrVFU+DTPc/c4t5pR/Jbdk5YD74Mns46UKsVbBnz3ldPdnb653i4/yqchqSMWko+iSScIIIAAAggggAACCCCAAAIIIIDAnwR+AARz1rJJfntoAAAAAElFTkSuQmCC" alt="back" width="24" height="24" class="icon">
