@@ -15,6 +15,7 @@ use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Bill;
 use App\Models\Bill_detail;
 use App\Models\Buses;
+use App\Models\Carriage;
 use App\Models\Customer;
 use App\Models\Location;
 use App\Models\Route;
@@ -33,31 +34,35 @@ class HomePageController extends Controller
     public function index()
     {
         $routes = Route::query()->with('city_start')->with('city_end')
-            ->selectRaw("routes.*,sum(route_driver_cars.pin) as pin")
+            ->selectRaw("routes.*,sum(route_driver_cars.price) as price")
             ->leftJoin('route_driver_cars','routes.id','=','route_driver_cars.route_id')
-            ->groupBy("id")
+            ->groupBy("routes.id")
             ->orderBy("pin","desc")
         ->get()
-        ->map(function ($each) {
-            $each->city_start_name = $each->city_start->pluck('name')[0];
-            $each->city_end_name = $each->city_end->pluck('name')[0];
-            $each->img = "upload/" . $each->images;
-            if(isset($each->pin)){
-                $price = Route_driver_car::query()
-                    ->selectRaw("route_id,MIN(price) as price")
-                    ->where('route_id','=',$each->id)
-                    ->groupBy('route_id')
-                    ->pluck('price')
-                    ->toArray();
-                $each->price = number_shorten($price[0]);
-            }else{
-                $each->price = null;
-            }
-            unset($each->city_start);
-            unset($each->city_end);
-            unset($each->images);
-            return $each;
-        });
+            ->map(function ($each) {
+//                dd($each);
+                $each->city_start_name = $each->city_start->pluck('name')[0];
+                $each->city_end_name = $each->city_end->pluck('name')[0];
+                $each->img = "upload/" . $each->images;
+                if(isset($each->pin)){
+                    $price = Route_driver_car::query()
+                        ->selectRaw("route_id,MIN(price) as price")
+                        ->where('route_id','=',$each->id)
+                        ->groupBy('route_id')
+                        ->pluck('price')
+                        ->toArray();
+                    if($price != null){
+                        $each->price = number_shorten($price[0]);
+                    }
+                }else{
+                    $each->price = null;
+                }
+                unset($each->city_start);
+                unset($each->city_end);
+                unset($each->images);
+                return $each;
+            });
+//        dd($routes);
         $i = 0;
         foreach ($routes as $each){
             $arr['city_start'][$each->city_start_id] = $each->city_start_name;
@@ -91,12 +96,13 @@ class HomePageController extends Controller
             $request->step = 1;
             //        step 1
             $routes = Route::query()->with('city_start')->with('city_end')
-                ->selectRaw("routes.*,sum(route_driver_cars.pin) as pin")
+                ->selectRaw("routes.*,sum(route_driver_cars.price) as price")
                 ->leftJoin('route_driver_cars','routes.id','=','route_driver_cars.route_id')
-                ->groupBy("id")
+                ->groupBy("routes.id")
                 ->orderBy("pin","desc")
                 ->get()
                 ->map(function ($each) {
+//                dd($each);
                     $each->city_start_name = $each->city_start->pluck('name')[0];
                     $each->city_end_name = $each->city_end->pluck('name')[0];
                     $each->img = "upload/" . $each->images;
@@ -107,7 +113,9 @@ class HomePageController extends Controller
                             ->groupBy('route_id')
                             ->pluck('price')
                             ->toArray();
-                        $each->price = number_shorten($price[0]);
+                        if($price != null){
+                            $each->price = number_shorten($price[0]);
+                        }
                     }else{
                         $each->price = null;
                     }
@@ -195,7 +203,7 @@ class HomePageController extends Controller
                         return $each;
                     })->where('remaining_seats','!=','0');
                 if($filter_price != ''){
-                    $arr_bus=$arr_bus->orderBy('route_price', $filter_price);
+                    $arr_bus=$arr_bus->orderBy('price', $filter_price);
                 }
                 if($filter_seat_type != ''){
                     $arr_bus=$arr_bus->where('seat_type','=',$filter_seat_type);
@@ -221,12 +229,13 @@ class HomePageController extends Controller
             catch(\Throwable $e){
                 $request->step = 1;
                 $routes = Route::query()->with('city_start')->with('city_end')
-                    ->selectRaw("routes.*,sum(route_driver_cars.pin) as pin")
+                    ->selectRaw("routes.*,sum(route_driver_cars.price) as price")
                     ->leftJoin('route_driver_cars','routes.id','=','route_driver_cars.route_id')
-                    ->groupBy("id")
+                    ->groupBy("routes.id")
                     ->orderBy("pin","desc")
                     ->get()
                     ->map(function ($each) {
+//                dd($each);
                         $each->city_start_name = $each->city_start->pluck('name')[0];
                         $each->city_end_name = $each->city_end->pluck('name')[0];
                         $each->img = "upload/" . $each->images;
@@ -237,7 +246,9 @@ class HomePageController extends Controller
                                 ->groupBy('route_id')
                                 ->pluck('price')
                                 ->toArray();
-                            $each->price = number_shorten($price[0]);
+                            if($price != null){
+                                $each->price = number_shorten($price[0]);
+                            }
                         }else{
                             $each->price = null;
                         }
@@ -308,49 +319,56 @@ class HomePageController extends Controller
 
     public function order(OrderRequest $request)
     {
-        if($request->arr_bus['car_id']){
-            dd(arr_bus['car_id']);
+        $car_id = $request->arr_bus['car_id'];
+        $carriage = Carriage::query()->find($car_id);
+        $default_number_seat = $carriage->default_number_seat;
+        if ($default_number_seat < $request->arr_bus['quantity']) {
+            return redirect()->route('index')->with('error',
+                'Xe không đủ số lượng ghế, số ghế còn lại '
+                .$default_number_seat);
         }
-        dd($request);
-            $arr_customer = $request->arr_customer;
-            $address = $arr_customer['address'] .', '.$arr_customer['district'] .', '.$arr_customer['city'];
-            $arr_customer['address'] = $address;
-            $arr_customer['birthday'] = $arr_customer['birthdate'];
-            unset($arr_customer['district'],$arr_customer['city'],$arr_customer['birthdate']);
-            $customer_id = Customer::firstOrCreate([
-                'phone' => $arr_customer['phone']
-            ], $arr_customer)->id;
-            $object_customer = Customer::query()->find($customer_id);
-            $object_customer -> fill($arr_customer);
-            $object_customer->save();
+        $arr_customer = $request->arr_customer;
+        $address = $arr_customer['address'].', '.$arr_customer['district'].', '
+            .$arr_customer['city'];
+        $arr_customer['address'] = $address;
+        $arr_customer['birthday'] = $arr_customer['birthdate'];
+        unset($arr_customer['district'], $arr_customer['city'], $arr_customer['birthdate']);
+        $customer_id = Customer::firstOrCreate([
+            'phone' => $arr_customer['phone']
+        ], $arr_customer)->id;
+        $object_customer = Customer::query()->find($customer_id);
+        $object_customer->fill($arr_customer);
+        $object_customer->save();
 //        bills
-            $arr_bill['customer_id'] = $customer_id;
-            $arr_bill['code'] = 'B'.strtoupper(Str::random(8));
-            $arr_bill['price'] = $request->arr_bus['price'];
-            $arr_bill['payment_method'] = PaymentMethodEnum::getValue(strtoupper($request->payment_method));
-            $arr_bill['status'] = '0';
-            $object_bill = Bill::query();
-            $bill_id = $object_bill->create($arr_bill)->id;
+        $arr_bill['customer_id'] = $customer_id;
+        $arr_bill['code'] = 'B'.strtoupper(Str::random(8));
+        $arr_bill['price'] = $request->arr_bus['price'];
+        $arr_bill['payment_method']
+            = PaymentMethodEnum::getValue(strtoupper($request->payment_method));
+        $arr_bill['status'] = '0';
+        $object_bill = Bill::query();
+        $bill_id = $object_bill->create($arr_bill)->id;
 //        bill_detail
-            $arr_bill_detail['buses_id'] = $request->arr_bus['id'];
-            $arr_bill_detail['bill_id'] = $bill_id;
-            $arr_bill_detail['quantity'] = $request->arr_bus['quantity'];
-            $arr_bill_detail['price'] = $request->arr_bus['price'];
-            $object_bill_detail = Bill_detail::query();
-            $bill_detail_id = $object_bill_detail->create($arr_bill_detail)->id;
+        $arr_bill_detail['buses_id'] = $request->arr_bus['id'];
+        $arr_bill_detail['bill_id'] = $bill_id;
+        $arr_bill_detail['quantity'] = $request->arr_bus['quantity'];
+        $arr_bill_detail['price'] = $request->arr_bus['price'];
+        $object_bill_detail = Bill_detail::query();
+        $bill_detail_id = $object_bill_detail->create($arr_bill_detail)->id;
 //        dd($bill_detail_id);
 //        tickets
-            $arr_tickets['bill_detail_id'] = $bill_detail_id;
-            $arr_tickets['code'] = 'T'.strtoupper(Str::random(8));
-            $arr_tickets['name_passenger'] = $request->arr_customer['name'];
-            $arr_tickets['phone_passenger'] = $request->arr_customer['phone'];
-            $arr_tickets['email_passenger'] = $request->arr_customer['email'];
-            $arr_tickets['address_passenger_id'] = $request->location;
-            $object_ticket = Ticket::query();
-            $object_ticket->create($arr_tickets);
+        $arr_tickets['bill_detail_id'] = $bill_detail_id;
+        $arr_tickets['code'] = 'T'.strtoupper(Str::random(8));
+        $arr_tickets['name_passenger'] = $request->arr_customer['name'];
+        $arr_tickets['phone_passenger'] = $request->arr_customer['phone'];
+        $arr_tickets['email_passenger'] = $request->arr_customer['email'];
+        $arr_tickets['address_passenger_id'] = $request->location;
+        $object_ticket = Ticket::query();
+        $object_ticket->create($arr_tickets);
 //            dd($request);
-            ApplicantOrderEvent::dispatch($request);
-            return redirect()->route('index')->with('success', 'Bạn đã đặt vé thành công !!!');
+        ApplicantOrderEvent::dispatch($request);
+        return redirect()->route('index')
+            ->with('success', 'Bạn đã đặt vé thành công !!!');
     }
 
     public function schedule(){

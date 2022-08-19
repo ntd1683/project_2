@@ -31,6 +31,6 @@ class TestController extends Controller
     public function test()
     {
 //        dd(session());
-        return redirect()->route('admin.users.create')->with('error','1123');
+        return view('test1');
     }
 }

@@ -17,6 +17,7 @@ class Route extends Model
         "time",
         "distance",
         "images",
+        "pin",
     ];
 
     public $timestamps = false;
