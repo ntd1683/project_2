@@ -70,6 +70,7 @@ class Buses extends Model
             ->where('departure_time', '>', $departure_time->format('y-m-d H:i:s'));
         $route_id_nearest_date = Buses::query()
         ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
+        ->where('route_driver_cars.car_id', $car_id)
         ->where('departure_time', $nearest_smaller_date->first()->departure_time)
         ->Orwhere('departure_time', $nearest_bigger_date->first()->departure_time)
         // Thêm điều kiện 1 ngày không hoạt động
