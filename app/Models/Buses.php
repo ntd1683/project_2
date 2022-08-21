@@ -32,6 +32,7 @@ class Buses extends Model
         return $day;
     }
     
+    // Check if the bus is available in the given time range
     public function check_available_carriage($route_id, $car_id, $departure_time){
         $time = Route::query()->find($route_id)->time;
 
@@ -55,7 +56,8 @@ class Buses extends Model
             return false; 
         }
 
-        // check carriage reverse route // kiểm tra xe đang ở tuyến đường nào
+        // check carriage reverse route // kiểm tra xe đang ở tuyến đường nào 
+        // Nếu xe không hoạt động 1 ngày thì xe đó available
         $nearest_smaller_date = Buses::query()
             ->selectRaw('max(departure_time) as departure_time')
             ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
@@ -70,6 +72,7 @@ class Buses extends Model
         ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
         ->where('departure_time', $nearest_smaller_date->first()->departure_time)
         ->Orwhere('departure_time', $nearest_bigger_date->first()->departure_time)
+        // Thêm điều kiện 1 ngày không hoạt động
         ->get()->pluck('route_id')->toArray();
         if(in_array($route_id, $route_id_nearest_date)){
             return false;
