@@ -61,14 +61,12 @@
                                     <label class="col-form-label">Tuyến đường</label>
                                 </div>
                                 <div class="col-md-5 mb-3">
-                                    <label class="col-form-label">Địa điểm 1</label>
-                                    <select class="form-control" name="from" id="from">
-                                    </select>
+                                    <label class="col-form-label">Tuyến đi</label>
+                                    <select class="select col-md-12" id="route_from" name="route_from"></select>
                                 </div>
                                 <div class="col-md-5 mb-3">
-                                    <label class="col-form-label">Địa điểm 2</label>
-                                    <select class="form-control" name="to" id="to">
-                                    </select>
+                                    <label class="col-form-label">Tuyến về</label>
+                                    <select class="select col-md-12" id="route_to" name="route_to"></select>
                                 </div>
                             </div>
 
@@ -122,10 +120,10 @@
                             min: 10,
                             max: 100,
                         },
-                        from: {
+                        route_from: {
                             required: true,
                         },
-                        to: {
+                        route_to: {
                             required: true,
                         },
                         driver: {
@@ -154,11 +152,11 @@
                             min: "Số lượng ghế phải lớn hơn 10",
                             max: "Số lượng ghế phải nhỏ hơn 100",
                         },
-                        from: {
-                            required: "Vui lòng chọn địa điểm đi",
+                        route_from: {
+                            required: "Vui lòng tuyến đường",
                         },
-                        to: {
-                            required: "Vui lòng chọn địa điểm đến",
+                        route_to: {
+                            required: "Vui lòng tuyến đường",
                         },
                         driver: {
                             required: "Vui lòng chọn tài xế",
@@ -171,8 +169,6 @@
                     },
                     submitHandler: function (form) {
                         //check license plate in softdelete
-
-                        //check 2 route exist from 2 city
 
                         // submit form
                         $.ajax({
@@ -204,12 +200,10 @@
                     }
                 });
 
-                // select2 for "#from" and "#to"
-                $('#from').select2({
+                $('#route_from').select2({
                     ajax: {
-                        url: "{{route('admin.cities.api.city')}}",
+                        url: "{{route('admin.routes.api.name_routes')}}",
                         dataType: 'json',
-                        delay: 250,
                         data: function (params) {
                             return {
                                 q: params.term, // search term
@@ -226,16 +220,15 @@
                                     }
                                 })
                             };
-                        }
+                        },
                     },
-                    placeholder: 'Địa điểm 1',
-                    allowClear:true,
+                    placeholder: 'Chọn tuyến đường',
                 });
-                $('#to').select2({
+
+                $('#route_to').select2({
                     ajax: {
-                        url: "{{route('admin.cities.api.city')}}",
+                        url: "{{route('admin.routes.api.name_routes')}}",
                         dataType: 'json',
-                        delay: 250,
                         data: function (params) {
                             return {
                                 q: params.term, // search term
@@ -252,10 +245,9 @@
                                     }
                                 })
                             };
-                        }
+                        },
                     },
-                    placeholder: 'Điểm đi',
-                    allowClear:true,
+                    placeholder: 'Chọn tuyến đường',
                 });
 
                 $('#driver').select2({
@@ -282,6 +274,53 @@
                     },
                     placeholder: 'Nhập tên tài xế',
                     allowClear:true
+                });
+
+                // route_from change
+                $('#route_from').on('change', function() {
+                    let route_from = $('#route_from').val();
+                    route_id = $('#route_from').val();
+                    $.ajax({
+                        url: '{{ route('admin.routes.apiGetRouteInverse') }}',
+                        type: 'GET',
+                        data: {
+                            route: route_from
+                        },
+                        success: function(res) {
+                            $('#route_to').empty();
+                            $('#route_to').select2({
+                                placeholder: 'Chọn tuyến đường',
+                                tags: true,
+                                data: [{
+                                    id: res.id,
+                                    text: res.name
+                                }]
+                            });
+                        }
+                    });
+                });
+
+                $('#route_to').on('change', function() {
+                    let route_to = $('#route_to').val();
+                    route_id = $('#route_from').val();
+                    $.ajax({
+                        url: '{{ route('admin.routes.apiGetRouteInverse') }}',
+                        type: 'GET',
+                        data: {
+                            route: route_to
+                        },
+                        success: function(res) {
+                            $('#route_from').empty();
+                            $('#route_from').select2({
+                                placeholder: 'Chọn tuyến đường',
+                                tags: true,
+                                data: [{
+                                    id: res.id,
+                                    text: res.name
+                                }]
+                            });
+                        }
+                    });
                 });
             });
         </script>

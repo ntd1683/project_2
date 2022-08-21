@@ -17,6 +17,7 @@
 @section('content')
 
 <form action="{{route('admin.buses.quickStore')}}" id="form" method="post">
+@csrf
 <div class="row">
     <div class="col-md-6">
         <div class="card">
@@ -392,7 +393,6 @@
                                 text: res.name
                             }]
                         });
-                        console.log(res.time);
                         $('#time_move').val(res.time);
                         $('#distance').val(res.distance);
                     }

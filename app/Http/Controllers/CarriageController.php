@@ -115,17 +115,10 @@ class CarriageController extends Controller
             $category = $request->get('category');
             $seat_type = $request->get('seat_type');
             $default_number_seat = $request->get('default_number_seat');
-            $from = $request->get('from');
-            $to = $request->get('to');
+            $route1_id = $request->get('route_from');
+            $route2_id = $request->get('route_to');
             $driver_id = $request->get('driver');
             $price = $request->get('price');
-
-            try {
-                $route1_id = ModelsRoute::query()->where('city_start_id', $from)->where('city_end_id', $to)->first()->id;
-                $route2_id = ModelsRoute::query()->where('city_start_id', $to)->where('city_end_id', $from)->first()->id;
-            } catch (\Exception $e) {
-                return ['success' => false, 'message' => 'Không tìm thấy tuyến đường'];
-            }
 
             $carriage_id=$this->model->create([
                 'license_plate' => $license_plate,
@@ -164,16 +157,14 @@ class CarriageController extends Controller
     {
         $RDC = Route_driver_car::query()->where('car_id', $carriage->id)->FirstOrFail();
         $route = ModelsRoute::query()->where('id', $RDC->route_id)->FirstOrFail();
-        $cityStart = City::query()->where('id', $route['city_start_id'])->FirstOrFail();
-        $cityEnd = City::query()->where('id', $route['city_end_id'])->FirstOrFail();
+        $routeReverse = ModelsRoute::query()->where('city_start_id', $route['city_end_id'])->where('city_end_id', $route['city_start_id'])->FirstOrFail();
         $driver = User::query()->where('id', $RDC['driver_id'])->FirstOrFail();
         $breadcumbs = Breadcrumbs::render('carriage.edit', $carriage);
         return view('admin.carriage.edit', [
             'carriage' => $carriage,
             'RDC' => $RDC,
             'route' => $route,
-            'from' => $cityStart,
-            'to' => $cityEnd,
+            'routeReverse' => $routeReverse,
             'driver' => $driver,
             'breadcumbs' => $breadcumbs,
         ]);
@@ -204,26 +195,22 @@ class CarriageController extends Controller
     {
         try {
             // update route_driver_car
-            $from = $request->get('from');
-            $to = $request->get('to');
-            try {
-                $route1_id = ModelsRoute::query()->where('city_start_id', $from)->where('city_end_id', $to)->first()->id;
-                $route2_id = ModelsRoute::query()->where('city_start_id', $to)->where('city_end_id', $from)->first()->id;
-            } catch (\Exception $e) {
-                return ['success' => false, 'message' => 'Không tìm thấy tuyến đường'];
-            }
+            $route1_id = $request->get('route_from');
+            $route2_id = $request->get('route_to');
             $driver_id = $request->get('driver');
             $price = $request->get('price');
             $carriage_id = $carriage->id;
             $RDC = Route_driver_car::where('car_id', $carriage_id)->get();
-            $RDC[0]->update([
+            $RDC[0]->updateOrCreate([
                 'route_id' => $route1_id,
                 'driver_id' => $driver_id,
+                'car_id' => $carriage_id,
                 'price' => $price,
             ]);
-            $RDC[1]->update([
+            $RDC[1]->updateOrCreate([
                 'route_id' => $route2_id,
                 'driver_id' => $driver_id,
+                'car_id' => $carriage_id,
                 'price' => $price,
             ]);
 
