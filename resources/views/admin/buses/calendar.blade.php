@@ -41,7 +41,7 @@
                     <button type="button" class="btn btn-primary btn-lg submit-btn">
                     Tạo Mới</button>
                 </a>
-                <a href="#">
+                <a href="{{route('admin.buses.quickCreate')}}">
                     <button type="button" class="btn btn-info btn-lg submit-btn" style="color: #ffffff;">
                     Tạo Nhanh</button>
                 </a>

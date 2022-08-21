@@ -30,42 +30,8 @@ class TestController extends Controller
 
     public function test()
     {
-//        $test = Bill_detail::query()
-//            ->selectRaw("routes.name,COUNT('id') as count")
-//            ->leftJoin('buses', 'bill_details.buses_id', '=', 'buses.id')
-//            ->leftJoin('route_driver_cars', 'buses.route_driver_car_id', '=', 'route_driver_cars.id')
-//            ->leftJoin('routes', 'route_driver_cars.route_id', '=', 'routes.id')
-//            ->groupBy('routes.name')
-//            ->orderBy('count','desc')
-//            ->get();
-//        dd($test);
-//        $mytime = date('d/m/y');
-//        dd($mytime);
-        $route_model = $this->model->with('city_start')->with('city_end')
-            ->get()
-            ->map(function($each){
-                $arr_route_driver_car = Route_driver_car::query()->with('car_name')
-                    ->select('car_id','route_id')
-                    ->where('route_id',$each->id)
-                    ->get()
-                    ->map(function ($each1){
-                        $each1->category_car = CarriageCategoryEnum::getKeyByValue(($each1->car_name->pluck('category'))[0]);
-                        $each1->seat_type_car = SeatTypeEnum::getKeyByValue(($each1->car_name->pluck('seat_type'))[0]);
-                        unset($each1->driver_name,$each1->car_name);
-                        return $each1;
-                    })->toArray();
-                $arr_category_car = [];
-                $arr_seat_type_car = [];
-                foreach ($arr_route_driver_car as $key => $value){
-                    $arr_category_car[$key]= $value['category_car'];
-                    $arr_seat_type_car[$key]= $value['seat_type_car'];
-                }
-                $arr_category_car = array_unique($arr_category_car);
-                $each->category_car = implode(', ', $arr_category_car);
-                $arr_seat_type_car = array_unique($arr_seat_type_car);
-                $each->seat_type_car = implode(', ', $arr_seat_type_car);
-                return $each;
-            });
-        dd($route_model);
+        $first = (new Buses())->get_first_day_of_week('34', '2022');
+        $last = (new Buses())->get_last_day_of_week('34', '2022');
+        return [$first, $last];
     }
 }

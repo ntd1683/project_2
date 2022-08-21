@@ -1146,12 +1146,12 @@ button.bg-danger:hover {
 -----------------------*/
 
 .select2-container .select2-selection--single {
-	border: 1px solid #ddd;
-	height: 40px;
+	border: 1px solid #ddd !important;
+	height: 40px !important;
 }
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-	height: 38px;
-	right: 7px;
+	height: 38px !important;
+	right: 7px	!important;
 }
 .select2-container--default .select2-selection--single .select2-selection__arrow b {
 	border-color: #ddd transparent transparent;
@@ -1174,10 +1174,10 @@ button.bg-danger:hover {
 	padding-left: 15px;
 }
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-	color: #333;
-	font-size: 15px;
-	font-weight: normal;
-	line-height: 38px;
+	color: #333 !important;
+	font-size: 15px !important;
+	font-weight: normal !important;
+	line-height: 38px !important;
 }
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
 	background-color: #ff0080;

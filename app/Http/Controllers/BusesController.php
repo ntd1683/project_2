@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\QuickStoreBusesRequest;
 use App\Models\Buses;
 use App\Http\Requests\StoreBusesRequest;
 use App\Http\Requests\UpdateBusesRequest;
@@ -70,6 +71,22 @@ class BusesController extends Controller
             ->first();
     }
 
+    public function apiGetDay(Request $request)
+    {
+        $year = $request->get('year');
+        $week = '';
+        if ($request->get('week_start') != null) {
+            $week = $request->get('week_start');
+            $date = (new Buses())->get_first_day_of_week($week, $year);
+            return $date->format('d/m/Y');
+        } else {
+            $week = $request->get('week_end');
+            $date = (new Buses())->get_last_day_of_week($week, $year);
+            return $date->format('d/m/Y');
+        }
+        return false;
+    }
+
     public function apiCalendar(Request $request)
     {
         $route_id = $request->get('route_id');
@@ -116,6 +133,11 @@ class BusesController extends Controller
         ]);
     }
 
+    public function quickCreate()
+    {
+        return view('admin.' . $this->table . '.quick_create');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -132,12 +154,21 @@ class BusesController extends Controller
             // get departure_time
             $date = $request->get('date');
             $time = $request->get('time');
+            $departure_time = new DateTime($date . ' ' . $time);
 
             // get price
             $price = $request->get('price');
 
+            // check available
+            $available = (new Buses())->check_available_carriage($route, $car, $departure_time);
+            if (!$available) {
+                return [
+                    'success' => false,
+                    'message' => 'Xe đang bận',
+                ];
+            }
+
             // create new buses
-            $departure_time = new DateTime($date . ' ' . $time);
             $route_driver_car_id = Route_driver_car::query()->where('route_id', $route)->where('car_id', $car)->first()->id;
             $buses = $this->model->create([
                 'route_driver_car_id' => $route_driver_car_id,
@@ -159,6 +190,11 @@ class BusesController extends Controller
         }
     }
 
+    public function quickStore(QuickStoreBusesRequest $request)
+    {
+        $all = $request->all();
+        dd($all);
+    }
     /**
      * Display the specified resource.
      *
