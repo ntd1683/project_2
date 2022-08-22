@@ -8,6 +8,7 @@ use App\Enums\SeatTypeEnum;
 use App\Events\ApplicantOrderEvent;
 use App\Events\UserCreateEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BookingTicketRequest;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\StoreInfoCustomerRequest;
 use App\Http\Requests\StoreTicketRequest;
@@ -359,6 +360,9 @@ class HomePageController extends Controller
 //        tickets
         $arr_tickets['bill_detail_id'] = $bill_detail_id;
         $arr_tickets['code'] = 'T'.strtoupper(Str::random(8));
+//        gửi code cho khách hàng
+        $request->code_ticket = $arr_tickets['code'];
+
         $arr_tickets['name_passenger'] = $request->arr_customer['name'];
         $arr_tickets['phone_passenger'] = $request->arr_customer['phone'];
         $arr_tickets['email_passenger'] = $request->arr_customer['email'];
@@ -371,8 +375,45 @@ class HomePageController extends Controller
             ->with('success', 'Bạn đã đặt vé thành công !!!');
     }
 
-    public function schedule(){
+    public function schedule()
+    {
         return view('applicant.schedule');
+    }
+
+    public function check_ticket()
+    {
+        return view('applicant.check_ticket');
+    }
+
+    public function booking(BookingTicketRequest $request)
+    {
+        $ticket = Ticket::query()->where('phone_passenger',$request->phone)
+            ->where('code',$request->code_ticket)->get();
+        if($ticket->isEmpty()){
+            return redirect()->back()->with('errors','Không tồn tại mã code này');
+        }
+        $ticket = Ticket::query()
+            ->selectRaw('tickets.*,tickets.code as code_ticket,bill_details.*,bills.*,
+            bills.code as code_bill,buses.departure_time,locations.*,routes.name as route_name,routes.time,cities.name as city_name_end')
+            ->join('bill_details','bill_details.id','bill_detail_id')
+            ->join('buses','buses.id','buses_id')
+            ->join('bills','bills.id','bill_id')
+            ->join('locations','locations.id','address_passenger_id')
+            ->join('route_driver_cars','route_driver_cars.id','route_driver_car_id')
+            ->join('routes','routes.id','route_id')
+            ->join('cities','cities.id','city_end_id')
+            ->where('phone_passenger',$request->phone)
+            ->where('tickets.code',$request->code_ticket)->first();
+        $ticket->location = $ticket->name.', '?? '';
+        $ticket->location .= $ticket->address .', '.$ticket->district;
+        $departure_time = \DateTime::createFromFormat('Y-m-d H:i:s', $ticket->departure_time);
+        $departure_time = $departure_time->format('H:i:s d-m-Y');
+        $ticket->departure_time = $departure_time;
+        $ticket->payment_method = PaymentMethodEnum::getKeyByValue($ticket->payment_method);
+//        dd($ticket);
+        return view('applicant.booking',[
+            'ticket' => $ticket,
+        ]);
     }
 
     public function api_schedule(){
@@ -424,62 +465,5 @@ class HomePageController extends Controller
                 return $arr;
             })
             ->make(true);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreTicketRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-
-    public function store(StoreTicketRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Ticket  $ticket
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Ticket $ticket)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Ticket  $ticket
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Ticket $ticket)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateTicketRequest  $request
-     * @param  \App\Models\Ticket  $ticket
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateTicketRequest $request, Ticket $ticket)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Ticket  $ticket
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Ticket $ticket)
-    {
-        //
     }
 }
