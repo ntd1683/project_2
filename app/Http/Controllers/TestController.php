@@ -31,6 +31,6 @@ class TestController extends Controller
     public function test()
     {
 //        dd(session());
-        return view('test1');
+        return view('applicant.booking');
     }
 }

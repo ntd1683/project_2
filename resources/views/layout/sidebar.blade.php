@@ -11,7 +11,7 @@
                 <li class="nav-item"><a href="destination.html" class="nav-link">Vận tải hàng hoá</a></li>
                 <li class="nav-item"><a href="{{route('applicant.schedule')}}" class="nav-link">Tuyến Đường</a></li>
                 <li class="nav-item"><a href="contact.html" class="nav-link">Tin tức</a></li>
-                <li class="nav-item"><a href="about.html" class="nav-link">Hoá Đơn</a></li>
+                <li class="nav-item"><a href="{{route('applicant.check_ticket')}}" class="nav-link">Kiểm Tra Vé</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">Liên Hệ</a></li>
                 <!-- <li class="nav-item cta"><a href="#" class="nav-link">Book Now</a></li> -->
             </ul>

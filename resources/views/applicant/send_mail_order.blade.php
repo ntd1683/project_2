@@ -213,6 +213,10 @@
                                                                                                     <div data-v-2d0d5948="" class="col-xs-4 sub-tit" style="font-weight: bold">Số điện thoại:</div>
                                                                                                     <div data-v-2d0d5948="" class="col-xs-8 text-right">{{$info->arr_customer['phone']}}</div>
                                                                                                 </div>
+                                                                                                <div data-v-2d0d5948="" class="col-xs-12 field">
+                                                                                                    <div data-v-2d0d5948="" class="col-xs-4 sub-tit" style="font-weight: bold">Mã vé:</div>
+                                                                                                    <div data-v-2d0d5948="" class="col-xs-8 text-right" style="color:red;font-weight: bold;">{{$info->code_ticket}}</div>
+                                                                                                </div>
                                                                                             </div> <!---->
                                                                                             <div data-v-2d0d5948="" class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-ms-12"><!---->
                                                                                                 <!----> <!----></div>

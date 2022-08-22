@@ -39,6 +39,7 @@ class AuthController extends Controller
                 ->firstOrFail();
             Auth::login($user, $remember);
             if (Auth::viaRemember()) {
+//                @todo Lưu vào cookie
                 dd('1');
             }
             return redirect()->intended('/admin/');
