@@ -163,6 +163,8 @@ Route::group([
     Route::get('/edit/{buses}', [BusesController::class, 'edit'])->name('edit');
     Route::post('/update/{buses}', [BusesController::class, 'update'])->name('update');
     Route::delete('/destroy/{buses}', [BusesController::class, 'destroy'])->name('destroy');
+    Route::get('/quick-delete', [BusesController::class, 'quickDelete'])->name('quickDelete');
+    Route::delete('/quick-destroy', [BusesController::class, 'quickDestroy'])->name('quickDestroy');
 
     //    api
     Route::get('/api', [BusesController::class, 'api'])->name('api');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\QuickDestroyBusesRequest;
 use App\Http\Requests\QuickStoreBusesRequest;
 use App\Models\Buses;
 use App\Http\Requests\StoreBusesRequest;
@@ -11,6 +12,7 @@ use App\Models\City;
 use App\Models\Route as ModelsRoute;
 use App\Models\Route_driver_car;
 use App\Models\User;
+use Carbon\Carbon;
 use DateTime;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Http\Request;
@@ -162,10 +164,7 @@ class BusesController extends Controller
             // check available
             $available = (new Buses())->check_available_carriage($route, $car, $departure_time);
             if (!$available) {
-                return [
-                    'success' => false,
-                    'message' => 'Xe đang bận',
-                ];
+                return $this->errorResponse("Xe đang bận");
             }
 
             // create new buses
@@ -183,17 +182,80 @@ class BusesController extends Controller
                 'id' => $buses,
             ];
         } catch (\Exception $e) {
-            return [
-                'success' => false,
-                'message' => 'Tạo mới thất bại',
-            ];
+            return $this->errorResponse("Tạo mới thất bại");
         }
     }
 
     public function quickStore(QuickStoreBusesRequest $request)
     {
-        $all = $request->all();
-        dd($all);
+        $routeFrom = $request->get('route_from');
+        $routeTo = $request->get('route_to');
+        $time_move = $request->get('time_move');
+        $distance = $request->get('distance');
+        $carriageFree = $request->get('carriage_free');
+        $carriageFrom = $request->get('carriage_from');
+        $carriageTo = $request->get('carriage_to');
+        $year = $request->get('year');
+        $weekStart = $request->get('week_start');
+        $weekEnd = $request->get('week_end');
+        $timeTwoBuses = Carbon::parse($request->get('time_two_buses'));
+        $timeStartDay = Carbon::parse($request->get('time_start_day'));
+        $timeEndDay = Carbon::parse($request->get('time_end_day'));
+
+        //convert time to int (minutes)
+        //->format('His.u') Compare times without date 
+        //$timeTwoBuses->hour get hour
+        //$timeTwoBuses->minute get minute
+
+        // get date start and end
+        $dateStart = (new Buses())->get_first_day_of_week($weekStart, $year);
+        $dateEnd = (new Buses())->get_last_day_of_week($weekEnd, $year);
+
+        // create array of carriages
+        $carriageFromArray = array_merge($carriageFrom,$carriageTo); // array_merge gộp mảng
+        $carriageToArray = array_merge($carriageTo,$carriageFrom);
+        $j = 0;
+
+        for($k = $dateStart; $k <= $dateEnd; $k->addDay()){
+            $i = $timeStartDay->copy();
+            for($i; $i <= $timeEndDay; $i->addHours($timeTwoBuses->hour)->addMinutes($timeTwoBuses->minute)){
+                $departure_time = (new DateTime($k->format('Y-m-d') . ' ' . $i->format('H:i')))->format('Y-m-d H:i:s');
+                $available = (new Buses())->check_available_carriage($routeFrom, $carriageFromArray[$j], $departure_time);
+                if (!$available) {
+                    continue;
+                }
+                $available = (new Buses())->check_available_carriage($routeTo, $carriageToArray[$j], $departure_time);
+                if (!$available) {
+                    continue;
+                }
+                try{ 
+                    $route_driver_car_from = Route_driver_car::query()->where('route_id', $routeFrom)->where('car_id', $carriageFromArray[$j])->first();
+                    $route_driver_car_to = Route_driver_car::query()->where('route_id', $routeTo)->where('car_id', $carriageToArray[$j])->first();
+                } catch (\Exception $e) {
+                    continue;
+                }
+                if($j == count($carriageFromArray) - 1){
+                    $j = 0;
+                }else{
+                    $j++;
+                }
+                try{
+                    $buses_from = $this->model->create([
+                        'route_driver_car_id' => $route_driver_car_from->id,
+                        'departure_time' => $departure_time,
+                        'price' => $route_driver_car_from->price,
+                    ])->id;
+                    $buses_to = $this->model->create([
+                        'route_driver_car_id' => $route_driver_car_to->id,
+                        'departure_time' => $departure_time,
+                        'price' => $route_driver_car_to->price,
+                    ])->id;
+                } catch (\Exception $e) {
+                    continue;
+                }
+            }
+        }
+        return $this->successResponse([], "Tạo nhanh thành công");
     }
     /**
      * Display the specified resource.
@@ -257,15 +319,9 @@ class BusesController extends Controller
                 'price' => $price,
             ]);
             // return with success
-            return [
-                'success' => true,
-                'message' => 'Cập nhật thành công',
-            ];
+            return $this->successResponse([],"Cập nhật thành công");
         } catch (\Exception $e) {
-            return [
-                'success' => false,
-                'message' => 'Cập nhật thất bại',
-            ];
+            return $this->errorResponse("Cập nhật thất bại");
         }
     }
 
@@ -279,15 +335,39 @@ class BusesController extends Controller
     {
         try {
             $buses->delete();
-            return response()->json([
-                'success' => true,
-                'message' => 'Xóa thành công',
-            ]);
+            return $this->successResponse([],"Xóa thành công");
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Xóa thất bại',
-            ]);
+            return $this->errorResponse("Xóa thất bại");
+        }
+    }
+
+    public function quickDelete(){
+        return view('admin.' . $this->table . '.quick_delete');
+    }
+
+    public function quickDestroy(QuickDestroyBusesRequest $request){
+        $routeFrom = $request->get('route_from');
+        $routeTo = $request->get('route_to');
+        $year = $request->get('year');
+        $weekStart = $request->get('week_start');
+        $weekEnd = $request->get('week_end');
+
+        // get date start and end
+        $dateStart = Carbon::parse((new Buses())->get_first_day_of_week($weekStart, $year))->format('Y-m-d H:i:s');
+        $dateEnd = Carbon::parse((new Buses())->get_last_day_of_week($weekEnd, $year))->format('Y-m-d H:i:s');
+
+        try {
+            $deleteBuses= Buses::join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
+            ->where(function ($q) use ($routeFrom, $routeTo){
+                $q->orWhere('route_driver_cars.route_id', $routeFrom);
+                $q->orWhere('route_driver_cars.route_id', $routeTo);
+            })
+            ->where('departure_time', '>=', $dateStart)
+            ->where('departure_time', '<=', $dateEnd)
+            ->delete();
+            return $this->successResponse([],"Xóa nhanh thành công");
+        } catch (\Exception $e){
+            return $this->errorResponse("Xóa nhanh thất bại");
         }
     }
 }

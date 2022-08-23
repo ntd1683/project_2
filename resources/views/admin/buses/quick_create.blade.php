@@ -184,7 +184,7 @@
                 id:'',
                 text:'Chọn tuần'
             }];
-            for (let i = 1; i <= 52; i++) {
+            for (let i = 1; i <= 53; i++) {
                 week.push({
                     id: i,
                     text: "Tuần " + i

@@ -58,6 +58,7 @@ class Buses extends Model
 
         // check carriage reverse route // kiểm tra xe đang ở tuyến đường nào 
         // Nếu xe không hoạt động 1 ngày thì xe đó available
+        $departure_time = Carbon::parse($departure_time);
         $nearest_smaller_date = Buses::query()
             ->selectRaw('max(departure_time) as departure_time')
             ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
@@ -71,9 +72,12 @@ class Buses extends Model
         $route_id_nearest_date = Buses::query()
         ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
         ->where('route_driver_cars.car_id', $car_id)
-        ->where('departure_time', $nearest_smaller_date->first()->departure_time)
-        ->Orwhere('departure_time', $nearest_bigger_date->first()->departure_time)
+        ->where(function ($q) use ($nearest_smaller_date, $nearest_bigger_date){
+            $q->orWhere('departure_time', $nearest_smaller_date->first()->departure_time);
+            $q->orWhere('departure_time', $nearest_bigger_date->first()->departure_time);
+        })
         // Thêm điều kiện 1 ngày không hoạt động
+        ->whereBetween('departure_time', [$departure_time->subDay()->format('y-m-d H:i:s'), $departure_time->addDay()->format('y-m-d H:i:s')])
         ->get()->pluck('route_id')->toArray();
         if(in_array($route_id, $route_id_nearest_date)){
             return false;

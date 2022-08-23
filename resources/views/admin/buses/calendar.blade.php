@@ -49,6 +49,10 @@
                     <button type="button" class="btn btn-success btn-lg submit-btn">
                     Tạo Tự Động</button>
                 </a>
+                <a href="{{route('admin.buses.quickDelete')}}">
+                    <button type="button" class="btn btn-danger btn-lg submit-btn">
+                    Xóa nhanh</button>
+                </a>
             </div>
         </div>
     </div>
