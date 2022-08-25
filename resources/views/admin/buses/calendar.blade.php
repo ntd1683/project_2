@@ -41,13 +41,17 @@
                     <button type="button" class="btn btn-primary btn-lg submit-btn">
                     Tạo Mới</button>
                 </a>
-                <a href="#">
+                <a href="{{route('admin.buses.quickCreate')}}">
                     <button type="button" class="btn btn-info btn-lg submit-btn" style="color: #ffffff;">
                     Tạo Nhanh</button>
                 </a>
                 <a href="#">
                     <button type="button" class="btn btn-success btn-lg submit-btn">
                     Tạo Tự Động</button>
+                </a>
+                <a href="{{route('admin.buses.quickDelete')}}">
+                    <button type="button" class="btn btn-danger btn-lg submit-btn">
+                    Xóa nhanh</button>
                 </a>
             </div>
         </div>

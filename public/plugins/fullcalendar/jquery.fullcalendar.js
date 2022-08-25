@@ -130,7 +130,6 @@
             $("#car").change(function() {
                 var car = $(this).val();
                 var domain = $.CalendarApp.$domain;
-                console.log(domain)
                 $.ajax({
                     url: domain +"admin/users/apiGetDriverByCar",
                     type: "GET",
@@ -275,8 +274,9 @@
 
         $this.$modal.find('.delete-event').show().end().find('.save-event').show().end().find('.create-event').hide().end().find('.modal-body').empty().prepend(form).end().find('.delete-event').unbind('click').click(function () {
             let confirm_delete = confirm('Bạn có chắc chắn muốn xóa?');
+            let domain = $.CalendarApp.$domain;
             if (confirm_delete) {
-                var form_delete = $("<form action='"+this.$domain+"/admin/buses/destroy/" + calEvent._id + "') }} method='POST'></form>");
+                var form_delete = $("<form action='"+domain+"admin/buses/destroy/" + calEvent._id + "') }} method='POST'></form>");
                 form_delete.append("<input type='hidden' name='_method' value='DELETE' />");
                 $.ajax({
                     url: form_delete.attr('action'),

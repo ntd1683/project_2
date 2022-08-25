@@ -99,6 +99,7 @@ Route::group([
     //    api
     Route::get('/api', [RouteController::class, 'api'])->name('api');
     Route::get('/apiNameRoutes', [RouteController::class, 'apiNameRoutes'])->name('api.name_routes');
+    Route::get('/apiGetRouteInverse', [RouteController::class, 'apiGetRouteInverse'])->name('apiGetRouteInverse');
     Route::get('/apiCityStart', [RouteController::class, 'apiCityStart'])->name('api.city_start');
     Route::get('/apiCityEnd', [RouteController::class, 'apiCityEnd'])->name('api.city_end');
     Route::get('/apiNameCheck', [RouteController::class, 'apiNameCheck'])->name('api.apiNameCheck');
@@ -156,13 +157,19 @@ Route::group([
     Route::get('/', [BusesController::class, 'calendar'])->name('calendar');
     Route::delete('/show/{buses}', [BusesController::class, 'show'])->name('show');
     Route::get('/create', [BusesController::class, 'create'])->name('create');
+    Route::get('/quick-create', [BusesController::class, 'quickCreate'])->name('quickCreate');
     Route::post('/store', [BusesController::class, 'store'])->name('store');
+    Route::post('/quick-store', [BusesController::class, 'quickStore'])->name('quickStore');
     Route::get('/edit/{buses}', [BusesController::class, 'edit'])->name('edit');
     Route::post('/update/{buses}', [BusesController::class, 'update'])->name('update');
     Route::delete('/destroy/{buses}', [BusesController::class, 'destroy'])->name('destroy');
+    Route::get('/quick-delete', [BusesController::class, 'quickDelete'])->name('quickDelete');
+    Route::delete('/quick-destroy', [BusesController::class, 'quickDestroy'])->name('quickDestroy');
 
     //    api
     Route::get('/api', [BusesController::class, 'api'])->name('api');
     Route::get('/apiCalendar', [BusesController::class, 'apiCalendar'])->name('api.calendar');
     Route::get('/apiGetPrice', [BusesController::class, 'apiGetPrice'])->name('api.apiGetPrice');
+    Route::get('/apiGetDay', [BusesController::class, 'apiGetDay'])->name('apiGetDay');
+    Route::get('/apiCheckCarriage', [BusesController::class, 'apiCheckCarriage'])->name('apiCheckCarriage');
 });

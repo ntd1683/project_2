@@ -372,13 +372,7 @@
                             data: form.serialize(),
                             datatype: 'json',
                             success: function(response){
-                                $.toast({
-                                    heading: response.heading,
-                                    text: response.text,
-                                    icon: response.icon,
-                                    position: 'top-right',
-                                    showHideTransition: 'slide',
-                                });
+                                notify(response);
                                 // reload table with page present
                                 table.ajax.reload(null, false);
                             }

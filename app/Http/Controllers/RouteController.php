@@ -110,6 +110,17 @@ class RouteController extends Controller
         return $query->get();
     }
 
+    public function apiGetRouteInverse(Request $request)
+    {
+        $route = $request->get('route');
+        $route_city = $this->model->find($route);
+        $route_inverse = Route::query()
+                    ->where('city_start_id', $route_city->city_end_id)
+                    ->where('city_end_id', $route_city->city_start_id)
+                    ->first();
+        return $route_inverse;
+    }
+
     public function apiCityStart(Request $request)
     {
         return City::where('name', 'like', '%' . $request->get('q') . '%')->get();

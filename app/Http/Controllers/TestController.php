@@ -32,5 +32,7 @@ class TestController extends Controller
     {
 //        dd(session());
         return view('applicant.booking');
+        $first = (new Buses())->check_location_carriage('1', '2','119', '2022-10-16 00:00:00');
+        return $first;
     }
 }
