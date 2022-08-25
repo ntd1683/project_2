@@ -74,7 +74,8 @@
                     </div>
                 </div>
                 <div class="text-end">
-                    <button class="btn btn-info" style="color: #ffffff;">Kiểm tra xe</button>
+                    <button type="button" class="btn btn-info" style="color: #ffffff;" onclick="checkCarriages()">Kiểm tra xe</button>
+                    <div style="color: darkgrey; font-size: 13px">* Lưu ý: chọn tuyến đường và tuần đầu tiên trước khi kiểm tra</div>
                 </div>
             </div>
         </div>
@@ -162,7 +163,58 @@
     {{-- add timepicker --}}
     <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
     <script>
+        function checkCarriages(){
+            let route_from = $('#route_from').val();
+            let route_to = $('#route_to').val();
+            let year = $('#year').val();
+            let week = $('#week_start').val();
+            $.ajax({
+                url: '{{ route('admin.buses.apiCheckCarriage') }}',
+                type: 'GET',
+                data: {
+                    route_from: route_from,
+                    route_to: route_to,
+                    year: year,
+                    week: week,
+                },
+                success: function(res) { 
+                    $("#carriage_from, #carriage_to, #carriage_free").val(null).trigger("change"); 
+                    for(let element in res.data){
+                        if(res.data[element][0] == 1){
+                            $('#carriage_from').select2('trigger', 'select', {
+                                data: {
+                                    text: res.data[element][1],
+                                    id: element
+                                }      
+                            });   
+                        }
+                        if(res.data[element][0] == 2){
+                            $('#carriage_to').select2('trigger', 'select', {
+                                data: {
+                                    text: res.data[element][1],
+                                    id: element
+                                }      
+                            });   
+                        }
+                        if(res.data[element][0] == 0){
+                            $('#carriage_free').select2('trigger', 'select', {
+                                data: {
+                                    text: res.data[element][1],
+                                    id: element
+                                }      
+                            });   
+                        }
+                    }
+                    notify(res);
+                },
+                error: function(res){
+                    notify(res.responseJSON);
+                }
+            });
+        }
+
         $(document).ready(function() {
+             
             // set data for year
             let year = [];
             let startYear = new Date().getFullYear();

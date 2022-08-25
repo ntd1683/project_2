@@ -30,8 +30,7 @@ class TestController extends Controller
 
     public function test()
     {
-        $first = (new Buses())->get_first_day_of_week('34', '2022');
-        $last = (new Buses())->get_last_day_of_week('34', '2022');
-        return [$first, $last];
+        $first = (new Buses())->check_location_carriage('1', '2','119', '2022-10-16 00:00:00');
+        return $first;
     }
 }

@@ -89,6 +89,42 @@ class BusesController extends Controller
         return false;
     }
 
+    public function apiCheckCarriage(Request $request){
+        $all = $request->all();
+        $routeFrom = $request->get('route_from');
+        $routeTo = $request->get('route_to');
+        $year = $request->get('year');
+        $week = $request->get('week');
+
+        // get date
+        $date = (new Buses())->get_first_day_of_week($week, $year)->format('Y-m-d H:i:s');
+
+        try{
+            $listCar = Carriage::select('carriages.id', 'carriages.license_plate')
+                ->join('route_driver_cars', 'route_driver_cars.car_id', '=', 'carriages.id')
+                ->where('route_driver_cars.route_id', $routeFrom)
+                ->groupBy('carriages.id')
+                ->get();
+        }  catch (\Exception $e) {
+            return $this->errorResponse("Kiểm tra xe thất bại");
+        }
+
+        $array_carriage_type = [];
+
+        foreach ($listCar as $car){
+            $check =(new Buses())->check_location_carriage($routeFrom, $routeTo, $car->id, $date);
+            if($check==1){
+                $array_carriage_type["$car->id"] = [1,$car->license_plate];
+            }else if($check==2){
+                $array_carriage_type["$car->id"] = [2,$car->license_plate];
+            } else {
+                $array_carriage_type["$car->id"] = [0,$car->license_plate];
+            }
+        }
+
+        return $this->successResponse($array_carriage_type, "Kiểm tra thành công");
+    }
+
     public function apiCalendar(Request $request)
     {
         $route_id = $request->get('route_id');

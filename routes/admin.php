@@ -171,4 +171,5 @@ Route::group([
     Route::get('/apiCalendar', [BusesController::class, 'apiCalendar'])->name('api.calendar');
     Route::get('/apiGetPrice', [BusesController::class, 'apiGetPrice'])->name('api.apiGetPrice');
     Route::get('/apiGetDay', [BusesController::class, 'apiGetDay'])->name('apiGetDay');
+    Route::get('/apiCheckCarriage', [BusesController::class, 'apiCheckCarriage'])->name('apiCheckCarriage');
 });
