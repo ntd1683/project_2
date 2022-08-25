@@ -19,20 +19,27 @@ class RouteDriverCarSeeder extends Seeder
     {
         $arr = [];
         $route = Route::query()->pluck('id')->toArray();
-        $user = User::query()->pluck('id')->toArray();
+        $user = User::query()->where('level', '0')->pluck('id')->toArray();
         $carriage = Carriage::query()->pluck('id')->toArray();
         $faker = \Faker\Factory::create('vi_VN');
-        for ($i = 1; $i <= 1000; $i++) {
+        foreach ($carriage as $car) {
             $driver_id = $faker->randomElement($user);
-            $driver_level = User::query()->where('id', $driver_id)->value('level');
-            if ($driver_level == 0) {
-                $arr[] = [
-                    'route_id' => $faker->randomElement($route),
-                    'driver_id' => $driver_id,
-                    'car_id' => $faker->randomElement($carriage),
-                    'price' => $faker->numberBetween(80000, 1000000),
-                ];
+            $route_id = $faker->randomElement($route);
+            while ($route_id % 2 == 0){
+                $route_id = $faker->randomElement($route);
             }
+            $arr[] = [
+                'route_id' => $route_id,
+                'driver_id' => $driver_id,
+                'car_id' => $car,
+                'price' => $faker->numberBetween(80000, 1000000),
+            ];
+            $arr[] = [
+                'route_id' => $route_id + 1,
+                'driver_id' => $driver_id,
+                'car_id' => $car,
+                'price' => $faker->numberBetween(80000, 1000000),
+            ];
         }
         Route_driver_car::insert($arr);
     }

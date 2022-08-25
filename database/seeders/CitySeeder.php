@@ -16,7 +16,7 @@ class CitySeeder extends Seeder
     {
         $arr = [];
         $faker = \Faker\Factory::create('vi_VN');
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 20; $i++) {
             $arr[] = [
                 'name' => $faker->unique()->province,
             ];
