@@ -228,6 +228,7 @@ class HomePageController extends Controller
                 }
             }
             catch(\Throwable $e){
+//                Muốn quay lại bước 1 ạ
                 $request->step = 1;
                 $routes = Route::query()->with('city_start')->with('city_end')
                     ->selectRaw("routes.*,sum(route_driver_cars.price) as price")
