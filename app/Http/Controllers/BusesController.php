@@ -196,11 +196,21 @@ class BusesController extends Controller
 
             // get price
             $price = $request->get('price');
+            // check time
+            $check_time = (new Buses())->check_time($departure_time);
+            if(!$check_time){
+                return $this->errorResponse("Không thể tạo trước ngày hôm nay");
+            }
+
+            $check_travel_time = (new Buses())->check_travel_time($route, $car, $departure_time, null);
+            if(!$check_travel_time){
+                return $this->errorResponse("Xe đang trong thời gian di chuyển");
+            }
 
             // check available
-            $available = (new Buses())->check_available_carriage($route, $car, $departure_time);
+            $available = (new Buses())->check_available_carriage($route, $car, $departure_time, null);
             if (!$available) {
-                return $this->errorResponse("Xe đang bận");
+                return $this->errorResponse("Xe đang ở tuyến đường ngược lại");
             }
 
             // create new buses
@@ -257,11 +267,18 @@ class BusesController extends Controller
                 $i = $timeStartDay->copy();
                 for($i; $i <= $timeEndDay; $i->addHours($timeTwoBuses->hour)->addMinutes($timeTwoBuses->minute)){
                     $departure_time = (new DateTime($k->format('Y-m-d') . ' ' . $i->format('H:i')))->format('Y-m-d H:i:s');
-                    $available = (new Buses())->check_available_carriage($routeFrom, $carriageFromArray[$j], $departure_time);
-                    if (!$available) {
+                    $check_time = (new Buses())->check_time($departure_time);
+                    if(!$check_time){
                         continue;
                     }
-                    $available = (new Buses())->check_available_carriage($routeTo, $carriageToArray[$j], $departure_time);
+
+                    $check_travle_time = (new Buses())->check_travel_time($routeFrom, $carriageFromArray[$j], $departure_time, null);
+                    $available = (new Buses())->check_available_carriage($routeFrom, $carriageFromArray[$j], $departure_time, null);
+                    if (!$available || !$check_travle_time) {
+                        continue;
+                    }
+                    $check_travle_time = (new Buses())->check_travel_time($routeTo, $carriageFromArray[$j], $departure_time, null);
+                    $available = (new Buses())->check_available_carriage($routeTo, $carriageToArray[$j], $departure_time, null);
                     if (!$available) {
                         continue;
                     }
@@ -350,8 +367,23 @@ class BusesController extends Controller
             // get price
             $price = $request->get('price');
             // update buses
-            $departure_time = new DateTime($date . ' ' . $time);
+            $departure_time = (new DateTime($date . ' ' . $time))->format('Y-m-d H:i:s');
             $route_driver_car_id = Route_driver_car::query()->where('route_id', $route)->where('car_id', $car)->first()->id;
+
+            $check_time = (new Buses())->check_time($departure_time);
+            if(!$check_time){
+                return $this->errorResponse("Không thể sửa ngày về trước hôm nay");
+            }
+            
+            $check_travel_time = (new Buses())->check_travel_time($route, $car, $departure_time, $buses->id);
+            if(!$check_travel_time){
+                return $this->errorResponse("Xe đang trong thời gian di chuyển");
+            }
+
+            $available = (new Buses())->check_available_carriage($route, $car, $departure_time, $buses->id);
+            if(!$available){
+                return $this->errorResponse("Xe đang ở tuyến đường ngược lại");
+            }
             
             $buses->update([
                 'route_driver_car_id' => $route_driver_car_id,

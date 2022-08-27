@@ -31,30 +31,40 @@ class Buses extends Model
         $day = Carbon::createFromDate($year, 1, 1)->addWeeks($number_of_week-1)->endOfWeek();
         return $day;
     }
-    
-    // Check if the bus is available in the given time range
-    public function check_available_carriage($route_id, $car_id, $departure_time){
-        $time = Route::query()->find($route_id)->time;
 
-        $timeMin = Carbon::parse($departure_time)->subHours($time)->format('Y-m-d H:i:s');
-        $timeMax = Carbon::parse($departure_time)->addHours($time)->format('Y-m-d H:i:s');
-
+    public function check_time ($departure_time){
         // check today // kiểm tra thời gian so với hôm nay
         $today = Carbon::now();
         $datetime = Carbon::parse($departure_time);
         if($datetime < $today){
             return false;
         }
+        return true;
+    }
+
+    public function check_travel_time($route_id, $car_id, $departure_time, $buses_id){
+        $time = Route::query()->find($route_id)->time;
+
+        $timeMin = Carbon::parse($departure_time)->subHours($time)->format('Y-m-d H:i:s');
+        $timeMax = Carbon::parse($departure_time)->addHours($time)->format('Y-m-d H:i:s');
 
         // check travel time // kiểm tra thời gian di chuyển
         $check_time = Buses::query()
             ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
             ->where('route_driver_cars.car_id', $car_id)
+            ->when($buses_id != null, function ($query) use ($buses_id){
+                return $query->where('buses.id','!=',$buses_id);
+            })
             ->whereBetween('departure_time', [$timeMin, $timeMax]) 
             ->exists();
         if($check_time){
             return false; 
         }
+        return true;
+    }
+    
+    // Check if the bus is available in the given time range
+    public function check_available_carriage($route_id, $car_id, $departure_time, $buses_id){
 
         // check carriage reverse route // kiểm tra xe đang ở tuyến đường nào 
         // Nếu xe không hoạt động 1 ngày thì xe đó available
@@ -71,6 +81,9 @@ class Buses extends Model
             ->where('departure_time', '>', $departure_time->format('Y-m-d H:i:s'));
         $route_id_nearest_date = Buses::query()
         ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
+        ->when($buses_id != null, function ($query) use ($buses_id){
+            return $query->where('buses.id','!=',$buses_id);
+        })
         ->where('route_driver_cars.car_id', $car_id)
         ->where(function ($q) use ($nearest_smaller_date, $nearest_bigger_date){
             $q->orWhere('departure_time', $nearest_smaller_date->first()->departure_time);
