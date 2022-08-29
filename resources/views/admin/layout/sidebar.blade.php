@@ -35,6 +35,10 @@
                     class="active"
                     @endif>
                     <a href="{{route('admin.tickets.index')}}"><i class="fas fa-ticket-alt"></i> <span> Quản Lý Vé Xe</span></a>
+                <li @if($route === 'customers')
+                    class="active"
+                    @endif>
+                    <a href="{{route('admin.customers.index')}}"><i class="fas fa-user"></i> <span> Quản Lý Khách Hàng</span></a>
                 </li>
             </ul>
         </div>

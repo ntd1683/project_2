@@ -11,13 +11,14 @@ use App\Http\Controllers\RouteDriverCarController;
 use App\Http\Controllers\TestController;
 
 use App\Http\Controllers\CarriageController;
-
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckAdminMiddleware;
 use App\Http\Middleware\CheckLoginMiddleware;
 use App\Http\Middleware\CheckLogoutMiddleware;
 use App\Http\Middleware\CheckStaffMiddleware;
+use App\Models\Customer;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'processLogin'])->name('process_login');
@@ -62,6 +63,22 @@ Route::group([
     Route::get('/apiNameDrivers', [UserController::class, 'apiNameDrivers'])->name('api.name_drivers');
     Route::get('/apiProvinces', [UserController::class, 'apiProvinces'])->name('api.provinces');
     Route::get('/apiGetDriverByCar', [UserController::class, 'apiGetDriverByCar'])->name('apiGetDriverByCar');
+});
+Route::group([
+    'as' => 'customers.',
+    'prefix' => 'customers',
+    // 'middleware' => CheckAdminMiddleware::class,
+], function () {
+    Route::get('/', [CustomerController::class, 'index'])->name('index');
+    Route::get('/show/{customer}', [CustomerController::class, 'show'])->name('show');
+    Route::delete('/destroy/{customer}', [CustomerController::class, 'destroy'])->name('destroy');
+
+    //    api
+    Route::get('/api', [CustomerController::class, 'api'])->name('api');
+    Route::get('/nameCustomers', [CustomerController::class, 'nameCustomers'])->name('api.nameCustomers');
+    Route::get('/emailCustomers', [CustomerController::class, 'emailCustomers'])->name('api.emailCustomers');
+    Route::get('/phoneCustomers', [CustomerController::class, 'phoneCustomers'])->name('api.phoneCustomers');
+
 });
 
 Route::group([

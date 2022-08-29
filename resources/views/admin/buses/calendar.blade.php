@@ -45,10 +45,6 @@
                     <button type="button" class="btn btn-info btn-lg submit-btn" style="color: #ffffff;">
                     Tạo Nhanh</button>
                 </a>
-                <a href="#">
-                    <button type="button" class="btn btn-success btn-lg submit-btn">
-                    Tạo Tự Động</button>
-                </a>
                 <a href="{{route('admin.buses.quickDelete')}}">
                     <button type="button" class="btn btn-danger btn-lg submit-btn">
                     Xóa nhanh</button>
@@ -58,23 +54,21 @@
     </div>
     {{-- End Add --}}
     {{-- Filter --}}
-    <div class="card filter-card" id="filter_inputs">
+    {{-- <div class="card filter-card" id="filter_inputs">
         <div class="card-body pb-0">
-                <div class="row filter-row">                        
-                        {{-- Filter time --}}
-                        {{-- End Filter time --}}
-                        <div class="col-sm-6 col-md-3">
-                            <form>
-                                <div class="form-group">
-                                    <label for="level">Route</label>
-                                    <select class="form-control" style="text-align: center">
-                                    </select>
-                                </div>
-                            </form>
+            <div class="row filter-row">     
+                <div class="col-sm-6 col-md-3">
+                    <form>
+                        <div class="form-group">
+                            <label for="level">Route</label>
+                            <select class="form-control" style="text-align: center">
+                            </select>
                         </div>
+                    </form>
                 </div>
+            </div>
         </div>
-    </div>
+    </div> --}}
     {{-- End Filter --}}
 
     {{-- nav tab --}}

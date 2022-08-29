@@ -19,7 +19,69 @@
 <form action="{{route('admin.buses.quickStore')}}" id="form" method="post">
 @csrf
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Thông tin thời gian</h4>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <div class="form-group">
+                        <label>Năm</label>
+                        <select class="select col-md-12" id="year" name="year"></select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-lg-6">
+                        <label>Tuần bắt đầu</label>
+                        <select class="select col-md-12" id="week_start" name="week_start"></select>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label>Tuần kết thúc</label>
+                        <select class="select col-md-12" id="week_end" name="week_end"></select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-lg-6">
+                        <label>Ngày bắt đầu</label>
+                        <input type="text" placeholder="Ngày bắt đầu" name="date_start" id="date_start"
+                            class="form-control" disabled>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label>Ngày kết thúc</label>
+                        <input type="text" placeholder="Ngày kết thúc" name="date_end" id="date_end"
+                            class="form-control" disabled>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label>Khoảng thời gian giữa 2 chuyến xe</label>
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <input class="col-md-12" type="text" id="time_two_buses" name="time_two_buses"
+                            style="height: 40px; border: 1px solid #ddd; text-align: center;"> 
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="form-group col-lg-6">
+                        <label>Giờ bắt đầu trong ngày</label>
+                        <div class="form-group">
+                            <input class="col-md-12" type="text" id="time_start_day" name="time_start_day"
+                            style="height: 40px; border: 1px solid #ddd; text-align: center;"> 
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label>Giờ kết thúc trong ngày</label>
+                        <div class="form-group">
+                            <input class="col-md-12" type="text" id="time_end_day" name="time_end_day"
+                            style="height: 40px; border: 1px solid #ddd; text-align: center;"> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">Thông tin tuyến đường</h4>
@@ -28,15 +90,11 @@
                 <div class="form-group row">
                     <div class="form-group col-lg-6">
                         <label>Tuyến đi</label>
-                        <div class="col-lg-12">
-                            <select class="select col-md-12" id="route_from" name="route_from"></select>
-                        </div>
+                        <select class="select col-md-12" id="route_from" name="route_from"></select>
                     </div>
                     <div class="form-group col-lg-6">
                         <label>Tuyến về</label>
-                        <div class="col-lg-12">
-                            <select class="select col-md-12" id="route_to" name="route_to"></select>
-                        </div>
+                        <select class="select col-md-12" id="route_to" name="route_to"></select>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -74,86 +132,13 @@
                     </div>
                 </div>
                 <div class="text-end">
-                    <button type="button" class="btn btn-info" style="color: #ffffff;" onclick="checkCarriages()">Kiểm tra xe</button>
-                    <div style="color: darkgrey; font-size: 13px">* Lưu ý: chọn tuyến đường và tuần đầu tiên trước khi kiểm tra</div>
+                    <button type="button" class="btn btn-info col-lg-2" style="color: #ffffff;" onclick="checkCarriages()">Kiểm tra xe</button>
+                    <button type="submit" class="btn btn-primary col-lg-2">Tạo nhanh</button>
+                </div>
+                <div class="text-end row">
+                    <div style="color: darkgrey; font-size: 13px">* Lưu ý: chọn tuyến đường và tuần bắt đầu trước khi kiểm tra</div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">Thông tin thời gian</h4>
-            </div>
-            <div class="card-body">
-                <div class="form-group row">
-                    <label>Năm</label>
-                    <div class="form-group">
-                        <select class="select col-md-12" id="year" name="year"></select>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="form-group col-lg-6">
-                        <label>Tuần bắt đầu</label>
-                        <div class="col-lg-12">
-                            <select class="select col-md-12" id="week_start" name="week_start"></select>
-                        </div>
-                    </div>
-                    <div class="form-group col-lg-6">
-                        <label>Tuần kết thúc</label>
-                        <div class="col-lg-12">
-                            <select class="select col-md-12" id="week_end" name="week_end"></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="form-group col-lg-6">
-                        <label>Ngày bắt đầu</label>
-                        <div class="col-lg-12">
-                            <input type="text" placeholder="Ngày bắt đầu" name="date_start" id="date_start"
-                                class="form-control" disabled>
-                        </div>
-                    </div>
-                    <div class="form-group col-lg-6">
-                        <label>Ngày kết thúc</label>
-                        <div class="col-lg-12">
-                            <input type="text" placeholder="Ngày kết thúc" name="date_end" id="date_end"
-                                class="form-control" disabled>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label>Khoảng thời gian giữa 2 chuyến xe</label>
-                    <div class="col-lg-12">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <input class="col-md-12" type="text" id="time_two_buses" name="time_two_buses"
-                                style="height: 40px; border: 1px solid #ddd; text-align: center;"> 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="form-group col-lg-6">
-                        <label>Giờ bắt đầu trong ngày</label>
-                        <div class="form-group">
-                            <input class="col-md-12" type="text" id="time_start_day" name="time_start_day"
-                            style="height: 40px; border: 1px solid #ddd; text-align: center;"> 
-                        </div>
-                    </div>
-                    <div class="form-group col-lg-6">
-                        <label>Giờ kết thúc trong ngày</label>
-                        <div class="form-group">
-                            <input class="col-md-12" type="text" id="time_end_day" name="time_end_day"
-                            style="height: 40px; border: 1px solid #ddd; text-align: center;"> 
-                        </div>
-                    </div>
-                </div>
-                <div class="text-end">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-            </div>
-            
         </div>
     </div>
 </div>
@@ -162,6 +147,7 @@
 @push('js')
     {{-- add timepicker --}}
     <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
     <script>
         function checkCarriages(){
             let route_from = $('#route_from').val();
@@ -451,8 +437,82 @@
                 });
             });
 
-
-        });
+            $("#form").validate({
+                    rules: {
+                        year: {
+                            required: true,
+                        },
+                        week_start: {
+                            required: true,
+                        },
+                        week_end: {
+                            required: true,
+                        },
+                        time_two_buses: {
+                            required: true,
+                        },
+                        time_start_day: {
+                            required: true,
+                        }, 
+                        time_end_day: {
+                            required: true,
+                        }, 
+                        route_from: {
+                            required: true,
+                        }, 
+                        route_to: {
+                            required: true,
+                        }, 
+                        time_move: {
+                            required: true,
+                        }, 
+                        carriage_from: {
+                            required: true,
+                        },
+                        carriage_to: {
+                            required: true,
+                        },
+                    },
+                    messages:{
+                        year: {
+                            required: 'Vui lòng chọn năm',
+                        },
+                        week_start: {
+                            required: 'Vui lòng chọn tuần bắt đầu',
+                        },
+                        week_end: {
+                            required: 'Vui lòng chọn tuần kết thúc',
+                        },
+                        time_two_buses: {
+                            required: 'Vui lòng chọn thời gian giữa 2 chuyến đi',
+                        },
+                        time_start_day: {
+                            required: 'Vui lòng chọn thời gian bắt đầu trong ngày',
+                        }, 
+                        time_end_day: {
+                            required: 'Vui lòng chọn thời gian kết thúc trong ngày',
+                        }, 
+                        route_from: {
+                            required: 'Vui lòng chọn tuyến đi',
+                        }, 
+                        route_to: {
+                            required: 'Vui lòng chọn tuyến về',
+                        }, 
+                        time_move: {
+                            required: 'Vui lòng nhập thời gian di chuyển',
+                        }, 
+                        carriage_from: {
+                            required: 'Vui lòng chọn danh sách xe',
+                        },
+                        carriage_to: {
+                            required: 'Vui lòng chọn danh sách xe',
+                        },
+                    },
+                    submitHandler: function(form) {
+                        form.submit();
+                    }
+                });
+            });
     </script>
 @endpush
 @endsection

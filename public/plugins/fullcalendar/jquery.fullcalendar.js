@@ -11,7 +11,7 @@
         this.$saveCategoryBtn = $('.save-category'),
         this.$calendarObj = null,
         this.$route = $('#route'),
-        this.$domain = "http://project_2.test:8080/"
+        this.$domain = "http://project_2.test/"
         // this.$domain = window.location.hostname
     };
 
@@ -195,7 +195,7 @@
                     $this.notification(response);
                 },
                 error: function (response) {
-                    $this.notification(response);
+                    $this.notification(response.responseJSON);
                 }
             });
             return false;
@@ -291,7 +291,7 @@
                         $this.notification(response);
                     },
                     error: function(response) {
-                        $this.notification(response);
+                        $this.notification(response.responseJSON);
                     }
                 });
             };
@@ -321,7 +321,7 @@
                     $this.notification(response);
                 },
                 error: function (response) {
-                    $this.notification(response);
+                    $this.notification(response.responseJSON);
                 }
             });
             return false;
