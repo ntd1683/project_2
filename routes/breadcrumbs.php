@@ -90,3 +90,27 @@ Breadcrumbs::for('buses.edit', function ($trail, $bus) {
     $trail->parent('buses');
     $trail->push('Sửa', route('admin.buses.edit', $bus->id));
 });
+
+// Trang Chủ > Vé xe
+Breadcrumbs::for('ticket', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Quản lý vé xe', route('admin.tickets.index'));
+});
+
+//Trang Chủ > Tuyến Xe > Thêm
+Breadcrumbs::for('create_ticket', function ($trail) {
+    $trail->parent('ticket');
+    $trail->push('Thêm', route('admin.tickets.create'));
+});
+
+//Trang Chủ > Tuyến Xe > Chỉnh sửa
+Breadcrumbs::for('edit_ticket', function ($trail, $ticket) {
+    $trail->parent('ticket');
+    $trail->push('Sửa', route('admin.tickets.edit', $ticket->id));
+});
+
+//Trang Chủ > Tuyến Xe > Xem
+Breadcrumbs::for('show_ticket', function ($trail, $ticket) {
+    $trail->parent('Ticket');
+    $trail->push('Xem', route('admin.tickets.show', $ticket->id));
+});

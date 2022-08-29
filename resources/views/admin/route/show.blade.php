@@ -62,7 +62,7 @@
                             </div>
                             <div class="mt-4 text-center">
                                 <a class="btn btn-success" href="{{route('admin.routes.edit',$route)}}">Sửa</a>
-                                <a href="{{route('admin.routes.index')}}" class="btn btn-link">Quay Lại</a>
+                                <a href="{{route('admin.routes.index')}}" class="btn btn-warning" style="color:white;">Quay Lại</a>
                             </div>
                     </div>
             </div>
