@@ -31,6 +31,11 @@
                     @endif>
                     <a href="{{route('admin.buses.calendar')}}"><i class="fas fa-shuttle-van"></i> <span> Quản Lý Chuyến Xe</span></a>
                 </li>
+                <li @if($route === 'customers')
+                    class="active"
+                    @endif>
+                    <a href="{{route('admin.customers.index')}}"><i class="fas fa-user"></i> <span> Quản Lý Khách Hàng</span></a>
+                </li>
             </ul>
         </div>
     </div>

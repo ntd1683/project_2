@@ -190,7 +190,12 @@
                                     </h2>`;
                             }
                         },
-                        {data: 'phone', name: 'phone'},
+                        {
+                            data: 'phone',
+                            render: function (data, type, row, meta) {
+                                return `<a href="tel:${data}">${data}1</a>`;
+                            }
+                        },
                         {data: 'birthdate', name: 'birthdate'},
                         {data: 'gender', name: 'gender'},
                         {data: 'address', name: 'address'},
