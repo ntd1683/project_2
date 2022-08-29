@@ -8,7 +8,9 @@ use App\Models\Bill;
 use App\Models\Bill_detail;
 use App\Models\Buses;
 use App\Models\Carriage;
+use App\Models\City;
 use App\Models\Customer;
+use App\Models\Location;
 use App\Models\Route;
 use App\Models\Route_driver_car;
 use Illuminate\Support\Str;
@@ -30,9 +32,19 @@ class TestController extends Controller
 
     public function test()
     {
-//        dd(session());
-        return view('applicant.booking');
-        $first = (new Buses())->check_location_carriage('1', '2','119', '2022-10-16 00:00:00');
-        return $first;
+        $arr = [];
+        $faker = \Faker\Factory::create('vi_VN');
+        $locations = Location::query()->pluck('id')->toArray();
+        for ($i = 1; $i <= 100; $i++) {
+            $arr[] = [
+                'bill_detail_id' => Bill_detail::query()->where('id', $i)->value('id'),
+                'code' => $faker->regexify('[A-Z0-9]{10}'),
+                'name_passenger' =>$faker->firstName . ' ' . $faker->lastName,
+                'phone_passenger' =>$faker->phoneNumber,
+                'email_passenger' => $faker->email,
+                'address_passenger_id' => $faker->randomElement($locations),
+            ];
+        }
+        return $arr;
     }
 }

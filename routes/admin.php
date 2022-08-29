@@ -12,6 +12,7 @@ use App\Http\Controllers\TestController;
 
 use App\Http\Controllers\CarriageController;
 
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckAdminMiddleware;
 use App\Http\Middleware\CheckLoginMiddleware;
@@ -148,6 +149,7 @@ Route::group([
     //    api
     Route::get('/apiRouteCommons', [BillDetailController::class, 'apiRouteCommons'])->name('api.route_commons');
 });
+
 Route::group([
     'as' => 'buses.',
     'prefix' => 'buses',
@@ -172,4 +174,21 @@ Route::group([
     Route::get('/apiGetPrice', [BusesController::class, 'apiGetPrice'])->name('api.apiGetPrice');
     Route::get('/apiGetDay', [BusesController::class, 'apiGetDay'])->name('apiGetDay');
     Route::get('/apiCheckCarriage', [BusesController::class, 'apiCheckCarriage'])->name('apiCheckCarriage');
+});
+
+//Tickets
+Route::group([
+    'as' => 'tickets.',
+    'prefix' => 'tickets',
+     'middleware' => CheckStaffMiddleware::class,
+], function () {
+    Route::get('/', [TicketController::class, 'index'])->name('index');
+    Route::get('/show/{ticket}', [TicketController::class, 'show'])->name('show');
+    Route::get('/edit/{ticket}', [TicketController::class, 'edit'])->name('edit');
+    Route::get('/create', [TicketController::class, 'create'])->name('create');
+    Route::post('/store', [TicketController::class, 'store'])->name('store');
+    //    api
+    Route::get('/apiTicket', [TicketController::class, 'api'])->name('api');
+    Route::get('/apiGetPhonePassenger', [TicketController::class, 'apiPhonePassenger'])->name('api.phone_passenger');
+    Route::get('/apiGetCodeTickets', [TicketController::class, 'apiCodeTickets'])->name('api.code_tickets');
 });

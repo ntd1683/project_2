@@ -23,8 +23,8 @@ class BillSeeder extends Seeder
                 'customer_id' => $faker->randomElement($customer),
                 'code' => $faker->unique()->regexify('[A-Z0-9]{8}'),
                 'price' => $faker->numberBetween(80000, 1000000),
-                'payment_method' => $faker->boolean ? ($faker->randomElement([1, 2, 3])) : null,
-                'status' =>  $faker->boolean ? ($faker->numberBetween(0, 5)) : null,
+                'payment_method' =>$faker->randomElement([0 ,1, 2, 3]),
+                'status' =>$faker->numberBetween(0, 1),
                 'created_at' => $faker->dateTimeBetween('-1 years', 'now'),
             ];
         }

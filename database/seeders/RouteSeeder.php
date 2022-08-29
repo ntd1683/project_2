@@ -19,7 +19,7 @@ class RouteSeeder extends Seeder
         $arr = [];
         $faker = \Faker\Factory::create('vi_VN');
         $city = City::query()->pluck('id')->toArray();
-        for ($i = 1; $i <= 9; $i++) {
+        for ($i = 1; $i <= 15; $i++) {
             $city_start_id = $faker->randomElement($city);
             $city_end_id = $faker->randomElement($city);
             while($city_start_id == $city_end_id){
@@ -42,6 +42,7 @@ class RouteSeeder extends Seeder
                 'distance' => $distance,
             ];
         }
-        Route::insert($arr);
+        $arr_unique = unique_multidim_array($arr,'name');
+        Route::insert($arr_unique);
     }
 }

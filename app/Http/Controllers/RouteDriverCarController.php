@@ -43,10 +43,6 @@ class RouteDriverCarController extends Controller
         //
     }
 
-    public function index1()
-    {
-        dd('1');
-    }
     public function api($request)
     {
 //        dd($request);

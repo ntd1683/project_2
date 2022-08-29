@@ -375,7 +375,7 @@
                         }
                     },
                     submitHandler: function (form) {
-                        $(form).submit();
+                        form.submit();
                     }
                 });
 
@@ -405,7 +405,7 @@
                         },
                     },
                     submitHandler: function (form) {
-                        $(form).submit();
+                        form.submit();
                     }
                 });
             });
