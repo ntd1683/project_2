@@ -97,20 +97,20 @@ Breadcrumbs::for('ticket', function ($trail) {
     $trail->push('Quản lý vé xe', route('admin.tickets.index'));
 });
 
-//Trang Chủ > Tuyến Xe > Thêm
+//Trang Chủ > Vé xe > Thêm
 Breadcrumbs::for('create_ticket', function ($trail) {
     $trail->parent('ticket');
     $trail->push('Thêm', route('admin.tickets.create'));
 });
 
-//Trang Chủ > Tuyến Xe > Chỉnh sửa
+//Trang Chủ > Vé xe > Chỉnh sửa
 Breadcrumbs::for('edit_ticket', function ($trail, $ticket) {
     $trail->parent('ticket');
     $trail->push('Sửa', route('admin.tickets.edit', $ticket->id));
 });
 
-//Trang Chủ > Tuyến Xe > Xem
+//Trang Chủ > Vé xe > Xem
 Breadcrumbs::for('show_ticket', function ($trail, $ticket) {
-    $trail->parent('Ticket');
+    $trail->parent('ticket');
     $trail->push('Xem', route('admin.tickets.show', $ticket->id));
 });

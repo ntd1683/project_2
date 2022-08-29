@@ -145,6 +145,7 @@
                 });
 
                 let table = $('#table-index').DataTable({
+                    order: [[1, 'desc']],
                     destroy: true,
                     dom: 'ltrp',
                     lengthMenu:[10,20,25,50,100],

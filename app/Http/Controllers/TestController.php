@@ -32,19 +32,10 @@ class TestController extends Controller
 
     public function test()
     {
-        $arr = [];
-        $faker = \Faker\Factory::create('vi_VN');
-        $locations = Location::query()->pluck('id')->toArray();
-        for ($i = 1; $i <= 100; $i++) {
-            $arr[] = [
-                'bill_detail_id' => Bill_detail::query()->where('id', $i)->value('id'),
-                'code' => $faker->regexify('[A-Z0-9]{10}'),
-                'name_passenger' =>$faker->firstName . ' ' . $faker->lastName,
-                'phone_passenger' =>$faker->phoneNumber,
-                'email_passenger' => $faker->email,
-                'address_passenger_id' => $faker->randomElement($locations),
-            ];
-        }
-        return $arr;
+        return view('test');
+    }
+
+    public function get_test(Request $request){
+        dd($request);
     }
 }

@@ -25,7 +25,8 @@
         <h1>404</h1>
         <h3 class="h2"><i class="fas fa-exclamation-triangle"></i> Oops! Page not found!</h3>
         <p class="h4 font-weight-normal">The page you requested was not found.</p>
-        <a href="{{route('index')}}" class="btn btn-primary">Back to Home</a>
+        <a href="@if(Illuminate\Support\Facades\Auth::check()){{route('admin.index')}}@endif
+        @if(!Illuminate\Support\Facades\Auth::check()){{route('index')}}@endif" class="btn btn-primary">Back to Home</a>
     </div>
 </div>
 

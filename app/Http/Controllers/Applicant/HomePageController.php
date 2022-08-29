@@ -217,7 +217,6 @@ class HomePageController extends Controller
                 }
 //                dd($arr_bus);
                 $select_locations = Location::query()->where('city_id',$city_start)->get()->toArray();
-//            dd($select_locations);
                 foreach($select_locations as $each){
                     if($each['name'] == null){
                         $arr_location[$each['id']] ='';
