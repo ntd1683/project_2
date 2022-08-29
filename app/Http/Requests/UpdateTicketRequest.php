@@ -13,7 +13,7 @@ class UpdateTicketRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,34 @@ class UpdateTicketRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name_passenger'=>[
+                'required',
+            ],
+            'phone_passenger'=>[
+                'required',
+            ],
+            'email_passenger'=>[
+                'required',
+            ],
+            'quantity' =>[
+                'required',
+            ],
+            'price'=>[
+                'required',
+            ],
+            'location'=>[
+                'required',
+            ],
+            'payment_method'=>[
+                'required',
+            ],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'Bạn đang bỏ trống ô nào đó',
         ];
     }
 }

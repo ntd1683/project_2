@@ -14,13 +14,64 @@
         span.select2-container{
             z-index:10000 !important;
         }
-
-        #label-pin{
-            opacity:0.6;
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
         }
-        #label-pin:hover{
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
             cursor: pointer;
-            opacity:1;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
         }
     </style>
 @endpush
@@ -28,298 +79,260 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">Sửa Chuyến Đi</h4>
-                </div>
-                    <div class="card-body">
-                        <form action="{{route('admin.routes.update',$route)}}" id="form-create-route" method="post" enctype="multipart/form-data">
-                            @csrf
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-2">Điểm Đến</label>
-                                <div class="col-md-10">
-                                    <select name="city_start_id" class="form-control" id="city_start_id"></select>
+                <form action="{{route('admin.tickets.update',$ticket->id_ticket)}}" id="form-edit-ticket" method="post">
+                    @csrf
+                    <input type="hidden" name="id_bill_detail" value="{{$ticket->bill_detail_id}}">
+                    <input type="hidden" name="id_bill" value="{{$ticket->bill_id}}">
+                    <div class="card-header">
+                        <h3 class="card-title">Xem Vé Xe</h3>
+                    </div>
+                    <div class="card-header">
+                        <h5 class="card-title">Thông tin Vé Xe</h5>
+                    </div>
+                        <div class="card-body">
+                                <div class="form-group row">
+                                    <label class="col-form-label col-md-2">Tên khách hàng</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" name="name_passenger" id="name_passenger" value="{{$ticket->name_passenger}}">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-2">Điểm Đi</label>
-                                <div class="col-md-10">
-                                    <select name="city_end_id" class="form-control" id="city_end_id"></select>
+                                <div class="form-group row">
+                                    <label class="col-form-label col-md-2">SĐT khách hàng</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" name="phone_passenger" id="phone_passenger" value="{{$ticket->phone_passenger}}" style="color:red;font-weight:bold;">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-2">Tên</label>
-                                <div class="col-md-10">
-                                    <input type="text" readonly class="form-control" name="name" id="name" placeholder="ví dụ : Đắk Lắk - Hồ Chí Minh" value="{{$route->name}}">
+                                <div class="form-group row">
+                                    <label class="col-form-label col-md-2">Mã vé xe</label>
+                                    <div class="col-md-10">
+                                        <input type="text" readonly class="form-control" id="code_ticket" value="{{$ticket->code_ticket}}" style="color:red;font-weight:bold;">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-2">Thời Gian Đi</label>
-                                <div class="col-md-10">
-                                    <input type="number" class="form-control" name="time" placeholder="Đơn vị giờ" value="{{$route->time}}">
+                            @if($level == 2)
+                                <div class="form-group row">
+                                    <label class="col-form-label col-md-2">Mã hàng hoá</label>
+                                    <div class="col-md-10">
+                                        <input type="text" readonly class="form-control" id="code_bill" value="{{$ticket->code_bill}}" style="color:red;font-weight:bold;">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-2">Khoảng Cách</label>
-                                <div class="col-md-10">
-                                    <input type="number" class="form-control" name="distance" id="distance" placeholder="Đơn vị km" value="{{$route->distance}}">
+                            @endif
+                                <div class="form-group row">
+                                    <label class="col-form-label col-md-2">Chuyến đi</label>
+                                    <div class="col-md-10">
+                                        <input type="text" readonly class="form-control" id="route_name" value="{{$ticket->route_name}}" style="color:red;font-weight:bold;">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-2">Chọn ảnh mới nếu bạn thích : </label>
-                                <div class="col-md-10">
-                                    <input type="file" name="images" onchange="loadFile(event)">
-                                    <br>
-                                    <img id="output" width="200" alt="Ảnh đã chọn"/>
+                                <div class="form-group row">
+                                    <label class="col-form-label col-md-2">Email khách hàng</label>
+                                    <div class="col-md-10">
+                                        <input type="email" class="form-control" name="email_passenger" id="email_passenger" value="{{$ticket->email_passenger}}">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-md-2">Ảnh cũ : </label>
-                                <div class="col-md-10">
-                                    <img width="200" src="{{asset($images)}}" alt="Ảnh cũ"/>
+                                <div class="form-group row">
+                                    <label class="col-form-label col-md-2">Thời gian lên xe</label>
+                                    <div class="col-md-10">
+                                        <input type="text" readonly class="form-control" id="departure_time" value="{{$ticket->departure_time}}">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-10">
-                                    <div class="checkbox">
-                                        <label for="pin" id="label-pin">
-                                            <input type="checkbox" name="pin" id="pin" @if($route->pin == 1)
-                                            checked
-                                            @endif> Bạn có muốn ghim tuyến này không ?
+                                <div class="form-group row">
+                                    <label class="col-form-label col-md-2">Số ghế</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" name="quantity" id="quantity" value="{{$ticket->quantity}}">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-form-label col-md-2">Tổng tiền : </label>
+                                    <div class="col-md-10">
+                                        <input type="text" readonly class="form-control" name="price_tmp" id="price_tmp" value="{{$ticket->price}}">
+                                        <input type="hidden" name="price" id="price" value="{{$ticket->bus_price*$ticket->quantity}}">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-form-label col-md-2">Điểm đón : </label>
+                                    <div class="col-md-10">
+                                        <select name="location" class="form-control">
+                                            @foreach($arr_location as $key => $value)
+                                                <option value="{{$key}}" @if($key == $ticket->id_location) selected @endif>{{$value}}</option>
+                                            @endforeach
+                                        </select>
+    {{--                                    <input type="text" class="form-control" name="location" id="location" value="{{$ticket->location}}">--}}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-form-label col-md-2" style="color:red;font-weight:bold;">Tình trạng thanh toán : </label>
+                                    <div class="col-md-10">
+                                        <label class="switch" for="checkbox">
+                                            <input type="checkbox" name="status"
+                                                   @if($ticket->status == 1) checked @endif id="checkbox">
+                                            <span class="slider round"></span>
                                         </label>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="mt-4 text-center">
-                                <button class="btn btn-primary" type="submit" onclick="alert('Vui lòng chờ 5s !!! Cảm ơn')" id="btn-submit">Sửa Tuyến Xe</button>
-                                <a href="{{route('admin.routes.index')}}" class="btn btn-link">Quay Lại</a>
-                            </div>
-                        </form>
-                    </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="modal-city" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Thêm Thành Phố Hoạt Động ( chưa có trong danh sách )</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal"
-                            aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{route('admin.cities.store')}}" id="form-create-city" method="post">
-                        @csrf
-                        <div class="row form-row">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label>Tên Thành Phố</label>
-                                    <select class="form-control" name="name" id="select-city">
-                                    </select>
+                                <div class="form-group row">
+                                    <label class="col-form-label col-md-2">Cách Thanh Toán : </label>
+                                    <div class="col-md-10" id="div_payment_method">
+                                        <select name="payment_method" class="form-control" id="payment_method">
+                                            @foreach($payment_method as $key => $value)
+                                                <option value="{{$key}}" @if($key == $ticket->payment_method) selected @endif>{{$key}}</option>
+                                            @endforeach
+                                        </select>
+                                        <br>
+                                    </div>
                                 </div>
+                        </div>
+                    <hr>
+                    <div class="card-header">
+                        <h5 class="card-title">Thông tin Tài Xế</h5>
+                    </div>
+                    <div class="card-header">
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-2">Tên tài xế : </label>
+                            <div class="col-md-10">
+                                <input type="text" readonly class="form-control" value="{{$ticket->user_name}}">
                             </div>
                         </div>
-                    </form>
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary btn-block" onclick="submitForm()"> Sửa Đổi</button>
-{{--                            <button type="submit" class="btn btn-primary btn-block"> Sửa Đổi</button>--}}
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-2">Số tài xế : </label>
+                            <div class="col-md-10">
+                                <input type="text" readonly class="form-control" value="{{$ticket->user_phone}}">
+                            </div>
                         </div>
-{{--                    </form>--}}
-                </div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-2">Biển tài xế : </label>
+                            <div class="col-md-10">
+                                <input type="text" readonly class="form-control" value="{{$ticket->license_plate}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-header">
+                        <div class="mt-4 text-center">
+                            <button class="btn btn-primary" type="submit" id="btn-submit">Sửa Thông Tin</button>
+                            <a href="{{route('admin.tickets.index')}}" class="btn btn-warning" style="color:white;">Quay Lại</a>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
     @push('js')
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
         <script>
-            const city_start_1 = '{{$city_start_name}}';
-            const city_end_1 = '{{$city_end_name}}';
-            function mySubmitFunction(e) {
-                e.preventDefault();
-                someBug();
-                return false;
-            }
-            var loadFile = function(event) {
-                var image = document.getElementById('output');
-                image.src = URL.createObjectURL(event.target.files[0]);
-            };
-            let check ;
-            function showError(notify) {
-                $.toast({
-                    heading: 'Error',
-                    text: notify,
-                    icon: 'error',
-                    position: 'top-right',
-                    showHideTransition: 'slide',
-                });
-            }
-
-            function showSuccess(notify) {
-                $.toast({
-                    heading: 'Success',
-                    text: notify,
-                    icon: 'success',
-                    position: 'top-right',
-                    showHideTransition: 'slide',
-                });
-            }
-
-            function test(){
-                console.log($("#select-city").val());
-            }
-
-            function submitForm() {
-                alert('Vui lòng chờ 5s !!!');
-                const obj = $("#form-create-city");
-                const formData = new FormData(obj[0]);
-                sessionStorage.setItem('key', 'value');
-                $.ajax({
-                    url: "{{route('admin.cities.store')}}",
-                    type: 'POST',
-                    dataType: 'json',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    async: false,
-                    cache: false,
-                    success: function (response) {
-                        if (response.success) {
-                            $("#modal-city").modal("hide");
-                            showSuccess('Thêm city thành công');
-                        } else {
-                            showError(response.message);
-                        }
-                    },
-                    error: function (response) {
-                        let errors;
-                        if (response.responseJSON.errors) {
-                            errors = Object.values(response.responseJSON.errors);
-                            showError(errors);
-                        } else {
-                            errors = response.responseJSON.message;
-                            showError(errors);
-                        }
+            function intToString(num) {
+                num = num.toString().replace(/[^0-9.]/g, '');
+                if (num < 1000) {
+                    return num;
+                }
+                let si = [
+                    {v: 1E3, s: "K"},
+                    {v: 1E6, s: "M"},
+                    {v: 1E9, s: "B"},
+                    {v: 1E12, s: "T"},
+                    {v: 1E15, s: "P"},
+                    {v: 1E18, s: "E"}
+                ];
+                let index;
+                for (index = si.length - 1; index > 0; index--) {
+                    if (num >= si[index].v) {
+                        break;
                     }
-                });
+                }
+                return (num / si[index].v).toFixed(2).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, "$1") + si[index].s;
             }
-{{--            Load city--}}
+            function loadFile(){
+                let image = $("#div_payment_method");
+                let payment_method = $("#payment_method").val();
+                let img;
+                let img_payment_method = $(".img_payment_method");
+                if(img_payment_method){
+                    $("img").remove(".img_payment_method");
+                }
+                switch (payment_method) {
+                    case 'Momo':
+                        img = `<img class="img_payment_method" src="{{asset('img/icon/momo.fc16949.png')}}" alt="Thanh toán momo" width="200" style="margin-top:15px;">`;
+                        break;
+                    case 'Thẻ Nội Địa':
+                        img =`<img class="img_payment_method" src="{{asset('img/icon/napas.e513efd.png')}}" alt="Thanh toán thẻ ATM" width="200" style="margin-top:15px;">`;
+                        break;
+                    case 'Thẻ Quốc Tế':
+                        img = `<img class="img_payment_method" src="{{asset('img/icon/jcb.99dcd7f.png')}}" alt="Thanh toán thẻ quốc tế" width="70" style="margin-top:15px;">
+                                                <img class="img_payment_method" src="{{asset('img/icon/master.f966244.png')}}" alt="Thanh toán thẻ quốc tế" width="70" style="margin-top:15px;">
+                                                <img class="img_payment_method" src="{{asset('img/icon/visa.af41b0e.png')}}" alt="Thanh toán thẻ quốc tế" width="70" style="margin-top:15px;">`;
+                        break;
+                    case 'Khác':
+                        img=`<img id="img_payment_method" src="{{asset('img/icon/the-other-1.jpg')}}" alt="Thanh toán khác" width="200" style="margin-top:15px;">`;
+                        break;
+                }
+                image.append(img);
+            }
+            $("#payment_method").change(function() {
+                loadFile();
+            });
+            $("#quantity").change(function() {
+                let bus_price = {{$ticket->bus_price}};
+                let price = bus_price * this.value;
+                let price_tmp = intToString(price);
+                let input_price_tmp = $("#price_tmp");
+                let input_price = $("#price");
+                input_price_tmp.val(price_tmp);
+                input_price.val(price);
+            });
             $(document).ready(async function () {
-                let check9i = 0;
-                $("#city_start_id").select2({tags: true});
-                $("#select-city").select2({tags: true});
-                $("#city_end_id").select2({tags: true});
-                const response_start = await fetch('{{ asset('locations/index.json') }}');
-                const cities_start = await response_start.json();
-                var string_start;
-                var string_end;
-                $.each(cities_start, function (index, each) {
-                    string_start += `<option data-path='${each.file_path}'`;
-                    if (city_start_1 === index) {
-                        string_start += ` selected `;
-                    }
-                    string_start += `>${index}</option>`;
-                    $("#city_start_id").append(string_start);
-                    $("#select-city").append(`
-                <option data-path='${each.file_path}'>
-                    ${index}
-                </option>`)
-
-                    string_end += `<option data-path='${each.file_path}'`;
-                    if (city_end_1 === index) {
-                        string_end += ` selected `;
-                    }
-                    string_end += `>${index}</option>`;
-                    $("#city_end_id").append(string_end);
-                });
-                function generateName(){
-                    city_start = $("#city_start_id").val();
-                    city_end = $("#city_end_id").val();
-                    let name = city_start + ' - ' + city_end;
-                    $("#name").val(name);
-                }
-
-                function checkCityStart() {
-                    $.ajax({
-                        url: '{{ route('admin.cities.check') }}/' + $("#city_start_id").val(),
-                        type: 'GET',
-                        dataType: 'json',
-                        success: async function (response) {
-                            if (response.data) {
-                                $("#modal-city").modal("hide");
-                                check = true;
-                            } else {
-                                $("#modal-city").modal("show");
-                                $("#select-city").val($("#city_start_id").val()).trigger('change');
-                                check = false;
-                            }
-                        }
-                    });
-                }
-                function checkCityEnd() {
-                    $.ajax({
-                        url: '{{ route('admin.cities.check') }}/' + $("#city_end_id").val(),
-                        type: 'GET',
-                        dataType: 'json',
-                        success: async function (response) {
-                            if (response.data) {
-                                $("#modal-city").modal("hide");
-                                check = true;
-                            } else {
-                                $("#modal-city").modal("show");
-                                $("#select-city").val($("#city_end_id").val()).trigger('change');
-                                check = false;
-                            }
-                        }
-                    });
-                }
-                let city_start = $("#city_start_id").val();
-                let city_end = $("#city_end_id").val();
-
-                $("#city_start_id, #city_end_id").change(function () {
-                    generateName();
-                });
+                loadFile();
 
                 //validation
-                $("#form-create-route").validate({
+                $("#form-edit-ticket").validate({
                     rules: {
-                        name: {
+                        name_passenger: {
                             required: true,
                         },
-                        city_start_id: {
+                        phone_passenger: {
                             required: true,
                         },
-                        city_end_id: {
+                        email_passenger: {
+                            required: true,
+                            email: true,
+                        },
+                        quantity: {
                             required: true,
                         },
-                        time: {
+                        price_tmp: {
                             required: true,
                         },
-                        distance: {
+                        location: {
+                            required: true,
+                        },
+                        payment_method: {
                             required: true,
                         }
                     },
                     messages:{
-                        name:{
+                        name_passenger: {
                             required:"Không được bỏ trống",
                         },
-                        city_start_id:{
+                        phone_passenger: {
                             required:"Không được bỏ trống",
                         },
-                        city_end_id:{
+                        email_passenger: {
+                            required:"Không được bỏ trống",
+                            email:"Email không hợp lệ",
+                        },
+                        quantity: {
                             required:"Không được bỏ trống",
                         },
-                        time:{
+                        price_tmp: {
                             required:"Không được bỏ trống",
                         },
-                        distance:{
+                        location: {
+                            required:"Không được bỏ trống",
+                        },
+                        payment_method: {
                             required:"Không được bỏ trống",
                         }
                     },
                     submitHandler:async function (form) {
-                        checkCityStart();
-                        checkCityEnd();
                         if (check === true){
                             form.submit();
                         }

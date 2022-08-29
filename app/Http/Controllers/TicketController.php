@@ -6,6 +6,9 @@ use App\Enums\CarriageCategoryEnum;
 use App\Enums\PaymentMethodEnum;
 use App\Enums\SeatTypeEnum;
 use App\Enums\StatusBillEnum;
+use App\Models\Bill;
+use App\Models\Bill_detail;
+use App\Models\Location;
 use App\Models\Route;
 use App\Models\Ticket;
 use App\Http\Requests\StoreTicketRequest;
@@ -74,7 +77,7 @@ class TicketController extends Controller
                 return route('admin.tickets.show', $object->id_ticket);
             })
             ->addColumn('edit', function ($object) {
-                return route('admin.tickets.edit', $object);
+                return route('admin.tickets.edit', $object->id_ticket);
             })
             ->make(true);
     }
@@ -110,13 +113,9 @@ class TicketController extends Controller
 
     public function show(Ticket $ticket)
     {
-//        dd($ticket);
-        $breadcumbs = Breadcrumbs::render('edit_ticket',$ticket);
-//        if($ticket->isEmpty()){
-//            return redirect()->back()->with('errors','Không tồn tại vé xe này');
-//        }
+        $breadcumbs = Breadcrumbs::render('show_ticket',$ticket);
         $ticket_tmp = Ticket::query()
-            ->selectRaw('tickets.*,tickets.code as code_ticket,bill_details.*,bills.*,
+            ->selectRaw('tickets.*,tickets.code as code_ticket,tickets.id as id_ticket,bill_details.*,bills.*,
             bills.code as code_bill,buses.departure_time,locations.*,
             routes.name as route_name,routes.time,
             users.name as user_name,users.phone as user_phone,
@@ -132,8 +131,8 @@ class TicketController extends Controller
             ->join('routes','routes.id','route_id')
             ->join('cities','cities.id','city_end_id')
             ->where('tickets.id',$ticket->id)->first();
-        $ticket_tmp->location = $ticket_tmp->name.', '?? '';
-        $ticket_tmp->location .= $ticket_tmp->address .', '.$ticket_tmp->district;
+        $ticket_tmp->location = '('.$ticket_tmp->name.')'?? '';
+        $ticket_tmp->location = $ticket_tmp->address .', '.$ticket_tmp->district .$ticket_tmp->location;
         $departure_time = \DateTime::createFromFormat('Y-m-d H:i:s', $ticket_tmp->departure_time);
         $departure_time = $departure_time->format('H:i:s d-m-Y');
         $ticket_tmp->departure_time = $departure_time;
@@ -150,18 +149,96 @@ class TicketController extends Controller
 
     public function edit(Ticket $ticket)
     {
+        $breadcumbs = Breadcrumbs::render('edit_ticket',$ticket);
+        $ticket_tmp = Ticket::query()
+            ->selectRaw('tickets.*,tickets.code as code_ticket,tickets.id as id_ticket,bill_details.*,bills.*,
+            bills.code as code_bill,buses.departure_time,locations.*,locations.id as id_location,
+            buses.price as bus_price,
+            routes.name as route_name,routes.time,routes.city_start_id,
+            users.name as user_name,users.phone as user_phone,
+            carriages.license_plate as license_plate,
+            cities.name as city_name_end')
+            ->join('bill_details','bill_details.id','bill_detail_id')
+            ->join('buses','buses.id','buses_id')
+            ->join('bills','bills.id','bill_id')
+            ->join('locations','locations.id','address_passenger_id')
+            ->join('route_driver_cars','route_driver_cars.id','route_driver_car_id')
+            ->join('users','route_driver_cars.driver_id','users.id')
+            ->join('carriages','route_driver_cars.car_id','carriages.id')
+            ->join('routes','routes.id','route_id')
+            ->join('cities','cities.id','city_end_id')
+            ->where('tickets.id',$ticket->id)->first();
+        $ticket_tmp->location = '('.$ticket_tmp->name.')'?? '';
+        $ticket_tmp->location = $ticket_tmp->address .', '.$ticket_tmp->district . ' '.$ticket_tmp->location;
+        $departure_time = \DateTime::createFromFormat('Y-m-d H:i:s', $ticket_tmp->departure_time);
+        $departure_time = $departure_time->format('H:i:s d-m-Y');
+        $ticket_tmp->departure_time = $departure_time;
+        $ticket_tmp->price = number_shorten($ticket_tmp->price);
+        $ticket_tmp->payment_method = PaymentMethodEnum::getKeyByValue($ticket_tmp->payment_method);
+//        dd($ticket_tmp);
+
+        $city_start = $ticket_tmp->city_start_id;
+        $select_locations = Location::query()->where('city_id',$city_start)->get()->toArray();
+        foreach($select_locations as $each){
+            if($each['name'] == null){
+                $arr_location[$each['id']] ='';
+            }else{
+                $arr_location[$each['id']] = $each['name'] . ' - ';
+            }
+            $arr_location[$each['id']] .= $each['address'].' - '.$each['district'];
+        }
+
+        $level = Auth::user()->level;
+
+        $payment_method = PaymentMethodEnum::getArrayView();
+        return view('admin.ticket.edit',[
+            'breadcumbs'=>$breadcumbs,
+            'ticket'=>$ticket_tmp,
+            'level'=>$level,
+            'arr_location' =>$arr_location,
+            'payment_method' =>$payment_method,
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateTicketRequest  $request
-     * @param  \App\Models\Ticket  $ticket
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateTicketRequest $request, Ticket $ticket)
+    public function update(UpdateTicketRequest $request,$ticket)
     {
-        //
+        try{
+//            ticket
+            $arr_ticket = $request->only([
+                "name_passenger",
+                "phone_passenger",
+                "email_passenger",
+                "location",
+            ]);
+            $object = $this->model->find($ticket);
+//            dd($object);
+            $object -> fill($arr_ticket);
+            $object->save();
+//            bill_detail
+            $arr_bill_detail = $request->only([
+                "quantity",
+                "price",
+            ]);
+            $object = Bill_detail::query()->find($request->id_bill_detail);
+            $object -> fill($arr_bill_detail);
+            $object->save();
+//            bill
+            $arr_bill = $request->only([
+                "quantity",
+                "price",
+            ]);
+            $arr_bill['payment_method'] = PaymentMethodEnum::getValueByKey($request->payment_method);
+            if($request->status){
+                $arr_bill['status'] = 1;
+            }
+            $object = Bill::query()->find($request->id_bill);
+            $object -> fill($arr_bill);
+            $object->save();
+            return redirect()->route('admin.tickets.index')->with('success','Bạn sửa thành công !!!');
+        }
+        catch(\Throwable $e){
+            return redirect()->back()->with('error','Bạn sửa thất bại rồi,vui lòng thử lại sau !!!');
+        }
     }
 
     /**

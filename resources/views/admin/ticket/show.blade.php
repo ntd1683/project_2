@@ -112,15 +112,15 @@
                                                 <img src="{{asset('img/icon/the-other-1.jpg')}}" alt="Thanh toán khác" width="200" style="margin-top:15px;">
                                             @break
                                             @case('Momo')
-                                                <img src="{{asset('img/icon/momo.fc16949.png')}}" alt="Thanh toán khác" width="200" style="margin-top:15px;">
+                                                <img src="{{asset('img/icon/momo.fc16949.png')}}" alt="Thanh toán MoMo" width="200" style="margin-top:15px;">
                                             @break
                                             @case('Thẻ Nội Địa')
-                                                <img src="{{asset('img/icon/napas.e513efd.png')}}" alt="Thanh toán khác" width="200" style="margin-top:15px;">
+                                                <img src="{{asset('img/icon/napas.e513efd.png')}}" alt="Thanh toán thẻ ATM" width="200" style="margin-top:15px;">
                                             @break
                                             @case('Thẻ Quốc Tế')
-                                                <img src="{{asset('img/icon/jcb.99dcd7f.png')}}" alt="Thanh toán khác" width="70" style="margin-top:15px;">
-                                                <img src="{{asset('img/icon/master.f966244.png')}}" alt="Thanh toán khác" width="70" style="margin-top:15px;">
-                                                <img src="{{asset('img/icon/visa.af41b0e.png')}}" alt="Thanh toán khác" width="70" style="margin-top:15px;">
+                                                <img src="{{asset('img/icon/jcb.99dcd7f.png')}}" alt="Thanh toán thẻ quốc tế" width="70" style="margin-top:15px;">
+                                                <img src="{{asset('img/icon/master.f966244.png')}}" alt="Thanh toán thẻ quốc tế" width="70" style="margin-top:15px;">
+                                                <img src="{{asset('img/icon/visa.af41b0e.png')}}" alt="Thanh toán thẻ quốc tế" width="70" style="margin-top:15px;">
                                             @break
                                         @endswitch
 {{--                                    </div>--}}
@@ -154,7 +154,7 @@
 
                 <div class="card-header">
                     <div class="mt-4 text-center">
-                        <a class="btn btn-success" href="{{route('admin.tickets.edit',$ticket)}}">Sửa</a>
+                        <a class="btn btn-success" href="{{route('admin.tickets.edit',$ticket->id_ticket)}}">Sửa</a>
                         <a href="{{route('admin.tickets.index')}}" class="btn btn-warning" style="color:white;">Quay Lại</a>
                     </div>
                 </div>

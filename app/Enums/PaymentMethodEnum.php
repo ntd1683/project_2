@@ -33,4 +33,10 @@ final class PaymentMethodEnum extends Enum
         }
         return array_search($value, self::getArrayView(), true);
     }
+
+    public static function getValueByKey($key): string
+    {
+        $arr = self::getArrayView();
+        return $arr[$key];
+    }
 }

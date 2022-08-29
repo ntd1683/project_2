@@ -201,9 +201,10 @@ Route::group([
 ], function () {
     Route::get('/', [TicketController::class, 'index'])->name('index');
     Route::get('/show/{ticket}', [TicketController::class, 'show'])->name('show');
-    Route::get('/edit/{ticket}', [TicketController::class, 'edit'])->name('edit');
     Route::get('/create', [TicketController::class, 'create'])->name('create');
     Route::post('/store', [TicketController::class, 'store'])->name('store');
+    Route::get('/edit/{ticket}', [TicketController::class, 'edit'])->name('edit');
+    Route::post('/update/{route}', [TicketController::class, 'update'])->name('update');
     //    api
     Route::get('/apiTicket', [TicketController::class, 'api'])->name('api');
     Route::get('/apiGetPhonePassenger', [TicketController::class, 'apiPhonePassenger'])->name('api.phone_passenger');

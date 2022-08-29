@@ -35,3 +35,4 @@ Route::get('/apiNameRoutes', [RouteController::class, 'apiNameRoutes'])->name('a
 
 //test
 Route::get('/test/', [TestController::class, 'test'])->name('test');
+Route::post('/test1/', [TestController::class, 'get_test'])->name('get_test');
