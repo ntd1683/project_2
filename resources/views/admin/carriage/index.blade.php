@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    <div class="card filter-card" id="filter_inputs">
+    <div class="card filter-card" id="filter_inputs" style="display: block;">
         <div class="card-body pb-0">
                 <div class="row filter-row">
                         <div class="col-sm-6 col-md-3">
@@ -192,7 +192,7 @@
                             orderable: false,
                             searchable: false,
                             render: function (data, type, row, meta) {
-                                return `<a class="btn btn-success" href="${data}" style="color:white!important;">Edit</a>`;
+                                return `<a class="btn btn-sm bg-success-light mr-2" href="${data}"><i class="far fa-edit mr-1"></i>Edit</a>`;
                             }
                         },
                         {                             
@@ -204,8 +204,8 @@
                                 return `<form action="${data}" method="post">
                                     @csrf
                                     @method('DELETE')
-                                <button type='button' class="btn btn-danger" id="btn-delete" >Delete</button>
-                                </form>`;
+                                    <button type='button' class="btn btn-sm bg-danger-light mr-2 delete_review_comment" id="btn-delete" ><i class="far fa-trash-alt mr-1"></i>Delete</button>
+                                    </form>`;
                             }
                         },
                     ],

@@ -12,10 +12,10 @@
                 @endif>
                     <a href="{{route('admin.index')}}"><i class="fas fa-columns"></i> <span>Trang Chủ</span></a>
                 </li>
-                <li @if($route === 'users')
+                <li @if($route === 'buses')
                     class="active"
                     @endif>
-                    <a href="{{route('admin.users.show_users')}}"><i class="fas fa-user-tie"></i> <span> Quản Lý Nhân Viên</span></a>
+                    <a href="{{route('admin.buses.calendar')}}"><i class="fas fa-shuttle-van"></i> <span> Quản Lý Chuyến Xe</span></a>
                 </li>
                 <li @if($route === 'routes')
                     class="active"
@@ -26,10 +26,10 @@
                     @endif>
                     <a href="{{route('admin.carriages.index')}}"><i class="fas fa-bus"></i> <span> Quản Lý Xe</span></a>
                 </li>
-                <li @if($route === 'buses')
+                <li @if($route === 'users')
                     class="active"
                     @endif>
-                    <a href="{{route('admin.buses.calendar')}}"><i class="fas fa-shuttle-van"></i> <span> Quản Lý Chuyến Xe</span></a>
+                    <a href="{{route('admin.users.show_users')}}"><i class="fas fa-user-tie"></i> <span> Quản Lý Nhân Viên</span></a>
                 </li>
                 <li @if($route === 'customers')
                     class="active"
