@@ -54,7 +54,7 @@
     </div>
     {{-- End Add --}}
     {{-- Filter --}}
-    <div class="card filter-card" id="filter_inputs">
+    <div class="card filter-card" id="filter_inputs" style="display: block;">
         <div class="card-body pb-0">
                 <div class="row filter-row">                        
                         {{-- Filter time --}}
@@ -135,7 +135,6 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Sửa</th>
                                 <th>Tuyến đường</th>
                                 <th>Xe</th>
                                 <th>Tài xế</th>
@@ -144,6 +143,7 @@
                                 <th>Giá vé</th>
                                 <th>Thời gian</th>
                                 <th>Quãng đường</th>
+                                <th>Sửa</th>
                                 <th>Xoá</th>
                             </tr>
                             </thead>
@@ -163,7 +163,7 @@
                 function( settings, data, dataIndex ) {
                     var min = minDate.val();
                     var max = maxDate.val();
-                    var date = new Date( data[5] );
+                    var date = new Date( data[4] );
             
                     if (
                         ( min === null && max === null ) ||
@@ -272,14 +272,6 @@
                         ajax: '{!! route('admin.buses.api') !!}',
                         columns: [
                             { data: 'id', name: 'id' },
-                            {   
-                                data: 'edit',
-                                orderable: false,
-                                searchable: false,
-                                render: function (data, type, row, meta) {
-                                    return `<a class="btn btn-sm bg-success-light mr-2" href="${data}"><i class="far fa-edit mr-1"></i>Edit</a>`;
-                                }
-                            },
                             // { 
                             //     data: 'images',
                             //     orderable: false,
@@ -328,6 +320,14 @@
                                     return data + 'km';
                                 }
                             },
+                            {   
+                                data: 'edit',
+                                orderable: false,
+                                searchable: false,
+                                render: function (data, type, row, meta) {
+                                    return `<a class="btn btn-sm bg-success-light mr-2" href="${data}"><i class="far fa-edit mr-1"></i>Edit</a>`;
+                                }
+                            },
                             {                             
                                 data: 'delete',
                                 orderable: false,
@@ -344,13 +344,13 @@
                 });
                 // filter
                 $('#route').change(function() {
-                    table.column(2).search(this.value).draw();
+                    table.column(1).search(this.value).draw();
                 });
                 $('#license-plate').change(function() {
-                    table.column(3).search(this.value).draw();
+                    table.column(2).search(this.value).draw();
                 });
                 $('#driver').change(function() {
-                    table.column(4).search(this.value).draw();
+                    table.column(3).search(this.value).draw();
                 });
                 $('#min, #max').change(function() {
                     minDate = $('#min').val();
@@ -358,7 +358,7 @@
                     table.draw();
                 });
                 $('#time').change(function() {
-                    table.column(6).search(this.value).draw();
+                    table.column(5).search(this.value).draw();
                 });
 
                  // Delete element on table by ajax

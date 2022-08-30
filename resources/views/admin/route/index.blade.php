@@ -34,7 +34,7 @@
         </div>
     </div>
     {{--  Fillter  --}}
-    <div class="card filter-card" id="filter_inputs">
+    <div class="card filter-card" id="filter_inputs"  style="display: block;">
         <div class="card-body pb-0">
             <div class="row filter-row">
                 <div class="col-sm-6 col-md-3">
@@ -77,8 +77,8 @@
                         <table class="table table-hover table-center mb-0" id="table-index" style="text-align: center">
                             <thead>
                             <tr>
-                                <th></th>
                                 <th>#</th>
+                                <th>Xem</th>
                                 <th>Điểm Đi</th>
                                 <th>Điểm Đến</th>
                                 <th>Tên</th>
@@ -122,7 +122,7 @@
                             };
                         }
                     },
-                    placeholder: 'Nhập tên chuyến đi',
+                    placeholder: 'Nhập tên tuyến đường',
                     allowClear:true
                 });
 
@@ -148,7 +148,7 @@
                             };
                         }
                     },
-                    placeholder: 'Nhập tên chuyến đi',
+                    placeholder: 'Nhập điểm đi',
                     allowClear:true
                 });
 
@@ -174,7 +174,7 @@
                             };
                         }
                     },
-                    placeholder: 'Nhập tên chuyến về',
+                    placeholder: 'Nhập điểm đến',
                     allowClear:true
                 });
 
@@ -187,16 +187,16 @@
                     serverSide: true,
                     ajax: '{!! route('admin.routes.api') !!}',
                     columns: [
+                        {data: 'id', name: 'id'},
                         {
                             data: 'show',
                             targets: 0,
                             orderable: false,
                             searchable: false,
                             render: function (data, type, row, meta) {
-                                return `<a class="btn btn-info" href="${data}" style="color:white!important;">Xem</a>`;
+                                return `<a href="${data}" class="btn btn-sm bg-info-light"><i class="far fa-eye mr-1"></i> View</a>`;
                             }
                         },
-                        {data: 'id', name: 'id'},
                         {data: 'city_start', name: 'city_start'},
                         {data: 'city_end', name: 'city_end'},
                         {data: 'name', name: 'name'},
@@ -208,7 +208,7 @@
                             orderable: false,
                             searchable: false,
                             render: function (data, type, row, meta) {
-                                return `<a class="btn btn-success" href="${data}" style="color:white!important;">Sửa</a>`;
+                               return `<a class="btn btn-sm bg-success-light mr-2" href="${data}"><i class="far fa-edit mr-1"></i>Edit</a>`;
                             }
                         },
                         {
@@ -220,8 +220,8 @@
                                 return `<form action="${data}" method="post">
                                     @csrf
                                 @method('DELETE')
-                                <button type='button' class="btn btn-danger" id="btn-delete" >Xoá</button>
-                            </form>`;
+                                <button type='button' class="btn btn-sm bg-danger-light mr-2 delete_review_comment" id="btn-delete" ><i class="far fa-trash-alt mr-1"></i>Delete</button>
+                                </form>`;
                             }
                         },
                     ],

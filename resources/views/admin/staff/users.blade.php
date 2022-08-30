@@ -34,14 +34,14 @@
         </div>
     </div>
         {{--  Fillter  --}}
-    <div class="card filter-card" id="filter_inputs">
+    <div class="card filter-card" id="filter_inputs"  style="display: block;">
         <div class="card-body pb-0">
                 <div class="row filter-row">
                         <div class="col-sm-6 col-md-3">
                             <form>
                                 <div class="form-group">
                                     <label for="level">Chức Vụ</label>
-                                    <select class="form-control select-filter" name="level" id="level" style="text-align: center">
+                                    <select class="form-control select" name="level" id="level" style="text-align: center">
                                         <option value="-1" Selected>Tất Cả</option>
                                         @foreach($levels as $level=>$value)
                                             <option value="{{$value}}">{{$level}}</option>
@@ -54,7 +54,7 @@
                             <form>
                                 <div class="form-group">
                                     <label for="select-name">Tên</label>
-                                    <select name="name" class="form-control" style="text-align: center" id="select-name">
+                                    <select name="name" class="form-control select" style="text-align: center" id="select-name">
                                     </select>
                                 </div>
                             </form>
@@ -63,7 +63,7 @@
                         <form>
                             <div class="form-group">
                                 <label for="select-provinces">Vị Trí</label>
-                                <select name="provinces" class="form-control" style="text-align: center" id="select-provinces">
+                                <select name="provinces" class="form-control select" style="text-align: center" id="select-provinces">
                                 </select>
                             </div>
                         </form>
@@ -83,13 +83,14 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Sửa</th>
                                 <th>Tên</th>
                                 <th>SĐT</th>
+                                <th>Email</th>
                                 <th>Ngày Sinh</th>
                                 <th>Giới Tính</th>
                                 <th>Địa Chỉ</th>
                                 <th>Chức Vụ</th>
+                                <th>Sửa</th>
                                 <th>Xoá</th>
                             </tr>
                             </thead>
@@ -167,15 +168,6 @@
                     columns: [
                         {data: 'id', name: 'id'},
                         {
-                            data: 'edit',
-                            targets: 1,
-                            orderable: false,
-                            searchable: false,
-                            render: function (data, type, row, meta) {
-                                return `<a class="btn btn-success" href="${data}" style="color:white!important;">Edit</a>`;
-                            }
-                        },
-                        {
                             data: 'name',
                             targets: 2,
                             orderable: true,
@@ -196,10 +188,25 @@
                                 return `<a href="tel:${data}">${data}1</a>`;
                             }
                         },
+                        {
+                            data: 'email',
+                            render: function (data, type, row, meta) {
+                                return `<a href="mailto:${data}">${data}1</a>`;
+                            }
+                        },
                         {data: 'birthdate', name: 'birthdate'},
                         {data: 'gender', name: 'gender'},
                         {data: 'address', name: 'address'},
                         {data: 'level', name: 'level'},
+                        {
+                            data: 'edit',
+                            targets: 1,
+                            orderable: false,
+                            searchable: false,
+                            render: function (data, type, row, meta) {
+                                return `<a class="btn btn-sm bg-success-light mr-2" href="${data}"><i class="far fa-edit mr-1"></i>Edit</a>`;
+                            }
+                        },
                         {
                             data: 'destroy',
                             targets: 8,
@@ -209,21 +216,21 @@
                                 return `<form action="${data}" method="post">
                                     @csrf
                                 @method('DELETE')
-                                <button type='button' class="btn btn-danger" id="btn-delete" >Delete</button>
-                            </form>`;
+                                <button type='button' class="btn btn-sm bg-danger-light mr-2 delete_review_comment" id="btn-delete" ><i class="far fa-trash-alt mr-1"></i>Delete</button>
+                                </form>`;
                             }
                         },
                     ],
                 });
                 $('#level').change(function () {
                     let value = $(this).val();
-                    table.columns(6).search(value).draw();
+                    table.columns(7).search(value).draw();
                 });
                 $('#select-name').change(function () {
                     table.columns(1).search(this.value).draw();
                 });
                 $('#select-provinces').change(function () {
-                    table.columns(5).search(this.value).draw();
+                    table.columns(6).search(this.value).draw();
                 });
                 $(document).on('click','#btn-delete',function(){
                     let confirm_delete = confirm("Bạn có chắc muốn xoá không ?");
