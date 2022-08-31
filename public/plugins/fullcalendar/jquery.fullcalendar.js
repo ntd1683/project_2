@@ -154,7 +154,6 @@
                     }
                 });
             });
-
         });
         $this.$modal.modal('show');
 
@@ -200,7 +199,7 @@
             });
             return false;
         });
-        $this.$calendarObj.fullCalendar('unselect');
+        // $this.$calendarObj.fullCalendar('unselect');
 
         $this.$modal.find('.close').click(function () {
             $this.$modal.modal('hide');
@@ -391,12 +390,12 @@
 
         //on new event
         this.$saveCategoryBtn.on('click', function(){
-            var categoryName = $this.$categoryForm.find("input[name='category-name']").val();
-            var categoryColor = $this.$categoryForm.find("select[name='category-color']").val();
-            if (categoryName !== null && categoryName.length != 0) {
-                $this.$extEvents.append('<div class="calendar-events" data-class="bg-' + categoryColor + '" style="position: relative;"><i class="fas fa-circle text-' + categoryColor + '"></i>' + categoryName + '</div>')
-                $this.enableDrag();
-            }
+            // var categoryName = $this.$categoryForm.find("input[name='category-name']").val();
+            // var categoryColor = $this.$categoryForm.find("select[name='category-color']").val();
+            // if (categoryName !== null && categoryName.length != 0) {
+            //     $this.$extEvents.append('<div class="calendar-events" data-class="bg-' + categoryColor + '" style="position: relative;"><i class="fas fa-circle text-' + categoryColor + '"></i>' + categoryName + '</div>')
+            //     $this.enableDrag();
+            // }
 
         });
     },

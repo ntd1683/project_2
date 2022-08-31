@@ -104,10 +104,10 @@
             <h5 class="card-title">Xe</h5>
             <div id="license-plate" class="mb-3">
             </div>
-            <a href="#" data-toggle="modal" data-target="#add_new_event"
-                class="btn mb-3 btn-primary justify-content-center d-flex">
-                <i class="fas fa-plus"></i> Thêm Xe
-            </a>
+            <button type="button" data-toggle="modal" data-target="#add_new_event" id="add_car"
+                class="btn col-lg-12 btn-primary justify-content-center d-flex">
+                Thêm Xe
+            </button>
         </div>
         <div class="col-lg-9 col-md-8">
             <div class="card">
@@ -131,8 +131,7 @@
                 <div class="modal-body"></div>
                 <div class="modal-footer justify-content-center">
                     <button type='submit' class='btn btn-success save-event submit-btn'>Save</button>
-                    <button type="button" class="btn btn-success create-event submit-btn">Create
-                        event</button>
+                    <button type="button" class="btn btn-success create-event submit-btn">Create</button>
                     <button type="button" class="btn btn-danger delete-event submit-btn"
                         data-dismiss="modal">Delete</button>
                 </div>
@@ -150,11 +149,44 @@
                         aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="form-carriages" method="POST" action="{{route('admin.carriages.store')}}">
+                        @csrf
                         <div class="form-group">
-                            <label>Category Name</label>
-                            <input class="form-control form-white" placeholder="Enter name" type="text"
-                                name="category-name" />
+                            <label>Biển số xe</label>
+                            <input type="text" class="form-control form-white" name="license_plate" placeholder="Ví dụ: 22-T9-9999">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6 mb-3">
+                                <label>Loại xe</label>
+                                <select class="form-control" name="category">
+                                    @foreach($categories as $category=>$value)
+                                        <option value="{{$value}}">{{$category}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Loại ghế ngồi</label>
+                                <select class="form-control" name="seat_type">
+                                    @foreach($seatTypes as $seatType=>$value)
+                                        <option value="{{$value}}">{{$seatType}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6 mb-3">
+                                <label>Số lượng ghế</label>
+                                <input type="number" class="form-control" name="default_number_seat" >
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Giá</label>
+                                <input type="number" class="form-control" name="price" id="price">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Tài xế</label>
+                            <select class="form-control select" name="driver" id="driver">
+                            </select>
                         </div>
                         <div class="form-group mb-0">
                             <label>Choose Category Color</label>
@@ -169,8 +201,8 @@
                             </select>
                         </div>
                         <div class="submit-section">
-                            <button type="button" class="btn btn-primary save-category submit-btn"
-                                data-dismiss="modal">Save</button>
+                            <button type="submit" class="btn btn-success save-category submit-btn"
+                                data-dismiss="modal">Create</button>
                         </div>
                     </form>
                 </div>
@@ -187,6 +219,12 @@
             $(document).on('click', '#add_btn', function() {
                 $('#add_show').slideToggle("slow");
             });
+
+            let editCarFunction = function(){
+                var attribute = this.getAttribute("value");
+                alert(attribute);
+            }
+
             $(document).ready(function() {
                 // get element
                 let calendar_event = $('#license-plate');
@@ -218,6 +256,7 @@
 
                 // get first route and set route selected
                 let route_id;
+                let route_id_inverse;
                 let route_event = $('#route_event');
                 $.ajax({
                     url: "{{route('admin.routes.api.apiGetFirstRoute')}}",
@@ -255,10 +294,26 @@
                             let carriages_html = '';
                             calendar_event.html('');
                             $.each(data, function(index, value) {
-                                carriages_html = `<div class="calendar-events" data-class="bg-info" value="${value.id}"><i class="fas fa-circle text-info"></i> ${value.license_plate} </div>`;
+                                carriages_html = `<div class="calendar-events" data-class="bg-info" value="${value.id}" style="cursor: pointer;"><i class="fas fa-circle text-info"></i> ${value.license_plate} </div>`;
                                 calendar_event.append(carriages_html);
                             });
                             $.CalendarApp.enableDrag();
+
+                            var elements = document.getElementsByClassName("calendar-events");
+
+                            for (var i = 0; i < elements.length; i++) {
+                                elements[i].addEventListener('click', editCarFunction, false);
+                            }
+                        }
+                    });
+                    $.ajax({
+                        url: '{{ route('admin.routes.apiGetRouteInverse') }}',
+                        type: 'GET',
+                        data: {
+                            route: route_id
+                        },
+                        success: function(res) {
+                            route_id_inverse=res.id;
                         }
                     });
 
@@ -282,6 +337,130 @@
                         }
                     });
                 });
+
+                // Add carriages
+                $('#add_car').click(function(){
+                    $('#add_new_event').modal("show");
+                    $('#driver').select2({
+                        ajax: {
+                            url: "{{route('admin.users.api.name_drivers')}}",
+                            dataType: 'json',
+                            data: function (params) {
+                                return {
+                                    q: params.term, // search term
+                                };
+                            },
+                            processResults: function (data, params) {
+                                params.page = params.page || 1;
+
+                                return {
+                                    results: $.map(data, function (item) {
+                                        return {
+                                            text: item.name,
+                                            id: item.id,
+                                        }
+                                    })
+                                };
+                            }
+                        },
+                        placeholder: 'Nhập tên tài xế',
+                        allowClear:true,
+                        dropdownParent: $("#add_new_event")
+                    });
+                })
+                $('#add_new_event').find('.close').click(function () {
+                    $('#add_new_event').modal('hide');
+                });
+                jQuery.validator.addMethod('valid_license_plate', function (value) {
+                    var regex = /^[0-9]{1,2}-[A-Z0-9]{1,2}-[0-9]{4,5}$/;
+                    return value.trim().match(regex);
+                });
+
+                $("#form-carriages").validate({
+                    rules: {
+                        license_plate: {
+                            required: true,
+                            valid_license_plate: true,
+                        },
+                        category: {
+                            required: true,
+                        },
+                        seat_type: {
+                            required: true,
+                        },
+                        default_number_seat: {
+                            required: true,
+                            number: true,
+                            min: 10,
+                            max: 100,
+                        },
+                        route_from: {
+                            required: true,
+                        },
+                        price: {
+                            required: true,
+                            number: true,
+                            min: 0,
+                        },
+                    },
+                    messages: {
+                        license_plate: {
+                            required: "Vui lòng nhập biển số xe",
+                            valid_license_plate: "Biển số xe không hợp lệ",
+                        },
+                        category: {
+                            required: "Vui lòng chọn loại xe",
+                        },
+                        seat_type: {
+                            required: "Vui lòng chọn loại ghế ngồi",
+                        },
+                        default_number_seat: {
+                            required: "Vui lòng nhập số lượng ghế",
+                            number: "Vui lòng nhập số",
+                            min: "Số lượng ghế phải lớn hơn 10",
+                            max: "Số lượng ghế phải nhỏ hơn 100",
+                        },
+                        driver: {
+                            required: "Vui lòng chọn tài xế",
+                        },
+                        price: {
+                            required: "Vui lòng nhập giá",
+                            number: "Vui lòng nhập số",
+                            min: "Giá phải lớn hơn 0",
+                        },
+                    },
+                    submitHandler: function (form) {
+                        //check license plate in softdelete
+
+                        // submit form
+                        $.ajax({
+                            url: form.action,
+                            type: form.method,
+                            data: $(form).serialize() + '&route_from=' + route_id + '&route_to=' + route_id_inverse,
+                            success: function(response) {
+                                notify(response);
+                            },
+                            error: function(response) {
+                                // get key and value in response object
+                                var errors = response.responseJSON.errors;
+                                $.each(errors, function (key, value) {
+                                    $.toast({
+                                        heading: 'Lỗi',
+                                        text: value,
+                                        icon: 'error',
+                                        position: 'top-right',
+                                        showHideTransition: 'slide',
+                                    });
+                                });
+                            }
+                        });
+                    }
+                });
+
+
+                $('.calendar-events').click(function(){
+                    console.log('hello');
+                })
 
             });
         </script>

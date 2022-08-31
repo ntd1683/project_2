@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CarriageCategoryEnum;
+use App\Enums\SeatTypeEnum;
 use App\Http\Requests\QuickDestroyBusesRequest;
 use App\Http\Requests\QuickStoreBusesRequest;
 use App\Models\Buses;
@@ -142,7 +144,12 @@ class BusesController extends Controller
 
     public function calendar()
     {
-        return view('admin.buses.calendar');
+        $seatTypes = SeatTypeEnum::getArrayView();
+        $categories = CarriageCategoryEnum::getArrayView();
+        return view('admin.buses.calendar',[
+            'seatTypes' => $seatTypes,
+            'categories' => $categories
+        ]);
     }
 
     /**
