@@ -6,6 +6,7 @@ use App\Enums\CarriageCategoryEnum;
 use App\Enums\PaymentMethodEnum;
 use App\Enums\SeatTypeEnum;
 use App\Enums\StatusBillEnum;
+use App\Events\ApprovalPaymentEvent;
 use App\Models\Bill;
 use App\Models\Bill_detail;
 use App\Models\Location;
@@ -114,6 +115,7 @@ class TicketController extends Controller
 
     public function show(Ticket $ticket)
     {
+//        dd('1');
         $breadcumbs = Breadcrumbs::render('show_ticket',$ticket);
         $ticket_tmp = Ticket::query()
             ->selectRaw('tickets.*,tickets.code as code_ticket,tickets.id as id_ticket,bill_details.*,bills.*,
@@ -212,9 +214,11 @@ class TicketController extends Controller
                 "location",
             ]);
             $object = $this->model->find($ticket);
+//            dd($info_ticket);
 //            dd($object);
             $object -> fill($arr_ticket);
             $object->save();
+            $info_ticket = $object;
 //            bill_detail
             $arr_bill_detail = $request->only([
                 "quantity",
@@ -231,6 +235,7 @@ class TicketController extends Controller
             $arr_bill['payment_method'] = PaymentMethodEnum::getValueByKey($request->payment_method);
             if($request->status){
                 $arr_bill['status'] = 1;
+                ApprovalPaymentEvent::dispatch($info_ticket);
             }
             $object = Bill::query()->find($request->id_bill);
             $object -> fill($arr_bill);

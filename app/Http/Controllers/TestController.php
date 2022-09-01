@@ -13,6 +13,7 @@ use App\Models\Customer;
 use App\Models\Location;
 use App\Models\Route;
 use App\Models\Route_driver_car;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
@@ -32,7 +33,10 @@ class TestController extends Controller
 
     public function test()
     {
-        return view('test');
+        $test = '+84-53-163-3317';
+        return view('test',[
+            'test'=>$test,
+        ]);
     }
 
     public function get_test(Request $request){
