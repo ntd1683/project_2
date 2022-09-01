@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Events\ApplicantOrderEvent;
+use App\Events\ApprovalPaymentEvent;
 use App\Events\UserCreateEvent;
 use App\Listeners\SendMailCreateUserNotification;
 use App\Listeners\SendMailOrderNotification;
+use App\Listeners\SendMailPaymentSuccessNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -27,6 +29,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         ApplicantOrderEvent::class => [
             SendMailOrderNotification::class,
+        ],
+        ApprovalPaymentEvent::class => [
+            SendMailPaymentSuccessNotification::class,
         ],
     ];
 

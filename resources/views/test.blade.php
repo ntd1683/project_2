@@ -66,15 +66,7 @@
 </head>
 <body>
 
-<h2>Toggle Switch</h2>
-<form action="{{route('get_test')}}" method="post">
-    @csrf
-    <label class="switch" for="checkbox">
-        <input type="checkbox" name="checkbox" checked id="checkbox">
-        <span class="slider round"></span>
-    </label>
-    <button>Submit</button>
-</form>
+{{urlencode($test)}}
 
 </body>
 </html>

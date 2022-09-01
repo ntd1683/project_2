@@ -387,6 +387,7 @@ class HomePageController extends Controller
 
     public function booking(BookingTicketRequest $request)
     {
+//        dd($request);
         $ticket = Ticket::query()->where('phone_passenger',$request->phone)
             ->where('code',$request->code_ticket)->get();
         if($ticket->isEmpty()){
