@@ -34,11 +34,11 @@ class Route extends Model
 
     public function city_start()
     {
-        return $this->hasMany(City::class,'id','city_start_id');
+        return $this->belongsTo(City::class,'city_start_id');
     }
 
     public function city_end()
     {
-        return $this->hasMany(City::class,'id','city_end_id');
+        return $this->belongsTo(City::class,'city_end_id');
     }
 }
