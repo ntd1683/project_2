@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
-
+//input : 188833 => output = 189k
 if(!function_exists('number_shorten')){
     function number_shorten($number, $precision = 3, $divisors = null) {
 
@@ -32,7 +32,7 @@ if(!function_exists('number_shorten')){
         return (int)number_format($number / $divisor, $precision) . $shorthand;
     }
 }
-
+// chuyển giờ
 if(!function_exists('add_hour')){
     function add_hour($time,$hour): string
     {
@@ -46,21 +46,21 @@ if(!function_exists('add_hour')){
         return $sum . ':' . $explodedTime[1];
     }
 }
-
+//mã hoá số điện thoại
 if(!function_exists('encode_phone')){
     function encode_phone($phone): string
     {
         return substr($phone, 0, 3).'xxxx'.substr($phone, -3);
     }
 }
-
+//mã hoá email
 if(!function_exists('encode_email')){
     function encode_email($mail): string
     {
         return substr($mail, 0, 3) . 'xxxxxxxxxxxx@' . Str::after($mail, '@');
     }
 }
-
+//unique
 if(!function_exists('unique_multidim_array')){
 
     function unique_multidim_array($array, $key): array
@@ -77,5 +77,16 @@ if(!function_exists('unique_multidim_array')){
             $i++;
         }
         return $temp_array;
+    }
+}
+if(!function_exists('hour_to_day')){
+    function hour_to_day($hour): string
+    {
+        if($hour<=24){
+            return $hour . 'Giờ';
+        }
+        (int)$date = floor($hour/24);
+        $new_hour = $hour - $date*24;
+        return $date .' Ngày '.$new_hour .' giờ';
     }
 }
