@@ -55,10 +55,10 @@ class RouteController extends Controller
         $route_model = $this->model->with('city_start')->with('city_end');
         return DataTables::of($route_model)
             ->editColumn('city_start', function ($object) {
-                return $object->city_start->pluck('name')->toArray();
+                return $object->city_start->name;
             })
             ->editColumn('city_end', function ($object) {
-                return $object->city_end->pluck('name')->toArray();
+                return $object->city_end->name;
             })
             ->editColumn('name', function ($object) {
                 return $object->name;

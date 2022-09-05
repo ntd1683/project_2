@@ -154,7 +154,7 @@ Route::group([
 ], function () {
     //    api
     Route::post('/api', [BillController::class, 'apiRevenue'])->name('api.revenue');
-    Route::get('/api', [BillController::class, 'apiCustomerRevenue'])->name('api.customers_revenue');
+    Route::get('/apiCustomersRevenue', [BillController::class, 'apiCustomerRevenue'])->name('api.customers_revenue');
 });
 
 //bill_details

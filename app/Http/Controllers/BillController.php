@@ -41,6 +41,7 @@ class BillController extends Controller
             ->limit(30)
             ->get()
             ->map(function ($each){
+                $each->revenue = number_shorten($each->revenue);
                 $each->name_customer = $each->customer_name->name;
                 $each->gender_customer = ($each->customer_name->gender == 1) ? 'nam' : 'nữ';
                 $each->birthdate_customer = date('d-m-Y', strtotime($each->customer_name->birthdate));

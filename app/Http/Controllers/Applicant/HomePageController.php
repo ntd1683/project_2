@@ -130,6 +130,7 @@ class HomePageController extends Controller
                     unset($each->images);
                     return $each;
                 });
+//            dd($routes);
             $i = 0;
             // lấy tên tất cả mảng trong cột city start và city end
             foreach ($routes as $each){
@@ -245,28 +246,26 @@ class HomePageController extends Controller
 //                dd('1');
                 $request->step = 1;
                 $routes = Route::query()->with('city_start')->with('city_end')
-                    ->selectRaw("routes.*,sum(route_driver_cars.price) as price")
+                    ->selectRaw("routes.*")
+                    ->selectRaw("sum(route_driver_cars.price) as price")
                     ->leftJoin('route_driver_cars','routes.id','=','route_driver_cars.route_id')
                     ->groupBy("routes.id")
-                    ->orderBy("pin","desc")
+                    ->orderByDESC("pin")
                     ->get()
                     ->map(function ($each) {
-//                dd($each);
-                        $each->city_start_name = $each->city_start->pluck('name')[0];
-                        $each->city_end_name = $each->city_end->pluck('name')[0];
+                        $each->city_start_name = $each->city_start->name;
+                        $each->city_end_name = $each->city_end->name;
                         $each->img = "upload/" . $each->images;
+                        $each->price = null;
                         if(isset($each->pin)){
                             $price = Route_driver_car::query()
-                                ->selectRaw("route_id,MIN(price) as price")
+                                ->selectRaw("MIN(price) as price")
                                 ->where('route_id','=',$each->id)
-                                ->groupBy('route_id')
-                                ->pluck('price')
-                                ->toArray();
-                            if($price != null){
-                                $each->price = number_shorten($price[0]);
+                                ->value("price");
+                            if(isNull($price)){
+//                            input = 189762 => output 189k
+                                $each->price = number_shorten($price);
                             }
-                        }else{
-                            $each->price = null;
                         }
                         unset($each->city_start);
                         unset($each->city_end);

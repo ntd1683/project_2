@@ -309,6 +309,7 @@
                 select: true,
                 processing: true,
                 serverSide: true,
+                order: [[3, 'desc']],
                 ajax: '{!! route('admin.bills.api.customers_revenue') !!}',
                 columns: [
                     {data: 'name_customer', name: 'name_customer'},
@@ -321,6 +322,7 @@
                 destroy: true,
                 dom: 'ltrp',
                 lengthMenu:[5,10,15],
+                order: [[1, 'desc']],
                 select: true,
                 processing: true,
                 serverSide: true,
