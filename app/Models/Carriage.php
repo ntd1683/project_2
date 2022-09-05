@@ -18,5 +18,6 @@ class Carriage extends Model
         'category',
         'seat_type',
         'default_number_seat',
+        'color',
     ];
 }

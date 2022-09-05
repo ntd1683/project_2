@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\CarriageCategoryEnum;
+use App\Enums\CarriageColorEnum;
 use App\Enums\SeatTypeEnum;
 use App\Http\Requests\QuickDestroyBusesRequest;
 use App\Http\Requests\QuickStoreBusesRequest;
@@ -132,23 +133,29 @@ class BusesController extends Controller
         $route_id = $request->get('route_id');
         return $this->model
             ->select('buses.id as id', 'buses.departure_time as departure_time', 'buses.price as price',
-                    'carriages.license_plate as license_plate', 'carriages.id as car_id',
+                    'carriages.license_plate as license_plate', 'carriages.id as car_id', 'carriages.color as color',
                     'users.name as driver_name',
                     'route_driver_cars.route_id as route_id')
             ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
             ->join('carriages', 'carriages.id', '=', 'route_driver_cars.car_id')
             ->join('users', 'users.id', '=', 'route_driver_cars.driver_id')
             ->where('route_driver_cars.route_id', $route_id)
-            ->get();
+            ->get()
+            ->map(function ($each) {
+                $each->color = CarriageColorEnum::getKeyByValue($each->color);
+                return $each;
+            });
     }
 
     public function calendar()
     {
         $seatTypes = SeatTypeEnum::getArrayView();
         $categories = CarriageCategoryEnum::getArrayView();
+        $color = CarriageColorEnum::getArrayView();
         return view('admin.buses.calendar',[
             'seatTypes' => $seatTypes,
-            'categories' => $categories
+            'categories' => $categories,
+            'color' => $color,
         ]);
     }
 

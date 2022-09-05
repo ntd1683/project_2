@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\CarriageCategoryEnum;
+use App\Enums\CarriageColorEnum;
 use App\Enums\SeatTypeEnum;
 use App\Models\Carriage;
 use App\Http\Requests\StoreCarriageRequest;
@@ -75,7 +76,7 @@ class CarriageController extends Controller
         $route_id = $request->get('route_id');
         $q = $request->get('q');
         $query = $this->model
-            ->select('carriages.id', 'carriages.license_plate')
+            ->select('carriages.id', 'carriages.license_plate', 'carriages.color')
             ->where('license_plate', 'like', '%' . $q . '%');
         $query->when($route_id != null, function ($query) use ($route_id) 
         {
@@ -83,7 +84,10 @@ class CarriageController extends Controller
             ->where('route_driver_cars.route_id', $route_id)
             ->groupBy('carriages.id');
         });
-        return $query->get();
+        return $query->get()->map(function ($each) {
+            $each->color = CarriageColorEnum::getKeyByValue($each->color);
+            return $each;
+        });
     }
 
     public function apiNumberSeats(Request $request)
@@ -124,18 +128,20 @@ class CarriageController extends Controller
             $category = $request->get('category');
             $seat_type = $request->get('seat_type');
             $default_number_seat = $request->get('default_number_seat');
+            $color = (int)$request->get('color');
             $route1_id = $request->get('route_from');
             $route2_id = $request->get('route_to');
             $driver_id = $request->get('driver');
             $price = $request->get('price');
 
-            $carriage_id=$this->model->create([
+            $carriage=$this->model->create([
                 'license_plate' => $license_plate,
                 'category' => $category,
                 'seat_type' => $seat_type,
                 'default_number_seat' => $default_number_seat,
-            ])->id;
-
+                'color' => $color,
+            ]);
+            $carriage_id = $carriage->id;
             // create route_driver_car with 2 route
             try {
                 Route_driver_car::create([
@@ -156,7 +162,8 @@ class CarriageController extends Controller
                 $this->model->withTrashed()->where('id', $carriage_id)->forceDelete();
                 return ['success' => false, 'message' => 'Liên kết tuyến đường bị lỗi'];
             }
-            return ['id' => $carriage_id, 'success' => true, 'message' => 'Thêm xe thành công'];
+            $carriage->color = CarriageColorEnum::getKeyByValue($color);
+            return [$carriage, 'success' => true, 'message' => 'Thêm xe thành công'];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => 'Thêm xe thất bại'];
         }
@@ -208,6 +215,7 @@ class CarriageController extends Controller
             $category = $request->get('category');
             $seat_type = $request->get('seat_type');
             $default_number_seat = $request->get('default_number_seat');
+            $color = (int)$request->get('color');
             $route1_id = $request->get('route_from');
             $route2_id = $request->get('route_to');
             $driver_id = $request->get('driver');
@@ -217,6 +225,7 @@ class CarriageController extends Controller
                 'category' => $category,
                 'seat_type' => $seat_type,
                 'default_number_seat' => $default_number_seat,
+                'color' => $color,
             ]);
             $RDC1 = Route_driver_car::updateOrCreate([
                 'route_id' => $route1_id,

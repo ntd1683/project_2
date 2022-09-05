@@ -192,15 +192,11 @@
                             </select>
                         </div>
                         <div class="form-group mb-0">
-                            <label>Choose Category Color</label>
-                            <select class="form-control form-white" data-placeholder="Choose a color..."
-                                name="category-color">
-                                <option value="success">Success</option>
-                                <option value="danger">Danger</option>
-                                <option value="info">Info</option>
-                                <option value="primary">Primary</option>
-                                <option value="warning">Warning</option>
-                                <option value="inverse">Inverse</option>
+                            <label>Color</label>
+                            <select class="form-control" name="color" id="color">
+                                @foreach($color as $color=>$value)
+                                    <option value="{{$value}}" class="text-{{$color}}">{{ucfirst($color)}}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="submit-section">
@@ -231,6 +227,29 @@
             $(document).on('click', '#add_btn', function() {
                 $('#add_show').slideToggle("slow");
             });
+
+            let loadEventCalendar = function(){
+                // load ajax event
+                $.ajax({
+                    url: '{{route('admin.buses.api.calendar')}}',
+                    type: 'GET',
+                    data: {
+                        route_id: route_id,
+                    },
+                    success: function(data){
+                        data.map(function(item){
+                                item.eventId = item.id;
+                                item.start = item.departure_time;
+                                item.end = moment(item.departure_time).add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+                                item.title = item.license_plate;
+                                item.className = 'bg-' + item.color;
+                                // item.backgroundColor = '#722ED1';
+                            });
+                        $.CalendarApp.$calendarObj.fullCalendar('removeEvents');
+                        $.CalendarApp.$calendarObj.fullCalendar('addEventSource', data);
+                    }
+                });
+            };
 
             let validateCarriages = function(){
                 form_carriages.validate({
@@ -289,8 +308,8 @@
                     type: form_carriages.attr('method'),
                     data: $(form_carriages).serialize() + '&route_from=' + route_id + '&route_to=' + route_id_inverse,
                     success: function(response) {
-                        let text = form_carriages.find("input[name='license_plate']").val();
-                        carriages_html = `<div class="calendar-events" data-class="bg-info" value="${response.id}" style="cursor: pointer;"><i class="fas fa-circle text-info"></i> ${text} </div>`;
+                        // let text = form_carriages.find("input[name='license_plate']").val();
+                        carriages_html = `<div class="calendar-events" value="${response[0].id}" style="cursor: pointer;"><i class="fas fa-circle text-${response[0].color}"></i> ${response[0].license_plate} </div>`;
                         calendar_event.append(carriages_html);
                         let elements = document.getElementsByClassName("calendar-events");
                         elements[elements.length-1].addEventListener('click', editCarFunction, false);
@@ -314,12 +333,16 @@
                 });
             };
 
-            let submitEditFormCarriages = function(){
+            let submitEditFormCarriages = function($this){
                 $.ajax({
                     url: form_carriages.attr('action'),
                     type: form_carriages.attr('method'),
                     data: $(form_carriages).serialize() + '&route_from=' + route_id + '&route_to=' + route_id_inverse,
                     success: function(response) {
+                        let color = form_carriages.find("select[name='color'] option:selected").text();
+                        let text = form_carriages.find("input[name='license_plate']").val();
+                        $this.innerHTML = `<i class="fas fa-circle text-${color.toLowerCase()}"></i> ${text}`;
+                        loadEventCalendar();
                         notify(response);
                         modal_carriages.modal('hide');
                     },
@@ -371,6 +394,7 @@
                         form_carriages.find("select[name='seat_type']").val(response.seat_type);
                         form_carriages.find("input[name='price']").val(response.price);
                         form_carriages.find("input[name='default_number_seat']").val(response.default_number_seat);
+                        form_carriages.find("select[name='color']").val(response.color);
                         $('#driver').select2('trigger', 'select', {
                             data: {
                                 id: response.driver_id,
@@ -381,7 +405,7 @@
                 });
                 modal_carriages.find('.save-car').unbind('click').click(function () {
                     if(form_carriages.valid()){
-                        submitEditFormCarriages();
+                        submitEditFormCarriages($this);
                     }
                 });
 
@@ -396,6 +420,7 @@
                             dataType: "json",
                             data: form_delete.serialize(),
                             success: function(response) {
+                                loadEventCalendar();
                                 $this.remove();
                                 notify(response);
                                 modal_carriages.modal('hide');
@@ -535,7 +560,7 @@
                             let carriages_html = '';
                             calendar_event.html('');
                             $.each(data, function(index, value) {
-                                carriages_html = `<div class="calendar-events" data-class="bg-info" value="${value.id}" style="cursor: pointer;"><i class="fas fa-circle text-info"></i> ${value.license_plate} </div>`;
+                                carriages_html = `<div class="calendar-events" value="${value.id}" style="cursor: pointer;"><i class="fas fa-circle text-${value.color}"></i> ${value.license_plate} </div>`;
                                 calendar_event.append(carriages_html);
                             });
                             $.CalendarApp.enableDrag();
@@ -558,25 +583,9 @@
                         }
                     });
 
-                    // load ajax event
-                    $.ajax({
-                        url: '{{route('admin.buses.api.calendar')}}',
-                        type: 'GET',
-                        data: {
-                            route_id: route_id,
-                        },
-                        success: function(data){
-                            data.map(function(item){
-                                    item.eventId = item.id;
-                                    item.start = item.departure_time;
-                                    item.end = moment(item.departure_time).add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss');
-                                    item.title = item.license_plate;
-                                    item.className = 'bg-info';
-                                });
-                            $.CalendarApp.$calendarObj.fullCalendar('removeEvents');
-                            $.CalendarApp.$calendarObj.fullCalendar('addEventSource', data);
-                        }
-                    });
+                    // load calendar
+                    loadEventCalendar();
+
                 });
                 // Validate carriages
                 validateCarriages();
