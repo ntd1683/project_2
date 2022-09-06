@@ -34,7 +34,7 @@
         </div>
     </div>
     {{--  Fillter  --}}
-    <div class="card filter-card" id="filter_inputs"  style="display: block;">
+    <div class="card filter-card" id="filter_inputs"  style="display: block;" style="display: block;">
         <div class="card-body pb-0">
             <div class="row filter-row">
                 <div class="col-sm-6 col-md-3">

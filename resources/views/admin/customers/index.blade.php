@@ -19,13 +19,13 @@
 @section('content')
 <div class="page-header">
     <div class="row" style="position:relative">
-            <div class="col-auto text-right" 
+            <div class="col-auto text-right"
                     style="
                 position: absolute;
                 right: 0;
                 top: -61px;
                 ">
-            <a class="btn btn-white filter-btn" id="filter_search">
+            <a class="btn btn-white filter-btn" id="filter_search" style="display: block;">
                 <i class="fas fa-filter"></i>
             </a>
         </div>
@@ -49,7 +49,7 @@
                             <div class="form-group">
                                 <label for="level">Điện thoại</label>
                                 <select class="form-control select" name="phone" id="phone" style="text-align: center">
-                                    
+
                                 </select>
                             </div>
                         </form>
@@ -59,7 +59,7 @@
                             <div class="form-group">
                                 <label for="level">Email</label>
                                 <select class="form-control select" name="email" id="email" style="text-align: center">
-                                    
+
                                 </select>
                             </div>
                         </form>
@@ -110,33 +110,33 @@
                             data: 'show',
                             render: function (data, type, row, meta) {
                                 return `<a href="${data}" class="btn btn-sm bg-info-light"><i class="far fa-eye mr-1"></i> View</a>`;
-                            } 
+                            }
                         },
                         { data: 'name', name: 'name' },
-                        { 
-                            data: 'email', 
+                        {
+                            data: 'email',
                             render: function (data, type, row, meta) {
                                 return `<a href="mailto:${data}">${data}1</a>`;
-                            } 
+                            }
                         },
-                        { 
-                            data: 'phone', 
+                        {
+                            data: 'phone',
                             render: function (data, type, row, meta) {
                                 return `<a href="tel:${data}">${data}1</a>`;
-                            } 
+                            }
                         },
-                        { 
-                            data: 'gender', 
+                        {
+                            data: 'gender',
                             render: function (data, type, row, meta) {
                                 return data == 0 ? 'Nữ' : 'Nam';
-                            } 
+                            }
                         },
                         { data: 'address', name: 'address' },
-                        { 
+                        {
                             data: 'birthday',
                             render: function (data, type, row, meta) {
                                 return data==null ? '' : moment(data).format('DD/MM/YYYY')
-                            } 
+                            }
                         },
                     ],
                 });
