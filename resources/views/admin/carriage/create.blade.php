@@ -32,7 +32,7 @@
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2" for="select-category">Loại xe</label>
                                 <div class="col-md-10">
-                                    <select class="form-control" name="category">
+                                    <select class="form-control select" name="category">
                                         @foreach($categories as $category=>$value)
                                             <option value="{{$value}}">{{$category}}</option>
                                         @endforeach
@@ -73,7 +73,7 @@
                             <div class="form-group row">
                                 <label class="col-form-label col-md-2" for="select-seat-type">Tài xế</label>
                                 <div class="col-md-10">
-                                    <select class="form-control" name="driver" id="driver">
+                                    <select class="form-control select" name="driver" id="driver">
                                     </select>
                                 </div>
                             </div>

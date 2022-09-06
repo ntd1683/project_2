@@ -92,12 +92,14 @@ Route::group([
     Route::delete('/destroy/{carriage}', [CarriageController::class, 'destroy'])->name('destroy');
     Route::get('/edit/{carriage}', [CarriageController::class, 'edit'])->name('edit');
     Route::post('/update/{carriage}', [CarriageController::class, 'update'])->name('update');
-    Route::post('/updateRouteCar/{carriage}', [CarriageController::class, 'updateRouteCar'])->name('updateRouteCar');
+    Route::post('/updateRDC/{carriage}', [CarriageController::class, 'updateRDC'])->name('updateRDC');
+    Route::post('/updateCarAndRDC/{carriage}', [CarriageController::class, 'updateCarAndRDC'])->name('updateCarAndRDC');
 
     //    api
     Route::get('/api', [CarriageController::class, 'api'])->name('api');
     Route::get('/apiNameCarriages', [CarriageController::class, 'apiNameCarriages'])->name('api.nameCarriages');
     Route::get('/apiNumberSeats', [CarriageController::class, 'apiNumberSeats'])->name('api.numberSeats');
+    Route::get('/apiCarriageByID', [CarriageController::class, 'apiCarriageByID'])->name('api.carriageByID');
 
 });
 //route

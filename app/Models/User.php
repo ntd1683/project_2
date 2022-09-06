@@ -51,4 +51,18 @@ class User extends Model implements AuthenticatableContract
     {
         return Str::afterLast($this->address, ',');
     }
+
+    // Auto delete related row
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($driver) {
+                $driver->RDCs()->get()->each->delete();
+        });
+    }
+
+    public function RDCs()
+    {
+        return $this->hasMany(Route_driver_car::class, 'id', 'driver_id');
+    }
 }

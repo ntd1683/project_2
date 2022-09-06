@@ -81,7 +81,7 @@
                     <h4 class="card-title">Tuyến đường liên kết</h4>
                 </div>
                     <div class="card-body">
-                        <form action="{{route('admin.carriages.updateRouteCar',$carriage)}}" id="form-route" method="post">
+                        <form action="{{route('admin.carriages.updateRDC',$carriage)}}" id="form-route" method="post">
                             @csrf
                             <div class="form-group row">
                                 <div class="col-md-2">

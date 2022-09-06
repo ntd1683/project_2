@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CarriageCategoryEnum;
+use App\Enums\CarriageColorEnum;
+use App\Enums\SeatTypeEnum;
 use App\Http\Requests\QuickDestroyBusesRequest;
 use App\Http\Requests\QuickStoreBusesRequest;
 use App\Models\Buses;
@@ -130,19 +133,30 @@ class BusesController extends Controller
         $route_id = $request->get('route_id');
         return $this->model
             ->select('buses.id as id', 'buses.departure_time as departure_time', 'buses.price as price',
-                    'carriages.license_plate as license_plate', 'carriages.id as car_id',
+                    'carriages.license_plate as license_plate', 'carriages.id as car_id', 'carriages.color as color',
                     'users.name as driver_name',
                     'route_driver_cars.route_id as route_id')
             ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
             ->join('carriages', 'carriages.id', '=', 'route_driver_cars.car_id')
             ->join('users', 'users.id', '=', 'route_driver_cars.driver_id')
             ->where('route_driver_cars.route_id', $route_id)
-            ->get();
+            ->get()
+            ->map(function ($each) {
+                $each->color = CarriageColorEnum::getKeyByValue($each->color);
+                return $each;
+            });
     }
 
     public function calendar()
     {
-        return view('admin.buses.calendar');
+        $seatTypes = SeatTypeEnum::getArrayView();
+        $categories = CarriageCategoryEnum::getArrayView();
+        $color = CarriageColorEnum::getArrayView();
+        return view('admin.buses.calendar',[
+            'seatTypes' => $seatTypes,
+            'categories' => $categories,
+            'color' => $color,
+        ]);
     }
 
     /**
@@ -429,14 +443,14 @@ class BusesController extends Controller
         $dateEnd = Carbon::parse((new Buses())->get_last_day_of_week($weekEnd, $year))->format('Y-m-d H:i:s');
 
         try {
-            $deleteBuses= Buses::join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
+            Buses::join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
             ->where(function ($q) use ($routeFrom, $routeTo){
                 $q->orWhere('route_driver_cars.route_id', $routeFrom);
                 $q->orWhere('route_driver_cars.route_id', $routeTo);
             })
             ->where('departure_time', '>=', $dateStart)
             ->where('departure_time', '<=', $dateEnd)
-            ->delete();
+            ->get()->each->delete();
             return redirect()->route('admin.buses.calendar')->with('success', 'Xóa nhanh thành công');
         } catch (\Exception $e){
             return redirect()->back()->with('error', 'Xóa nhanh thất bại');

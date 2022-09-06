@@ -18,5 +18,20 @@ class Carriage extends Model
         'category',
         'seat_type',
         'default_number_seat',
+        'color',
     ];
+
+    // Auto delete related row
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($carriage) {
+            $carriage->RDCs()->get()->each->delete();
+        });
+    }
+
+    public function RDCs()
+    {
+        return $this->hasMany(Route_driver_car::class, 'car_id', 'id');
+    }
 }

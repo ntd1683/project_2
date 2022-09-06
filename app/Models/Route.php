@@ -41,4 +41,18 @@ class Route extends Model
     {
         return $this->belongsTo(City::class,'city_end_id');
     }
+
+    // Auto delete related row
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($route) {
+            $route->RDCs()->get()->each->delete();
+        });
+    }
+
+    public function RDCs()
+    {
+        return $this->hasMany(Route_driver_car::class);
+    }
 }

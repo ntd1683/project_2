@@ -14,6 +14,9 @@
         table.table td a:hover {
             color: #ff0080;
         }
+        .error{
+            color: red !important;
+        }
     </style>
 @endpush
 @section('content')
@@ -104,10 +107,10 @@
             <h5 class="card-title">Xe</h5>
             <div id="license-plate" class="mb-3">
             </div>
-            <a href="#" data-toggle="modal" data-target="#add_new_event"
-                class="btn mb-3 btn-primary justify-content-center d-flex">
-                <i class="fas fa-plus"></i> Thêm Xe
-            </a>
+            <button type="button" data-toggle="modal" data-target="#add_new_event" id="add_car"
+                class="btn col-lg-12 btn-primary justify-content-center d-flex">
+                Thêm Xe
+            </button>
         </div>
         <div class="col-lg-9 col-md-8">
             <div class="card">
@@ -130,9 +133,8 @@
                 </div>
                 <div class="modal-body"></div>
                 <div class="modal-footer justify-content-center">
-                    <button type='submit' class='btn btn-success save-event submit-btn'>Save</button>
-                    <button type="button" class="btn btn-success create-event submit-btn">Create
-                        event</button>
+                    <button type="button" class='btn btn-success save-event submit-btn'>Save</button>
+                    <button type="button" class="btn btn-success create-event submit-btn">Create</button>
                     <button type="button" class="btn btn-danger delete-event submit-btn"
                         data-dismiss="modal">Delete</button>
                 </div>
@@ -141,36 +143,68 @@
     </div>
 
 
-    <div class="modal fade" id="add_new_event">
+    <div class="modal fade" id="carriages">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add Category</h4>
+                    <h4 class="modal-title"></h4>
                     <button type="button" class="close" data-dismiss="modal"
                         aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="form-carriages" method="POST">
+                        @csrf
                         <div class="form-group">
-                            <label>Category Name</label>
-                            <input class="form-control form-white" placeholder="Enter name" type="text"
-                                name="category-name" />
+                            <label>Biển số xe</label>
+                            <input type="text" class="form-control form-white" name="license_plate" id="license_plate" placeholder="Ví dụ: 22-T9-9999">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6 mb-3">
+                                <label>Loại xe</label>
+                                <select class="form-control" name="category" id="category">
+                                    @foreach($categories as $category=>$value)
+                                        <option value="{{$value}}">{{$category}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Loại ghế</label>
+                                <select class="form-control" name="seat_type" id="seat_type">
+                                    @foreach($seatTypes as $seatType=>$value)
+                                        <option value="{{$value}}">{{$seatType}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6 mb-3">
+                                <label>Số lượng ghế</label>
+                                <input type="number" class="form-control" name="default_number_seat" >
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Giá</label>
+                                <input type="number" class="form-control" name="price" id="price">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Tài xế</label>
+                            <select class="form-control select" name="driver" id="driver">
+                            </select>
                         </div>
                         <div class="form-group mb-0">
-                            <label>Choose Category Color</label>
-                            <select class="form-control form-white" data-placeholder="Choose a color..."
-                                name="category-color">
-                                <option value="success">Success</option>
-                                <option value="danger">Danger</option>
-                                <option value="info">Info</option>
-                                <option value="primary">Primary</option>
-                                <option value="warning">Warning</option>
-                                <option value="inverse">Inverse</option>
+                            <label>Color</label>
+                            <select class="form-control" name="color" id="color">
+                                @foreach($color as $color=>$value)
+                                    <option value="{{$value}}" class="text-{{$color}}">{{ucfirst($color)}}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="submit-section">
-                            <button type="button" class="btn btn-primary save-category submit-btn"
-                                data-dismiss="modal">Save</button>
+                            <button type="button" class='btn btn-success save-car submit-btn'>Save</button>
+                            <button type="button" class="btn btn-success create-car submit-btn"
+                                data-dismiss="modal">Create</button>
+                            <button type="button" class="btn btn-danger delete-car submit-btn"
+                                data-dismiss="modal">Delete</button>
                         </div>
                     </form>
                 </div>
@@ -184,12 +218,257 @@
         <script src="{{asset('plugins/fullcalendar/jquery.fullcalendar.js')}}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
         <script>
+            let modal_carriages = $('#carriages');
+            let form_carriages = $('#form-carriages')
+            let calendar_event = $('#license-plate');
+            let route_id;
+            let route_id_inverse;
+
             $(document).on('click', '#add_btn', function() {
                 $('#add_show').slideToggle("slow");
             });
+
+            let loadEventCalendar = function(){
+                // load ajax event
+                $.ajax({
+                    url: '{{route('admin.buses.api.calendar')}}',
+                    type: 'GET',
+                    data: {
+                        route_id: route_id,
+                    },
+                    success: function(data){
+                        data.map(function(item){
+                                item.eventId = item.id;
+                                item.start = item.departure_time;
+                                item.end = moment(item.departure_time).add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+                                item.title = item.license_plate;
+                                item.className = 'bg-' + item.color;
+                                // item.backgroundColor = '#722ED1';
+                            });
+                        $.CalendarApp.$calendarObj.fullCalendar('removeEvents');
+                        $.CalendarApp.$calendarObj.fullCalendar('addEventSource', data);
+                    }
+                });
+            };
+
+            let validateCarriages = function(){
+                form_carriages.validate({
+                    rules: {
+                        license_plate: {
+                            required: true,
+                            valid_license_plate: true,
+                        },
+                        category: {
+                            required: true,
+                        },
+                        seat_type: {
+                            required: true,
+                        },
+                        default_number_seat: {
+                            required: true,
+                            number: true,
+                            min: 10,
+                            max: 100,
+                        },
+                        price: {
+                            required: true,
+                            number: true,
+                            min: 0,
+                        },
+                    },
+                    messages: {
+                        license_plate: {
+                            required: "Vui lòng nhập biển số xe",
+                            valid_license_plate: "Biển số xe không hợp lệ",
+                        },
+                        category: {
+                            required: "Vui lòng chọn loại xe",
+                        },
+                        seat_type: {
+                            required: "Vui lòng chọn loại ghế ngồi",
+                        },
+                        default_number_seat: {
+                            required: "Vui lòng nhập số lượng ghế",
+                            number: "Vui lòng nhập số",
+                            min: "Số lượng ghế phải lớn hơn 10",
+                            max: "Số lượng ghế phải nhỏ hơn 100",
+                        },
+                        price: {
+                            required: "Vui lòng nhập giá",
+                            number: "Vui lòng nhập số",
+                            min: "Giá phải lớn hơn 0",
+                        },
+                    },
+                });
+            };
+
+            let submitAddFormCarriages = function(){
+                $.ajax({
+                    url: form_carriages.attr('action'),
+                    type: form_carriages.attr('method'),
+                    data: $(form_carriages).serialize() + '&route_from=' + route_id + '&route_to=' + route_id_inverse,
+                    success: function(response) {
+                        // let text = form_carriages.find("input[name='license_plate']").val();
+                        carriages_html = `<div class="calendar-events" value="${response[0].id}" style="cursor: pointer;"><i class="fas fa-circle text-${response[0].color}"></i> ${response[0].license_plate} </div>`;
+                        calendar_event.append(carriages_html);
+                        let elements = document.getElementsByClassName("calendar-events");
+                        elements[elements.length-1].addEventListener('click', editCarFunction, false);
+                        $.CalendarApp.enableDrag();
+                        notify(response);
+                        modal_carriages.modal('hide');
+                    },
+                    error: function(response) {
+                        // get key and value in response object
+                        var errors = response.responseJSON.errors;
+                        $.each(errors, function (key, value) {
+                            $.toast({
+                                heading: 'Lỗi',
+                                text: value,
+                                icon: 'error',
+                                position: 'top-right',
+                                showHideTransition: 'slide',
+                            });
+                        });
+                    }
+                });
+            };
+
+            let submitEditFormCarriages = function($this){
+                $.ajax({
+                    url: form_carriages.attr('action'),
+                    type: form_carriages.attr('method'),
+                    data: $(form_carriages).serialize() + '&route_from=' + route_id + '&route_to=' + route_id_inverse,
+                    success: function(response) {
+                        let color = form_carriages.find("select[name='color'] option:selected").text();
+                        let text = form_carriages.find("input[name='license_plate']").val();
+                        $this.innerHTML = `<i class="fas fa-circle text-${color.toLowerCase()}"></i> ${text}`;
+                        loadEventCalendar();
+                        notify(response);
+                        modal_carriages.modal('hide');
+                    },
+                    error: function(response) {
+                        // get key and value in response object
+                        var errors = response.responseJSON.errors;
+                        $.each(errors, function (key, value) {
+                            $.toast({
+                                heading: 'Lỗi',
+                                text: value,
+                                icon: 'error',
+                                position: 'top-right',
+                                showHideTransition: 'slide',
+                            });
+                        });
+                    }
+                });
+            };
+
+            let editCarFunction = function(){
+                let $this = this;
+                let car_id = this.getAttribute("value");
+                form_carriages.trigger('reset');
+                let action = "{!! route('admin.carriages.updateCarAndRDC','') !!}"+"/"+ car_id;
+                form_carriages.attr('action', action);
+                modal_carriages
+                    .modal({
+                        backdrop: 'static'
+                    })
+                    .find('.modal-title').text('Sửa xe').end()
+                    .find('.create-car').hide().end()
+                    .find('.delete-car').show().end()
+                    .find('.save-car').show().end()
+                    .modal('show')
+                    .find('.close').click(function () {
+                        modal_carriages.modal('hide');
+                    });
+
+                $.ajax({
+                    url: "{{route('admin.carriages.api.carriageByID')}}",
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        car_id: car_id,
+                    },
+                    success: function(response) {
+                        form_carriages.find("input[name='license_plate']").val(response.license_plate);
+                        form_carriages.find("select[name='category']").val(response.category);
+                        form_carriages.find("select[name='seat_type']").val(response.seat_type);
+                        form_carriages.find("input[name='price']").val(response.price);
+                        form_carriages.find("input[name='default_number_seat']").val(response.default_number_seat);
+                        form_carriages.find("select[name='color']").val(response.color);
+                        $('#driver').select2('trigger', 'select', {
+                            data: {
+                                id: response.driver_id,
+                                text: response.name
+                            }
+                        });
+                    }
+                });
+                modal_carriages.find('.save-car').unbind('click').click(function () {
+                    if(form_carriages.valid()){
+                        submitEditFormCarriages($this);
+                    }
+                });
+
+                modal_carriages.find('.delete-car').unbind('click').click(function () {
+                    let confirm_delete_car = confirm('Bạn có chắc chắn muốn xóa?');
+                    if (confirm_delete_car) {
+                        var form_delete = $("<form action='" + "{!! route('admin.carriages.destroy','') !!}"+"/" + car_id + "' method='POST'></form>");
+                        form_delete.append("<input type='hidden' name='_method' value='DELETE' />");
+                        $.ajax({
+                            url: form_delete.attr('action'),
+                            type: "POST",
+                            dataType: "json",
+                            data: form_delete.serialize(),
+                            success: function(response) {
+                                loadEventCalendar();
+                                $this.remove();
+                                notify(response);
+                                modal_carriages.modal('hide');
+                            },
+                            error: function(response) {
+                                notify(response.responseJSON);
+                            }
+                        });
+                    };
+                });
+            };
+
+            let addCarFunction = function(){
+                form_carriages.trigger('reset');
+                $('#driver').select2('trigger', 'select', {
+                    data: {
+                        id: '',
+                        text: ''
+                    }
+                });
+
+                modal_carriages
+                    .modal({
+                        backdrop: 'static'
+                    })
+                    .find('.modal-title').text('Thêm xe').end()
+                    .find('.delete-car').hide().end()
+                    .find('.save-car').hide().end()
+                    .find('.create-car').show().end()
+                    .modal('show')
+                    .find('.close').click(function () {
+                        modal_carriages.modal('hide');
+                    });
+
+                form_carriages.attr('action', "{{route('admin.carriages.store')}}");
+                modal_carriages.find('.create-car').unbind('click').click(function () {
+                    if(form_carriages.valid()){
+                        submitAddFormCarriages();  
+                    }
+                });
+                    
+            };
+
             $(document).ready(function() {
-                // get element
-                let calendar_event = $('#license-plate');
+                jQuery.validator.addMethod('valid_license_plate', function (value) {
+                    var regex = /^[0-9]{1,2}-[A-Z0-9]{1,2}-[0-9]{4,5}$/;
+                    return value.trim().match(regex);
+                });
                 // select2 route
                 let route = $('#route').select2({
                     ajax: {
@@ -216,8 +495,34 @@
                     allowClear:true,
                 });
 
+                $('#driver').select2({
+                    ajax: {
+                        url: "{{route('admin.users.api.name_drivers')}}",
+                        dataType: 'json',
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                            };
+                        },
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+
+                            return {
+                                results: $.map(data, function (item) {
+                                    return {
+                                        text: item.name,
+                                        id: item.id,
+                                    }
+                                })
+                            };
+                        }
+                    },
+                    placeholder: 'Nhập tên tài xế',
+                    allowClear:true,
+                    dropdownParent: modal_carriages
+                });
+
                 // get first route and set route selected
-                let route_id;
                 let route_event = $('#route_event');
                 $.ajax({
                     url: "{{route('admin.routes.api.apiGetFirstRoute')}}",
@@ -255,33 +560,40 @@
                             let carriages_html = '';
                             calendar_event.html('');
                             $.each(data, function(index, value) {
-                                carriages_html = `<div class="calendar-events" data-class="bg-info" value="${value.id}"><i class="fas fa-circle text-info"></i> ${value.license_plate} </div>`;
+                                carriages_html = `<div class="calendar-events" value="${value.id}" style="cursor: pointer;"><i class="fas fa-circle text-${value.color}"></i> ${value.license_plate} </div>`;
                                 calendar_event.append(carriages_html);
                             });
                             $.CalendarApp.enableDrag();
+
+                            var elements = document.getElementsByClassName("calendar-events");
+
+                            for (var i = 0; i < elements.length; i++) {
+                                elements[i].addEventListener('click', editCarFunction, false);
+                            }
+                        }
+                    });
+                    $.ajax({
+                        url: '{{ route('admin.routes.apiGetRouteInverse') }}',
+                        type: 'GET',
+                        data: {
+                            route: route_id
+                        },
+                        success: function(res) {
+                            route_id_inverse=res.id;
                         }
                     });
 
-                    // load ajax event
-                    $.ajax({
-                        url: '{{route('admin.buses.api.calendar')}}',
-                        type: 'GET',
-                        data: {
-                            route_id: route_id,
-                        },
-                        success: function(data){
-                            data.map(function(item){
-                                    item.eventId = item.id;
-                                    item.start = item.departure_time;
-                                    item.end = moment(item.departure_time).add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss');
-                                    item.title = item.license_plate;
-                                    item.className = 'bg-info';
-                                });
-                            $.CalendarApp.$calendarObj.fullCalendar('removeEvents');
-                            $.CalendarApp.$calendarObj.fullCalendar('addEventSource', data);
-                        }
-                    });
+                    // load calendar
+                    loadEventCalendar();
+
                 });
+                // Validate carriages
+                validateCarriages();
+
+                // Add carriages
+                $('#add_car').click(function(){
+                    addCarFunction();
+                })
 
             });
         </script>
