@@ -443,14 +443,14 @@ class BusesController extends Controller
         $dateEnd = Carbon::parse((new Buses())->get_last_day_of_week($weekEnd, $year))->format('Y-m-d H:i:s');
 
         try {
-            $deleteBuses= Buses::join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
+            Buses::join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
             ->where(function ($q) use ($routeFrom, $routeTo){
                 $q->orWhere('route_driver_cars.route_id', $routeFrom);
                 $q->orWhere('route_driver_cars.route_id', $routeTo);
             })
             ->where('departure_time', '>=', $dateStart)
             ->where('departure_time', '<=', $dateEnd)
-            ->delete();
+            ->get()->each->delete();
             return redirect()->route('admin.buses.calendar')->with('success', 'Xóa nhanh thành công');
         } catch (\Exception $e){
             return redirect()->back()->with('error', 'Xóa nhanh thất bại');

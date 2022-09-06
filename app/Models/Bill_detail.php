@@ -20,4 +20,18 @@ class Bill_detail extends Model
     {
         return $this->hasOne(Buses::class,'id','buses_id');
     }
+
+    // Auto delete related row
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($billDetail) {
+             $billDetail->tickets()->get()->each->delete();
+        });
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

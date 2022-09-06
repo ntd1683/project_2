@@ -135,4 +135,18 @@ class Buses extends Model
         "departure_time",
         "price",
     ];
+
+    // Auto delete related row
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($buses) {
+                $buses->billDetails()->get()->each->delete();
+        });
+    }
+
+    public function billDetails()
+    {
+        return $this->hasMany(Bill_detail::class);
+    }
 }

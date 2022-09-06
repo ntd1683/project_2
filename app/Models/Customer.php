@@ -30,4 +30,18 @@ class Customer extends Model
     {
         return \Carbon\Carbon::parse($this->birthdate)->format('d-m-Y');
     }
+
+    // Auto delete related row
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($customer) {
+                $customer->bills()->get()->each->delete();
+        });
+    }
+
+    public function bills()
+    {
+        return $this->hasMany(Bill::class);
+    }
 }

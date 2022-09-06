@@ -33,4 +33,18 @@ class Route_driver_car extends Model
         'car_id',
         'price',
     ];
+
+    // Auto delete related row
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($RDC) {
+                $RDC->buses()->get()->each->delete();
+        });
+    }
+
+    public function buses()
+    {
+        return $this->hasMany(Buses::class);
+    }
 }
