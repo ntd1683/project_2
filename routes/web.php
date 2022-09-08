@@ -34,5 +34,8 @@ Route::get('/apiCityEnd', [RouteController::class, 'apiCityEnd'])->name('api.rou
 Route::get('/apiNameRoutes', [RouteController::class, 'apiNameRoutes'])->name('api.routes.name_routes');
 
 //test
-Route::get('/test/', [TestController::class, 'test'])->name('test');
-Route::post('/test1/', [TestController::class, 'get_test'])->name('get_test');
+Route::group(['middleware' => ['web']], function()
+{
+    Route::get('/test/', [TestController::class, 'test'])->name('test');
+    Route::get('/test1/', [TestController::class, 'test1'])->name('test1');
+});
