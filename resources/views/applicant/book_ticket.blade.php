@@ -1,4 +1,5 @@
 @extends('layout.master')
+{{--@dd(session()->has('error'))--}}
 @push('css')
         <link rel="stylesheet" href="{{asset('plugins/bootstrap/css/bootstrap.min.css')}}">
         @if($request->step == 1)
@@ -404,7 +405,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="search-wrap-1 ftco-animate p-4" style="border-radius:15px;box-shadow: 5px 5px #847979c4;" id="id_book_ticket">
-                        <form action="{{route('applicant.book_ticket')}}" method="get" class="search-property-1">
+                        <form action="{{route('applicant.book_ticket_2')}}" method="get" class="search-property-1">
                             <input type="hidden" name="step" value="2">
                             <div class="row">
                                 <div class="col-lg align-items-end">
@@ -478,7 +479,7 @@
 {{--    {{dd($request->step==2)}}--}}
     @if($request->step===2&&!empty($arr_bus))
         <section class="ftco-section" style="padding:0px !important;">
-            <form action="{{route('applicant.book_ticket')}}" method="get">
+            <form action="{{route('applicant.book_ticket_2')}}" method="get">
                 <input type="hidden" name="step" value="2">
                 <input type="hidden" name="city_start" value="{{$request->city_start}}">
                 <input type="hidden" name="city_end" value="{{$request->city_end}}">
@@ -545,7 +546,7 @@
                 <div class="route-line-list" data-v-008a65cb="">
                     <div class="route-line bold" data-v-008a65cb=""><img alt="pickup-bold" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAn1BMVEUAAAAAAAAAgAAAVVUAbUkAYEAAYkUAYkMAYjwAYD4AYTwAYD0AYT4AYTwAYT0AYT0AYT0AYT0AYT0AYT0AYDwAYT0AYT0AYT0AYD0AYT3////+/v79/f39/fzv8/HV4dzL29WTr6I0d1orakwfZUQWY0IPY0APYT4HYj8MXzwGYT4DYT0AYjwAYT0AYTwAYD0AYDwAXTYAXDAAWS0ASwCRAZr+AAAAGnRSTlMAAQIDBxgaIi9Se5eZwsja4Orx9/r7/P39/ifZSUoAAAFmSURBVHjahVMJjoMwDHS37fY+odBAuQrlTmKO/79tTUBVVWmVERLKzCSxHRtGzOYAy83+eDGMy3G/WQLMZ/CBH4DV7iRwgjjtVgP5xhwW2yvi3WKMc8asO+J1uyD6vf/3wPFmC8klgUth35AffkmY9q/P0mTIJcoJHJkpz2uSxv1nNDnpH6CliWd1xgwWBznq3w55WJA8hy0nfSKrsqwmMxK9JRlWV2QDxTnmSdY0WZIjH9ZEXylb2OFt0tOib+O47Yt0dJCwA1ie0Obq/FdXR6Hvh1HdvVBRNp6WsBF3ofS0ewaOQvDsUuUgaQN7tIb8MS/qwPEervvwnKAuchW2hXs4IlPHJX3keK7j0uc5UZ8okuERLsgkocra0Hk4LoF+YZtVRCLDCxhj1mUT+0pWFj9uyrEyhtagv4KCFP8FKShIbZraQmlLrX0s7XNrG0bbcrqm1bX99+AIsqD4GBz96OmHVzv+f2mSel1r7cqaAAAAAElFTkSuQmCC" width="16" height="16" data-v-008a65cb="">
                         <div data-v-008a65cb="">
-                            Xe tuyến: {{$arr_route['distance']}} km - {{$arr_route['time']}}
+                            Xe tuyến: {{$arr_route['distance']}} km - {{hour_to_day($arr_route['time'])}} tiếng
                         </div>
                     </div>
                     <div class="route-line bold" data-v-008a65cb="">

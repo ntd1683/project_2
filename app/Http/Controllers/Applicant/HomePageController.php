@@ -35,6 +35,19 @@ class HomePageController extends Controller
 {
     public function index()
     {
+//        dd(session()->get('success'));
+        if(session()->has('error')){
+            $get_error = session()->get('error');
+            session()->forget('error');
+            session()->flush();
+            session()->flash('error',$get_error);
+        }
+        else if(session()->has('success')){
+            $get_success = session()->get('success');
+            session()->forget('success');
+            session()->flush();
+            session()->flash('success',$get_success);
+        }
         $routes = Route::query()->with('city_start')->with('city_end')
             ->selectRaw("routes.*,sum(route_driver_cars.price) as price")
             ->leftJoin('route_driver_cars','routes.id','=','route_driver_cars.route_id')
@@ -84,216 +97,181 @@ class HomePageController extends Controller
         ]);
     }
 
-    public function book_ticket(Request $request)
-    {
-//        tạo array
-        $arr_bus =[];
-        $arr_route =[];
+    public function book_ticket_step_1(Request $request){
+        if(session()->has('error')){
+            session()->forget('error');
+            session()->flush();
+            $request->session()->flash('error','Không tim thấy tuyến xe hoặc nhà xe không có chuyến');
+        }
+        else if(!isset($request->city_start)
+            ||!isset($request->city_end)
+            ||!isset($request->departure_time)
+            ||$request->city_start==-1
+            ||$request->city_end ==-1){
+            $request->session()->flash('error', 'Bạn đang nhập thiếu thông tin , vui lòng điền đầy đủ');
+        }
+//        dd(session()->has('error'));
         $array =[];
         $arr_routes = [];
-        $arr_location = [];
-        $bus =[];
-        $seatTypes =[];
-//        nếu không có thằng step nào sẽ rơi vào đây
+        $request->step = 1;
+        //        step 1
+        $routes = Route::query()->with('city_start')->with('city_end')
+            ->selectRaw("routes.*")
+            ->selectRaw("sum(route_driver_cars.price) as price")
+            ->leftJoin('route_driver_cars','routes.id','=','route_driver_cars.route_id')
+            ->groupBy("routes.id")
+            ->orderByDESC("pin")
+            ->get()
+            ->map(function ($each) {
+                $each->city_start_name = $each->city_start->name;
+                $each->city_end_name = $each->city_end->name;
+                $each->img = "upload/" . $each->images;
+                $each->price = null;
+                if(isset($each->pin)){
+                    $price = Route_driver_car::query()
+                        ->selectRaw("MIN(price) as price")
+                        ->where('route_id','=',$each->id)
+                        ->value("price");
+                    if(isNull($price)){
+//                            input = 189762 => output 189k
+                        $each->price = number_shorten($price);
+                    }
+                }
+                unset($each->city_start);
+                unset($each->city_end);
+                unset($each->images);
+                return $each;
+            });
+//            dd($routes);
+        $i = 0;
+        // lấy tên tất cả mảng trong cột city start và city end
+        foreach ($routes as $each){
+            $arr['city_start'][$each->city_start_id] = $each->city_start_name;
+            $arr['city_end'][$each->city_end_id] = $each->city_end_name;
+            if($each->pin == 0){
+//                    xoá các cột ko được ghim
+                unset($routes[$i]);
+            }
+            $i ++;
+        }
+//            ghim 3 chuyến đầu
+        for($i =0 ; $i<=2;$i++){
+            $arr_routes[$i] = $routes[$i];
+        }
+
+        $array['city_start'] = array_unique($arr['city_start']);
+        $array['city_end'] = array_unique($arr['city_end']);
+        $array = New Fluent($array);
+        return view('applicant/book_ticket',[
+            'city_start' => $array['city_start'],
+            'city_end' => $array['city_end'],
+            'request'=>$request,
+            'routes'=>$arr_routes,
+        ]);
+    }
+
+    public function book_ticket_step_2(Request $request){
+//        tạo array
         if(!isset($request->city_start)
             ||!isset($request->city_end)
             ||!isset($request->departure_time)
             ||$request->city_start==-1
             ||$request->city_end ==-1)
         {
-            $request->step = 1;
-            //        step 1
-            $routes = Route::query()->with('city_start')->with('city_end')
-                ->selectRaw("routes.*")
-                ->selectRaw("sum(route_driver_cars.price) as price")
-                ->leftJoin('route_driver_cars','routes.id','=','route_driver_cars.route_id')
-                ->groupBy("routes.id")
-                ->orderByDESC("pin")
-                ->get()
-                ->map(function ($each) {
-                    $each->city_start_name = $each->city_start->name;
-                    $each->city_end_name = $each->city_end->name;
-                    $each->img = "upload/" . $each->images;
-                    $each->price = null;
-                    if(isset($each->pin)){
-                        $price = Route_driver_car::query()
-                            ->selectRaw("MIN(price) as price")
-                            ->where('route_id','=',$each->id)
-                            ->value("price");
-                        if(isNull($price)){
-//                            input = 189762 => output 189k
-                            $each->price = number_shorten($price);
-                        }
-                    }
-                    unset($each->city_start);
-                    unset($each->city_end);
-                    unset($each->images);
+            return redirect()->route('applicant.book_ticket_1');
+        }
+        $array =[];
+        $arr_routes = [];
+        $arr_location = [];
+        $bus =[];
+        $filter_price = ($request->filter_price!='') ? $request->filter_price : '';
+        $filter_seat_type = ($request->filter_seat_type!='') ? $request->filter_seat_type : '';
+        $filter_hour = ($request->filter_hour!='') ? $request->filter_hour : '';
+        switch($filter_hour){
+            case 1:
+                $arr_filter_hour['start'] = '00:00:00';
+                $arr_filter_hour['end'] = '06:00:00';
+                break;
+            case 2:
+                $arr_filter_hour['start'] = '06:00:00';
+                $arr_filter_hour['end'] = '12:00:00';
+                break;
+            case 3:
+                $arr_filter_hour['start'] = '12:00:00';
+                $arr_filter_hour['end'] = '18:00:00';
+                break;
+            case 4:
+                $arr_filter_hour['start'] = '18:00:00';
+                $arr_filter_hour['end'] = '23:59:59';
+                break;
+            default:
+                $arr_filter_hour['start'] = '00:00:00';
+                $arr_filter_hour['end'] = '23:59:59';
+                break;
+        }
+        $seatTypes = SeatTypeEnum::getArrayView();
+        $request->step = 2;
+        $city_start = (int)$request->city_start;
+        $city_end = (int)$request->city_end;
+        $departure_time = str_replace('/', '-',$request->departure_time);
+        $departure_time = date("Y-m-d", strtotime($departure_time));
+        try{
+            $route_id = Route::query()->where('city_start_id',$city_start)->where('city_end_id',$city_end)->pluck('id')[0];
+            $arr_route = Route::query()->where('id',$route_id)->get()->toArray()[0];
+            $arr_bus = Buses::query()
+                ->select('buses.*', 'routes.name as route_name', 'routes.id as route_id', 'routes.time',
+                    'routes.distance', 'carriages.id as car_id',
+                    'carriages.category','carriages.seat_type',
+                    'carriages.default_number_seat','carriages.license_plate as license_plate_car',
+                    'route_driver_cars.price as route_price')
+                ->selectRaw('carriages.default_number_seat-buses.slot as remaining_seats')
+                ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
+                ->join('routes',function($join) use ($city_start,$city_end) {
+                    $join->on('routes.id', '=', 'route_driver_cars.route_id');
+                    $join->where('routes.city_start_id', '=', $city_start);
+                    $join->where('routes.city_end_id', '=', $city_end);
+                })
+                ->join('carriages',function($join){
+                    $join->on('carriages.id', '=', 'route_driver_cars.car_id');
+                    $join->whereRaw('carriages.default_number_seat-buses.slot > 0');
+                })
+                ->where('departure_time', '>=',$departure_time. ' '. $arr_filter_hour['start'])
+                ->where('departure_time', '<', $departure_time. ' '.$arr_filter_hour['end'])
+                ->where('routes.city_start_id','=',$city_start)
+                ->where('routes.city_end_id','=',$city_end)
+                ->where('route_driver_car_id','=','13')
+                ->When(!empty($filter_seat_type),function($q) use($filter_seat_type){
+                    return $q->where('carriages.seat_type','=',$filter_seat_type);
+                })
+                ->When(!empty($filter_price),function($q) use($filter_price){
+                    return $q->orderBy('buses.price',$filter_price);
+                })
+                ->get()->map(function($each){
+                    $each->category_car = CarriageCategoryEnum::getKeyByValue(($each->category));
+                    $each->seat_type_car = SeatTypeEnum::getKeyByValue(($each->seat_type));
                     return $each;
                 });
-//            dd($routes);
-            $i = 0;
-            // lấy tên tất cả mảng trong cột city start và city end
-            foreach ($routes as $each){
-                $arr['city_start'][$each->city_start_id] = $each->city_start_name;
-                $arr['city_end'][$each->city_end_id] = $each->city_end_name;
-                if($each->pin == 0){
-//                    xoá các cột ko được ghim
-                    unset($routes[$i]);
-                }
-                $i ++;
+            if($arr_bus->isEmpty()){
+                session()->put('error', 'yes');
+                return redirect()->back();
             }
-//            ghim 3 chuyến đầu
-            for($i =0 ; $i<=2;$i++){
-                $arr_routes[$i] = $routes[$i];
-            }
-
-            $array['city_start'] = array_unique($arr['city_start']);
-//            dd($array['city_start']);
-            $array['city_end'] = array_unique($arr['city_end']);
-        }
-        else if($request->step == 2){
-//        step2
-            // Load seat type enum
-            $filter_price = ($request->filter_price!='') ? $request->filter_price : '';
-            $filter_seat_type = ($request->filter_seat_type!='') ? $request->filter_seat_type : '';
-            $filter_hour = ($request->filter_hour!='') ? $request->filter_hour : '';
-            switch($filter_hour){
-                case 1:
-                    $arr_filter_hour['start'] = '00:00:00';
-                    $arr_filter_hour['end'] = '06:00:00';
-                    break;
-                case 2:
-                    $arr_filter_hour['start'] = '06:00:00';
-                    $arr_filter_hour['end'] = '12:00:00';
-                    break;
-                case 3:
-                    $arr_filter_hour['start'] = '12:00:00';
-                    $arr_filter_hour['end'] = '18:00:00';
-                    break;
-                case 4:
-                    $arr_filter_hour['start'] = '18:00:00';
-                    $arr_filter_hour['end'] = '23:59:59';
-                    break;
-                default:
-                    $arr_filter_hour['start'] = '00:00:00';
-                    $arr_filter_hour['end'] = '23:59:59';
-                    break;
-            }
-            $seatTypes = SeatTypeEnum::getArrayView();
-            $request->step = 2;
-            $city_start = (int)$request->city_start;
-            $city_end = (int)$request->city_end;
-            $departure_time = str_replace('/', '-',$request->departure_time);
-            $departure_time = date("Y-m-d", strtotime($departure_time));
-//            dd($departure_time. ' '. $arr_filter_hour['end']);
-//            dd($request);
-            try{
-                $route_id = Route::query()->where('city_start_id',$city_start)->where('city_end_id',$city_end)->pluck('id')[0];
-//            dd($route_id);
-                $arr_route = Route::query()->where('id',$route_id)->get()->toArray()[0];
-//            dd($arr_route['name']);
-                $arr_bus = Buses::query()
-                    ->select('buses.*', 'routes.name as route_name', 'routes.id as route_id', 'routes.time',
-                        'routes.distance', 'carriages.id as car_id',
-                        'carriages.category','carriages.seat_type',
-                        'carriages.default_number_seat','carriages.license_plate as license_plate_car',
-                        'route_driver_cars.price as route_price')
-                    ->selectRaw('carriages.default_number_seat-buses.slot as remaining_seats')
-                    ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
-                    ->join('routes',function($join) use ($city_start,$city_end) {
-                        $join->on('routes.id', '=', 'route_driver_cars.route_id');
-                        $join->where('routes.city_start_id', '=', $city_start);
-                        $join->where('routes.city_end_id', '=', $city_end);
-                    })
-                    ->join('carriages',function($join){
-                        $join->on('carriages.id', '=', 'route_driver_cars.car_id');
-                        $join->whereRaw('carriages.default_number_seat-buses.slot > 0');
-                    })
-                    ->where('departure_time', '>=',$departure_time. ' '. $arr_filter_hour['start'])
-                    ->where('departure_time', '<', $departure_time. ' '.$arr_filter_hour['end'])
-                    ->where('routes.city_start_id','=',$city_start)
-                    ->where('routes.city_end_id','=',$city_end)
-                    ->where('route_driver_car_id','=','13')
-                    ->When(!empty($filter_seat_type),function($q) use($filter_seat_type){
-                        return $q->where('carriages.seat_type','=',$filter_seat_type);
-                    })
-                    ->When(!empty($filter_price),function($q) use($filter_price){
-                        return $q->orderBy('buses.price',$filter_price);
-                    })
-                    ->get()->map(function($each){
-                        $each->category_car = CarriageCategoryEnum::getKeyByValue(($each->category));
-                        $each->seat_type_car = SeatTypeEnum::getKeyByValue(($each->seat_type));
-                        return $each;
-                    });
-                if($arr_bus->isEmpty()){
-                    $request->session()->flash('error', 'Không tim thấy tuyến xe hoặc nhà xe không có chuyến');
-                    $request->step = 1;
-                    return redirect(Request::url());
-                }
 //                lấy danh sách các điểm đón
-                $select_locations = Location::query()->where('city_id',$city_start)->get()->toArray();
-                foreach($select_locations as $each){
-                    if($each['name'] == null){
-                        $arr_location[$each['id']] ='';
-                    }else{
-                        $arr_location[$each['id']] = $each['name'] . ' - ';
-                    }
-                    $arr_location[$each['id']] .= $each['address'].' - '.$each['district'];
+            $select_locations = Location::query()->where('city_id',$city_start)->get()->toArray();
+            foreach($select_locations as $each){
+                if($each['name'] == null){
+                    $arr_location[$each['id']] ='';
+                }else{
+                    $arr_location[$each['id']] = $each['name'] . ' - ';
                 }
+                $arr_location[$each['id']] .= $each['address'].' - '.$each['district'];
             }
-            catch(\Throwable $e){
-//                Muốn quay lại bước 1 ạ
-//                dd('1');
-                $request->step = 1;
-                $routes = Route::query()->with('city_start')->with('city_end')
-                    ->selectRaw("routes.*")
-                    ->selectRaw("sum(route_driver_cars.price) as price")
-                    ->leftJoin('route_driver_cars','routes.id','=','route_driver_cars.route_id')
-                    ->groupBy("routes.id")
-                    ->orderByDESC("pin")
-                    ->get()
-                    ->map(function ($each) {
-                        $each->city_start_name = $each->city_start->name;
-                        $each->city_end_name = $each->city_end->name;
-                        $each->img = "upload/" . $each->images;
-                        $each->price = null;
-                        if(isset($each->pin)){
-                            $price = Route_driver_car::query()
-                                ->selectRaw("MIN(price) as price")
-                                ->where('route_id','=',$each->id)
-                                ->value("price");
-                            if(isNull($price)){
-//                            input = 189762 => output 189k
-                                $each->price = number_shorten($price);
-                            }
-                        }
-                        unset($each->city_start);
-                        unset($each->city_end);
-                        unset($each->images);
-                        return $each;
-                    });
-                $i = 0;
-                foreach ($routes as $each){
-                    $arr['city_start'][$each->city_start_id] = $each->city_start_name;
-                    $arr['city_end'][$each->city_end_id] = $each->city_end_name;
-                    if($each->pin == 0||$each->pin===null){
-                        unset($routes[$i]);
-                    }
-                    $i ++;
-                }
-
-                for($i =0 ; $i<=2;$i++){
-                    $arr_routes[$i] = $routes[$i];
-                }
-
-                $array['city_start'] = array_unique($arr['city_start']);
-                $array['city_end'] = array_unique($arr['city_end']);
-                $request->session()->flash('error', 'Không tim thấy tuyến xe hoặc nhà xe không có chuyến');
-            }
-
         }
-//        dd($request);
+        catch(\Throwable $e){
+            session()->put('error', 'yes');
+            return redirect()->back();
+        }
         $array = New Fluent($array);
+//        dd($arr_bus);
         return view('applicant/book_ticket',[
             'city_start' => $array['city_start'],
             'city_end' => $array['city_end'],
@@ -304,6 +282,13 @@ class HomePageController extends Controller
             'arr_location'=>$arr_location,
             'bus'=>$bus,
             'seatTypes'=>$seatTypes,
+        ]);
+    }
+
+    public function book_ticket(Request $request)
+    {
+        return view('applicant/book_ticket',[
+            'request'=>$request,
         ]);
     }
 
@@ -385,8 +370,8 @@ class HomePageController extends Controller
         $object_ticket->create($arr_tickets);
 //            dd($request);
         ApplicantOrderEvent::dispatch($request);
-        return redirect()->route('index')
-            ->with('success', 'Bạn đã đặt vé thành công !!!');
+        session()->put('success', 'Bạn đã đặt vé thành công !!!');
+        return redirect()->route('index');
     }
 
     public function schedule()
