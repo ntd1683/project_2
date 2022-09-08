@@ -45,7 +45,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="search-wrap-1 ftco-animate p-4" style="border-radius:15px;box-shadow: 5px 5px #847979c4;">
-                    <form action="{{route('applicant.book_ticket')}}" method="get" class="search-property-1">
+                    <form action="{{route('applicant.book_ticket_2')}}" method="get" class="search-property-1">
                         <input type="hidden" name="step" value="2">
                         <div class="row">
                             <div class="col-lg align-items-end">
@@ -170,12 +170,12 @@
             @foreach($routes as $route)
             <div class="col-md-4 ftco-animate">
                 <div class="project-wrap">
-                    <a href="{{route('applicant.book_ticket')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}#id_book_ticket" class="img"
+                    <a href="{{route('applicant.book_ticket_1')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}#id_book_ticket" class="img"
                        style="background-image:url({{asset($route->img)}})"></a>
                     <div class="text p-4">
-                        <a href="{{route('applicant.book_ticket')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}#id_book_ticket"><span class="price" style="text-align:center">Từ {{$route->price}} Đ/Vé</span></a>
+                        <a href="{{route('applicant.book_ticket_1')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}#id_book_ticket"><span class="price" style="text-align:center">Từ {{$route->price}} Đ/Vé</span></a>
 {{--                        <span class="days">Ngày Thường</span>--}}
-                        <h3><a href="{{route('applicant.book_ticket')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}#id_book_ticket">{{$route->name}}</a></h3>
+                        <h3><a href="{{route('applicant.book_ticket_1')}}?step=1&city_start={{$route->city_start_id}}&city_end={{$route->city_end_id}}#id_book_ticket">{{$route->name}}</a></h3>
                         <p class="location" style="display:inline-block"><span class="fas fa-location-arrow"></span> {{$route->distance}}km</p>
                         <p class="location" style="display:inline-block;margin-left: 10px;"><span class="fas fa-stopwatch"></span> {{$route->distance}}h</p>
                         <ul>
@@ -358,37 +358,39 @@
 </section>
     @push('js')
         <script src="{{asset('js/jquery.toast.min.js')}}"></script>
-        $(function() {
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
+        <script>
+            $(function() {
+                @if ($errors->any())
+                @foreach ($errors->all() as $error)
                 $.toast({
-                heading: 'Error',
-                text: '{{ $error }}',
-                icon: 'error',
-                position: 'top-right',
-                showHideTransition: 'slide',
+                    heading: 'Error',
+                    text: '{{ $error }}',
+                    icon: 'error',
+                    position: 'top-right',
+                    showHideTransition: 'slide',
                 });
-            @endforeach
-        @endif
-        @if (session()->has('success'))
-            $.toast({
-            heading: 'Import Success',
-            text: '{{session()->get('success')}}',
-            icon: 'success',
-            position: 'top-right',
-            showHideTransition: 'slide',
+                @endforeach
+                @endif
+                @if (session()->has('success'))
+                $.toast({
+                    heading: 'Import Success',
+                    text: '{{session()->get('success')}}',
+                    icon: 'success',
+                    position: 'top-right',
+                    showHideTransition: 'slide',
+                });
+                @endif
+                @if (session()->has('error'))
+                $.toast({
+                    heading: 'Error',
+                    text: '{{session()->get('error')}}',
+                    icon: 'error',
+                    position: 'top-right',
+                    showHideTransition: 'slide',
+                });
+                @endif
             });
-        @endif
-        @if (session()->has('error'))
-            $.toast({
-            heading: 'Error',
-            text: '{{session()->get('error')}}',
-            icon: 'error',
-            position: 'top-right',
-            showHideTransition: 'slide',
-            });
-        @endif
-        });
+        </script>
         <script>
             $(document).ready( function() {
                 var today = new Date();
