@@ -63,7 +63,6 @@ class TicketController extends Controller
             ->join('route_driver_cars','route_driver_cars.id','route_driver_car_id')
             ->join('routes','routes.id','route_id')
             ->join('cities','cities.id','city_end_id');
-//        dd($arr);
         return DataTables::of($arr)
             ->editColumn('payment_method', function ($object) {
                 return PaymentMethodEnum::getKeyByValue($object->payment_method);
