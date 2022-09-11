@@ -132,8 +132,8 @@ class BusesController extends Controller
     {
         $route_id = $request->get('route_id');
         return $this->model
-            ->select('buses.id as id', 'buses.departure_time as departure_time', 'buses.price as price',
-                    'carriages.license_plate as license_plate', 'carriages.id as car_id', 'carriages.color as color',
+            ->select('buses.id as id', 'buses.departure_time as departure_time', 'buses.price as price','buses.slot as slot',
+                    'carriages.license_plate as license_plate', 'carriages.id as car_id', 'carriages.color as color', 'carriages.default_number_seat as default_number_seat',
                     'users.name as driver_name',
                     'route_driver_cars.route_id as route_id')
             ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
