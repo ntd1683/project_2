@@ -228,7 +228,7 @@
                     searchable: false,
                     render: function (data, type, row, meta) {
                         return `<a class="btn btn-primary"
-                        href="{{route('applicant.book_ticket')}}?step=2&city_start=${data.city_start_id}&city_end=${data.city_end_id}&departure_time=${data.date_today}">
+                        href="{{route('applicant.book_ticket_2')}}?city_start=${data.city_start_id}&city_end=${data.city_end_id}&departure_time=${data.date_today}">
                         ĐẶT VÉ
                         </a>`;
                     }
