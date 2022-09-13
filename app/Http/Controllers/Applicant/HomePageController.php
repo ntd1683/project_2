@@ -26,6 +26,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
@@ -33,6 +34,17 @@ use function PHPUnit\Framework\isNull;
 
 class HomePageController extends Controller
 {
+    public function __construct()
+    {
+        //kiểm tra xem đang ở tab nào
+        $current_path = \Illuminate\Support\Facades\Route::getFacadeRoot()->current()->uri();
+        $current_path_1 = Str::after($current_path, 'admin/');
+        $url = Str::before($current_path_1, '/');
+//        dd($url);
+        View::share([
+            'url' => $url,
+        ]);
+    }
     public function index()
     {
 //        dd(session()->get('success'));
@@ -180,6 +192,7 @@ class HomePageController extends Controller
         {
             return redirect()->route('applicant.book_ticket_1');
         }
+//        dd($request);
         $array =[];
         $arr_routes = [];
         $arr_location = [];
@@ -239,7 +252,6 @@ class HomePageController extends Controller
                 ->where('departure_time', '<', $departure_time. ' '.$arr_filter_hour['end'])
                 ->where('routes.city_start_id','=',$city_start)
                 ->where('routes.city_end_id','=',$city_end)
-                ->where('route_driver_car_id','=','13')
                 ->When(!empty($filter_seat_type),function($q) use($filter_seat_type){
                     return $q->where('carriages.seat_type','=',$filter_seat_type);
                 })
@@ -446,10 +458,10 @@ class HomePageController extends Controller
                 return $object->name;
             })
             ->editColumn('city_start', function ($object) {
-                return $object->city_start->pluck('name')->toArray()[0];
+                return $object->city_start->name;
             })
             ->editColumn('city_end', function ($object) {
-                return $object->city_end->pluck('name')->toArray()[0];
+                return $object->city_end->name;
             })
             ->editColumn('distance', function ($object) {
                 return $object->distance_name;
@@ -459,8 +471,8 @@ class HomePageController extends Controller
             })
             ->addColumn('show', function ($object) {
                 $arr = [];
-                $arr['city_start_id'] = $object->city_start->pluck('id')->toArray();
-                $arr['city_end_id'] = $object->city_end->pluck('id')->toArray();
+                $arr['city_start_id'] = $object->city_start->id;
+                $arr['city_end_id'] = $object->city_end->id;
                 $arr['date_today'] = date('d/m/Y');
                 return $arr;
             })
