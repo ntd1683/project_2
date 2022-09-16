@@ -168,7 +168,10 @@
                 data: form.serialize() + '&route=' + $this.$route.val(),
                 success: function (response) {
                     if (response.success) {
-                        var id = response.id;
+                        var id = response.data[0].id;
+                        var color = response.data[0].color;
+                        var slot = response.data[0].slot;
+                        var default_number_seat = response.data[0].default_number_seat;
                         var route_id = $this.$route.val();
                         var departure_time = moment(form.find('input[name="date"]').val() + ' ' + form.find('input[name="time"]').val());
                         var price = form.find('input[name="price"]').val();
@@ -187,7 +190,9 @@
                             start: departure_time,
                             end: moment(departure_time).add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
                             title: license_plate,
-                            className: 'bg-info',
+                            className: 'bg-' + color,
+                            slot: slot,
+                            default_number_seat: default_number_seat,
                         }, true);
                         $this.$modal.modal('hide');
                     }

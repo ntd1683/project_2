@@ -58,7 +58,7 @@ Breadcrumbs::for('show_route', function ($trail, $route) {
 // Trang Chủ > Xe
 Breadcrumbs::for('carriage', function ($trail) {
     $trail->parent('home');
-    $trail->push('Danh sách xe', route('admin.carriages.index'));
+    $trail->push('Xe', route('admin.carriages.index'));
 });
 
 // Trang Chủ > Xe > Thêm
@@ -76,13 +76,31 @@ Breadcrumbs::for('carriage.edit', function ($trail, $carriage) {
 // Trang Chủ > Chuyến xe
 Breadcrumbs::for('buses', function ($trail) {
     $trail->parent('home');
-    $trail->push('Chuyến xe', route('admin.buses.index'));
+    $trail->push('Chuyến xe', route('admin.buses.calendar'));
+});
+
+// Trang Chủ > Chuyến xe > danh sách
+Breadcrumbs::for('buses.index', function ($trail) {
+    $trail->parent('buses');
+    $trail->push('Danh sách', route('admin.buses.index'));
 });
 
 // Trang Chủ > Chuyến xe > Thêm
 Breadcrumbs::for('buses.create', function ($trail) {
     $trail->parent('buses');
     $trail->push('Thêm', route('admin.buses.create'));
+});
+
+// Trang Chủ > Chuyến xe > Thêm nhanh
+Breadcrumbs::for('buses.quickCreate', function ($trail) {
+    $trail->parent('buses');
+    $trail->push('Thêm nhanh', route('admin.buses.quickCreate'));
+});
+
+// Trang Chủ > Chuyến xe > Xóa nhanh
+Breadcrumbs::for('buses.quickDelete', function ($trail) {
+    $trail->parent('buses');
+    $trail->push('Xóa nhanh', route('admin.buses.quickDelete'));
 });
 
 // Trang Chủ > Chuyến xe > Sửa
@@ -113,4 +131,17 @@ Breadcrumbs::for('edit_ticket', function ($trail, $ticket) {
 Breadcrumbs::for('show_ticket', function ($trail, $ticket) {
     $trail->parent('ticket');
     $trail->push('Xem', route('admin.tickets.show', $ticket->id));
+});
+
+
+// Trang Chủ > Khách hàng
+Breadcrumbs::for('customers', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Khách hàng', route('admin.customers.index'));
+});
+
+//Trang Chủ > Khách hàng > Xem
+Breadcrumbs::for('show', function ($trail, $customer) {
+    $trail->parent('customers');
+    $trail->push('Xem', route('admin.customers.show', $customer->id));
 });

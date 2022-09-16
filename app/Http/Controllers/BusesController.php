@@ -149,6 +149,7 @@ class BusesController extends Controller
 
     public function calendar()
     {
+        $breadcumbs = Breadcrumbs::render('buses');
         $seatTypes = SeatTypeEnum::getArrayView();
         $categories = CarriageCategoryEnum::getArrayView();
         $color = CarriageColorEnum::getArrayView();
@@ -156,6 +157,7 @@ class BusesController extends Controller
             'seatTypes' => $seatTypes,
             'categories' => $categories,
             'color' => $color,
+            'breadcumbs' => $breadcumbs,
         ]);
     }
 
@@ -166,7 +168,7 @@ class BusesController extends Controller
      */
     public function index()
     {
-        $breadcumbs = Breadcrumbs::render('buses');
+        $breadcumbs = Breadcrumbs::render('buses.index');
         return view('admin.' . $this->table . '.index', [
             'breadcumbs' => $breadcumbs,
         ]);
@@ -187,7 +189,10 @@ class BusesController extends Controller
 
     public function quickCreate()
     {
-        return view('admin.' . $this->table . '.quick_create');
+        $breadcumbs = Breadcrumbs::render('buses.quickCreate');
+        return view('admin.' . $this->table . '.quick_create',[
+            'breadcumbs' => $breadcumbs,
+        ]);
     }
 
     /**
@@ -235,12 +240,23 @@ class BusesController extends Controller
                 'price' => $price,
             ])->id;
 
+            $data = $this->model
+            ->select('buses.id as id', 'buses.departure_time as departure_time', 'buses.price as price','buses.slot as slot',
+                    'carriages.license_plate as license_plate', 'carriages.id as car_id', 'carriages.color as color', 'carriages.default_number_seat as default_number_seat',
+                    'users.name as driver_name',
+                    'route_driver_cars.route_id as route_id')
+            ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
+            ->join('carriages', 'carriages.id', '=', 'route_driver_cars.car_id')
+            ->join('users', 'users.id', '=', 'route_driver_cars.driver_id')
+            ->where('buses.id', $buses)
+            ->get()
+            ->map(function ($each) {
+                $each->color = CarriageColorEnum::getKeyByValue($each->color);
+                return $each;
+            });
+
             // return success
-            return [
-                'success' => true,
-                'message' => 'Tạo mới thành công',
-                'id' => $buses,
-            ];
+            return $this->successResponse($data, "Tạo mới thành công");
         } catch (\Exception $e) {
             return $this->errorResponse("Tạo mới thất bại");
         }
@@ -428,7 +444,8 @@ class BusesController extends Controller
     }
 
     public function quickDelete(){
-        return view('admin.' . $this->table . '.quick_delete');
+        $breadcumbs = Breadcrumbs::render('buses.quickDelete');
+        return view('admin.' . $this->table . '.quick_delete',['breadcumbs' => $breadcumbs,]);
     }
 
     public function quickDestroy(QuickDestroyBusesRequest $request){

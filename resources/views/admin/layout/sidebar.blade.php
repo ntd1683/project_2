@@ -12,6 +12,11 @@
                 @endif>
                     <a href="{{route('admin.index')}}"><i class="fas fa-columns"></i> <span>Trang Chủ</span></a>
                 </li>
+                <li @if($route === 'tickets')
+                    class="active"
+                    @endif>
+                    <a href="{{route('admin.tickets.index')}}"><i class="fas fa-ticket-alt"></i> <span> Quản Lý Vé Xe</span></a>
+                </li>
                 <li @if($route === 'buses')
                     class="active"
                     @endif>
@@ -31,10 +36,6 @@
                     @endif>
                     <a href="{{route('admin.users.show_users')}}"><i class="fas fa-user-tie"></i> <span> Quản Lý Nhân Viên</span></a>
                 </li>
-                <li @if($route === 'tickets')
-                    class="active"
-                    @endif>
-                    <a href="{{route('admin.tickets.index')}}"><i class="fas fa-ticket-alt"></i> <span> Quản Lý Vé Xe</span></a>
                 <li @if($route === 'customers')
                     class="active"
                     @endif>
