@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
+use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\View;
@@ -64,7 +65,10 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        return view('admin.' . $this->table . '.index');
+        $breadcumbs = Breadcrumbs::render('customers');
+        return view('admin.' . $this->table . '.index',[
+            'breadcumbs' => $breadcumbs,
+        ]);
     }
 
     /**
@@ -96,8 +100,10 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
+        $breadcumbs = Breadcrumbs::render('show', $customer);
         return view('admin.' . $this->table . '.show',[
-            'customer' => $customer
+            'customer' => $customer,
+            'breadcumbs' => $breadcumbs,
         ]);
     }
 
