@@ -103,7 +103,7 @@ class HomePageController extends Controller
         $array['city_start'] = array_unique($arr['city_start']);
         $array['city_end'] = array_unique($arr['city_end']);
 
-        dd($array);
+//        dd($array);
         return view('index',[
             'city_start' => $array['city_start'],
             'city_end' => $array['city_end'],
