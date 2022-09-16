@@ -68,8 +68,8 @@ class HomePageController extends Controller
         ->get()
             ->map(function ($each) {
 //                dd($each);
-                $each->city_start_name = $each->city_start->pluck('name')[0];
-                $each->city_end_name = $each->city_end->pluck('name')[0];
+                $each->city_start_name = $each->city_start->name;
+                $each->city_end_name = $each->city_end->name;
                 $each->img = "upload/" . $each->images;
                 if(isset($each->pin)){
                     $price = Route_driver_car::query()
@@ -102,6 +102,8 @@ class HomePageController extends Controller
 
         $array['city_start'] = array_unique($arr['city_start']);
         $array['city_end'] = array_unique($arr['city_end']);
+
+        dd($array);
         return view('index',[
             'city_start' => $array['city_start'],
             'city_end' => $array['city_end'],
