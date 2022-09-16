@@ -185,6 +185,11 @@ class HomePageController extends Controller
     }
 
     public function book_ticket_step_2(Request $request){
+        if(session()->has('error')){
+            session()->forget('error');
+            session()->flush();
+            $request->session()->flash('error','Không tim thấy tuyến xe hoặc nhà xe không có chuyến');
+        }
 //        tạo array
         if(!isset($request->city_start)
             ||!isset($request->city_end)
@@ -281,7 +286,7 @@ class HomePageController extends Controller
             }
         }
         catch(\Throwable $e){
-            session()->put('error', 'yes');
+            session()->put('error', 'Lỗi không tìm thấy chuyến xe , vui lòng thử lại');
             return redirect()->back();
         }
         $array = New Fluent($array);
