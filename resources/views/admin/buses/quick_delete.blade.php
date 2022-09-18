@@ -89,6 +89,7 @@
 @push('js')
     {{-- add timepicker --}}
     <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
     <script>
         $(document).ready(function() {
             // set data for year
@@ -259,47 +260,47 @@
                 });
             });
             $("#form").validate({
-                    rules: {
-                        year: {
-                            required: true,
-                        },
-                        week_start: {
-                            required: true,
-                        },
-                        week_end: {
-                            required: true,
-                        },
-                        route_from: {
-                            required: true,
-                        }, 
-                        route_to: {
-                            required: true,
-                        },
+                rules: {
+                    year: {
+                        required: true,
                     },
-                    messages:{
-                        year: {
-                            required: 'Vui lòng chọn năm',
-                        },
-                        week_start: {
-                            required: 'Vui lòng chọn tuần bắt đầu',
-                        },
-                        week_end: {
-                            required: 'Vui lòng chọn tuần kết thúc',
-                        },
-                        route_from: {
-                            required: 'Vui lòng chọn tuyến đi',
-                        }, 
-                        route_to: {
-                            required: 'Vui lòng chọn tuyến về',
-                        },
+                    week_start: {
+                        required: true,
                     },
-                    submitHandler: function(form) {
-                        let confirm_delete = confirm('Bạn có chắc chắn muốn xóa?');
-                        if(confirm_delete){
-                            form.submit();
-                        }
-                    }
-                });
+                    week_end: {
+                        required: true,
+                    },
+                    route_from: {
+                        required: true,
+                    }, 
+                    route_to: {
+                        required: true,
+                    },
+                },
+                messages:{
+                    year: {
+                        required: 'Vui lòng chọn năm',
+                    },
+                    week_start: {
+                        required: 'Vui lòng chọn tuần bắt đầu',
+                    },
+                    week_end: {
+                        required: 'Vui lòng chọn tuần kết thúc',
+                    },
+                    route_from: {
+                        required: 'Vui lòng chọn tuyến đi',
+                    }, 
+                    route_to: {
+                        required: 'Vui lòng chọn tuyến về',
+                    },
+                },
+                submitHandler: function(form) {
+                    let confirm_delete = confirm('Bạn có chắc chắn muốn xóa?');
+                    if(confirm_delete){
+                        form.submit();
+                    };
+                },
+            });
         });
     </script>
 @endpush

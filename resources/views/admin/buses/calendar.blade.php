@@ -178,7 +178,7 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6 mb-3">
-                                <label>Số lượng ghế</label>
+                                <label>Số ghế</label>
                                 <input type="number" class="form-control" name="default_number_seat" >
                             </div>
                             <div class="col-md-6 mb-3">

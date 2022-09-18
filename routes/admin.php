@@ -48,7 +48,7 @@ Route::post('reset_password', [AuthController::class, 'processResetPassword'])->
 Route::group([
     'as' => 'users.',
     'prefix' => 'users',
-    // 'middleware' => CheckAdminMiddleware::class,
+    'middleware' => CheckAdminMiddleware::class,
 ], function () {
     Route::get('/', [UserController::class, 'show_users'])->name('show_users');
     Route::get('/create', [UserController::class, 'create'])->name('create');
@@ -67,7 +67,7 @@ Route::group([
 Route::group([
     'as' => 'customers.',
     'prefix' => 'customers',
-    // 'middleware' => CheckAdminMiddleware::class,
+    'middleware' => CheckAdminMiddleware::class,
 ], function () {
     Route::get('/', [CustomerController::class, 'index'])->name('index');
     Route::get('/show/{customer}', [CustomerController::class, 'show'])->name('show');
@@ -84,7 +84,7 @@ Route::group([
 Route::group([
     'as' => 'carriages.',
     'prefix' => 'carriages',
-    // 'middleware' => CheckAdminMiddleware::class,
+    'middleware' => CheckAdminMiddleware::class,
 ], function () {
     Route::get('/', [CarriageController::class, 'index'])->name('index');
     Route::get('/create', [CarriageController::class, 'create'])->name('create');
@@ -106,7 +106,7 @@ Route::group([
 Route::group([
     'as' => 'routes.',
     'prefix' => 'routes',
-    // 'middleware' => CheckStaffMiddleware::class,
+    'middleware' => CheckStaffMiddleware::class,
 ], function () {
     Route::get('/', [RouteController::class, 'index'])->name('index');
     Route::get('/show/{route}', [RouteController::class, 'show'])->name('show');
@@ -130,7 +130,7 @@ Route::group([
 Route::group([
     'as' => 'cities.',
     'prefix' => 'cities',
-    // 'middleware' => CheckStaffMiddleware::class,
+    'middleware' => CheckStaffMiddleware::class,
 ], function () {
     Route::post('/store', [CityController::class, 'store'])->name('store');
     //    api
@@ -142,7 +142,7 @@ Route::group([
 Route::group([
     'as' => 'route_driver_car.',
     'prefix' => 'route_driver_car',
-    // 'middleware' => CheckStaffMiddleware::class,
+    'middleware' => CheckStaffMiddleware::class,
 ], function () {
     //    api
     Route::get('/api/{id}', [RouteDriverCarController::class, 'api'])->name('api');
@@ -152,7 +152,7 @@ Route::group([
 Route::group([
     'as' => 'bills.',
     'prefix' => 'bills',
-    // 'middleware' => CheckStaffMiddleware::class,
+    'middleware' => CheckStaffMiddleware::class,
 ], function () {
     //    api
     Route::post('/api', [BillController::class, 'apiRevenue'])->name('api.revenue');
@@ -163,7 +163,7 @@ Route::group([
 Route::group([
     'as' => 'bill_details.',
     'prefix' => 'bill_details',
-    // 'middleware' => CheckStaffMiddleware::class,
+    'middleware' => CheckStaffMiddleware::class,
 ], function () {
     //    api
     Route::get('/apiRouteCommons', [BillDetailController::class, 'apiRouteCommons'])->name('api.route_commons');
@@ -172,7 +172,7 @@ Route::group([
 Route::group([
     'as' => 'buses.',
     'prefix' => 'buses',
-    // 'middleware' => CheckStaffMiddleware::class,
+    'middleware' => CheckStaffMiddleware::class,
 ], function () {
     Route::get('/index', [BusesController::class, 'index'])->name('index');
     Route::get('/', [BusesController::class, 'calendar'])->name('calendar');
@@ -199,7 +199,7 @@ Route::group([
 Route::group([
     'as' => 'tickets.',
     'prefix' => 'tickets',
-     'middleware' => CheckStaffMiddleware::class,
+    'middleware' => CheckStaffMiddleware::class,
 ], function () {
     Route::get('/', [TicketController::class, 'index'])->name('index');
     Route::get('/show/{ticket}', [TicketController::class, 'show'])->name('show');

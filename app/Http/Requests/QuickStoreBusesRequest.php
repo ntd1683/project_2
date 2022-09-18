@@ -24,6 +24,17 @@ class QuickStoreBusesRequest extends FormRequest
     public function rules()
     {
         return [
+            'year' => 'required',
+            'week_start'=>'required',
+            'week_end' =>'required',
+            'time_two_buses'=>'required',
+            'time_start_day'=>'required',
+            'time_end_day'=>'required',
+            'route_from'=>'required',
+            'route_to'=>'required',
+            'time_move'=>'required',
+            'carriage_from'=>'required',
+            'carriage_to'=>'required',
         ];
     }
 

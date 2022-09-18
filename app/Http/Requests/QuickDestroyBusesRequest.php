@@ -24,6 +24,11 @@ class QuickDestroyBusesRequest extends FormRequest
     public function rules()
     {
         return [
+            'year' => 'required',
+            'week_start' => 'required',
+            'week_end' => 'required',
+            'route_from' => 'required',
+            'route_to' => 'required',
         ];
     }
 

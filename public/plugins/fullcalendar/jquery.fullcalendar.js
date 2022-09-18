@@ -79,11 +79,11 @@
         var form = $("<form action='"+this.$domain+"admin/buses/store') }} method='POST'></form>");
         form.append("<div class='event-inputs'></div>");
         form.find(".event-inputs")
-            .append("<div class='form-group row'><label class='col-form-label col-md-2'>Xe</label><div class='col-md-10'><select class='form-control' name='car' id='car'></select></div></div>")
-            .append("<div class='form-group row'><label class='col-form-label col-md-2'>Tài Xế</label><div class='col-md-10'><input class='form-control' name='driver' type=text disabled /></div></div>")
-            .append("<div class='form-group row'><label class='col-form-label col-md-2'>Ngày</label><div class='col-md-10'><input class='form-control' name='date' type=date value='" + day + "'/></div></div>")
-            .append("<div class='form-group row'><label class='col-form-label col-md-2'>Giờ</label><div class='col-md-10'><input class='form-control' name='time' type=time value='" + time + "'/></div></div>")
-            .append("<div class='form-group row'><label class='col-form-label col-md-2'>Giá</label><div class='col-md-10'><input class='form-control' name='price' type=text /></div></div>");
+            .append("<div class='form-group row'><label class='col-form-label col-md-3'>Xe</label><div class='col-md-9'><select class='form-control' name='car' id='car'></select></div></div>")
+            .append("<div class='form-group row'><label class='col-form-label col-md-3'>Tài Xế</label><div class='col-md-9'><input class='form-control' name='driver' type=text disabled /></div></div>")
+            .append("<div class='form-group row'><label class='col-form-label col-md-3'>Ngày</label><div class='col-md-9'><input class='form-control' name='date' type=date value='" + day + "'/></div></div>")
+            .append("<div class='form-group row'><label class='col-form-label col-md-3'>Giờ</label><div class='col-md-9'><input class='form-control' name='time' type=time value='" + time + "'/></div></div>")
+            .append("<div class='form-group row'><label class='col-form-label col-md-3'>Giá</label><div class='col-md-9'><input class='form-control' name='price' type=text /></div></div>");
 
                 // load carriages by route
         $.ajax({
@@ -168,7 +168,10 @@
                 data: form.serialize() + '&route=' + $this.$route.val(),
                 success: function (response) {
                     if (response.success) {
-                        var id = response.id;
+                        var id = response.data[0].id;
+                        var color = response.data[0].color;
+                        var slot = response.data[0].slot;
+                        var default_number_seat = response.data[0].default_number_seat;
                         var route_id = $this.$route.val();
                         var departure_time = moment(form.find('input[name="date"]').val() + ' ' + form.find('input[name="time"]').val());
                         var price = form.find('input[name="price"]').val();
@@ -187,7 +190,9 @@
                             start: departure_time,
                             end: moment(departure_time).add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
                             title: license_plate,
-                            className: 'bg-info',
+                            className: 'bg-' + color,
+                            slot: slot,
+                            default_number_seat: default_number_seat,
                         }, true);
                         $this.$modal.modal('hide');
                     }
@@ -217,17 +222,20 @@
         var $this = this;
         var car_id = calEvent.car_id;
         var driver = calEvent.driver_name;
+        var slot = calEvent.slot;
+        var default_number_seat = calEvent.default_number_seat;
         var day = calEvent.start.format('YYYY-MM-DD');
         var time = calEvent.start.format('HH:mm');
         var price = calEvent.price;
         var form = $("<form action='"+this.$domain+"admin/buses/update/" + calEvent._id + "') }} method='POST'></form>");
         form.append("<div class='event-inputs'></div>");
         form.find(".event-inputs")
-            .append("<div class='form-group row'><label class='col-form-label col-md-2'>Xe</label><div class='col-md-10'><select class='form-control' name='car' id='car'></select></div></div>")
-            .append("<div class='form-group row'><label class='col-form-label col-md-2'>Tài Xế</label><div class='col-md-10'><input class='form-control' name='driver' type=text value='" + driver + "' disabled /></div></div>")
-            .append("<div class='form-group row'><label class='col-form-label col-md-2'>Ngày</label><div class='col-md-10'><input class='form-control' name='date' type=date value='" + day + "' /></div></div>")
-            .append("<div class='form-group row'><label class='col-form-label col-md-2'>Giờ</label><div class='col-md-10'><input class='form-control' name='time' type=time value='" + time + "' /></div></div>")
-            .append("<div class='form-group row'><label class='col-form-label col-md-2'>Giá</label><div class='col-md-10'><input class='form-control' name='price' type=text value='" + price + "' /></div></div>");
+            .append("<div class='form-group row'><label class='col-form-label col-md-3'>Xe</label><div class='col-md-9'><select class='form-control' name='car' id='car'></select></div></div>")
+            .append("<div class='form-group row'><label class='col-form-label col-md-3'>Tài Xế</label><div class='col-md-9'><input class='form-control' name='driver' type=text value='" + driver + "' disabled /></div></div>")
+            .append("<div class='form-group row'><label class='col-form-label col-md-3'>Ngày</label><div class='col-md-9'><input class='form-control' name='date' type=date value='" + day + "' /></div></div>")
+            .append("<div class='form-group row'><label class='col-form-label col-md-3'>Giờ</label><div class='col-md-9'><input class='form-control' name='time' type=time value='" + time + "' /></div></div>")
+            .append("<div class='form-group row'><label class='col-form-label col-md-3'>Giá</label><div class='col-md-9'><input class='form-control' name='price' type=text value='" + price + "' /></div></div>")
+            .append("<div class='form-group row'><label class='col-form-label col-md-3'>Chỗ đã đặt</label><div class='col-md-9'><input class='form-control' name='slot' type=text value='" + slot + "/" + default_number_seat + "' disabled /></div></div>");
 
         // load carriages by route
         $.ajax({
