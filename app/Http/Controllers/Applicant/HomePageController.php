@@ -342,9 +342,8 @@ class HomePageController extends Controller
         $carriage = Carriage::query()->find($car_id);
         $default_number_seat = $carriage->default_number_seat;
         if ($default_number_seat < $request->arr_bus['quantity']) {
-            return redirect()->route('index')->with('error',
-                'Xe không đủ số lượng ghế, số ghế còn lại '
-                .$default_number_seat);
+            session()->put('error', 'Xe không đủ số lượng ghế, số ghế còn lại '.$default_number_seat);
+            return redirect()->route('index');
         }
         $arr_customer = $request->arr_customer;
         $address = $arr_customer['address'].', '.$arr_customer['district'].', '
