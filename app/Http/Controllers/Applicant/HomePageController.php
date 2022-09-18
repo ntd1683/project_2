@@ -112,6 +112,7 @@ class HomePageController extends Controller
     }
 
     public function book_ticket_step_1(Request $request){
+        $url = "dat-ve-xe";
         if(session()->has('error')){
             session()->forget('error');
             session()->flush();
@@ -185,6 +186,7 @@ class HomePageController extends Controller
     }
 
     public function book_ticket_step_2(Request $request){
+        $url = "dat-ve-xe";
         if(session()->has('error')){
             session()->forget('error');
             session()->flush();
@@ -306,6 +308,7 @@ class HomePageController extends Controller
 
     public function book_ticket(Request $request)
     {
+        $url = "dat-ve-xe";
         return view('applicant/book_ticket',[
             'request'=>$request,
         ]);
@@ -313,6 +316,7 @@ class HomePageController extends Controller
 
     public function payment(StoreInfoCustomerRequest $request)
     {
+        $url = "dat-ve-xe";
 //        dd($request);
         $request->bus = json_decode($request->bus,true);
         $location = Location::query()->with('city')

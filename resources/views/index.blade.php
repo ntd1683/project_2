@@ -204,14 +204,13 @@
                     <div class="item">
                         <div class="testimony-wrap py-4">
                             <div class="text">
-                                <p class="mb-4">Far far away, behind the word mountains, far from the countries Vokalia and
-                                    Consonantia, there live the blind texts.</p>
+                                <p class="mb-4">Chuyến xe đi an toàn , tài xế nhiệt tình , 10 điểm nhà xe.</p>
                                 <div class="d-flex align-items-center">
                                     <div class="user-img"
-                                         style="background-image:url(images/xperson_1.jpg.pagespeed.ic.P4pHl6glbj.jpg)"></div>
+                                         style="background-image:url(https://upload.wikimedia.org/wikipedia/commons/8/8c/Cristiano_Ronaldo_2018.jpg)"></div>
                                     <div class="pl-3">
-                                        <p class="name">Roger Scott</p>
-                                        <span class="position">Marketing Manager</span>
+                                        <p class="name">Cristiano Ronaldo</p>
+                                        <span class="position">Cầu thủ bóng đá</span>
                                     </div>
                                 </div>
                             </div>
@@ -220,14 +219,13 @@
                     <div class="item">
                         <div class="testimony-wrap py-4">
                             <div class="text">
-                                <p class="mb-4">Far far away, behind the word mountains, far from the countries Vokalia and
-                                    Consonantia, there live the blind texts.</p>
+                                <p class="mb-4">Nhà xe nhiệt tình , lái xe an toàn, phù hợp với tôi.</p>
                                 <div class="d-flex align-items-center">
                                     <div class="user-img"
-                                         style="background-image:url(images/xperson_2.jpg.pagespeed.ic.yyrmjBH91b.jpg)"></div>
+                                         style="background-image:url(https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcR_BSXPlBjoBeJruSaCamv7kQuMNjoIIWX0CITXUVoapFCbRM9g)"></div>
                                     <div class="pl-3">
-                                        <p class="name">Roger Scott</p>
-                                        <span class="position">Marketing Manager</span>
+                                        <p class="name">Lionel Messi</p>
+                                        <span class="position">Cầu thủ bóng đá</span>
                                     </div>
                                 </div>
                             </div>
@@ -236,13 +234,12 @@
                     <div class="item">
                         <div class="testimony-wrap py-4">
                             <div class="text">
-                                <p class="mb-4">Far far away, behind the word mountains, far from the countries Vokalia and
-                                    Consonantia, there live the blind texts.</p>
+                                <p class="mb-4">Nhà xe nhiệt tình, xe đi an toàn, sạch sẽ.</p>
                                 <div class="d-flex align-items-center">
-                                    <div class="user-img" style="background-image:url(images/person_3.jpg)"></div>
+                                    <div class="user-img" style="background-image:url(https://upload.wikimedia.org/wikipedia/commons/b/bc/Bra-Cos_%281%29.jpg)"></div>
                                     <div class="pl-3">
-                                        <p class="name">Roger Scott</p>
-                                        <span class="position">Marketing Manager</span>
+                                        <p class="name">Neymar da Silva Santos Júnior</p>
+                                        <span class="position">Cầu thủ bóng đá</span>
                                     </div>
                                 </div>
                             </div>
@@ -251,14 +248,13 @@
                     <div class="item">
                         <div class="testimony-wrap py-4">
                             <div class="text">
-                                <p class="mb-4">Far far away, behind the word mountains, far from the countries Vokalia and
-                                    Consonantia, there live the blind texts.</p>
+                                <p class="mb-4">Nhà Xe an toàn sạch sẽ</p>
                                 <div class="d-flex align-items-center">
                                     <div class="user-img"
-                                         style="background-image:url(images/xperson_1.jpg.pagespeed.ic.P4pHl6glbj.jpg)"></div>
+                                         style="background-image:url(http://t0.gstatic.com/licensed-image?q=tbn:ANd9GcQIjnNG168e1GZWlzuE4SmKCkiOdRrxBtGQecwI3irgVn8jbgiCxp_Glxp83Mjj3sJ6)"></div>
                                     <div class="pl-3">
-                                        <p class="name">Roger Scott</p>
-                                        <span class="position">Marketing Manager</span>
+                                        <p class="name">Erling Haaland</p>
+                                        <span class="position">Cầu thủ bóng đá</span>
                                     </div>
                                 </div>
                             </div>
@@ -267,14 +263,13 @@
                     <div class="item">
                         <div class="testimony-wrap py-4">
                             <div class="text">
-                                <p class="mb-4">Far far away, behind the word mountains, far from the countries Vokalia and
-                                    Consonantia, there live the blind texts.</p>
+                                <p class="mb-4">Nhà xe đi an toàn , nhiệt tình , sạch sẽ phù hợp với tôi , tôi cho 10 điểm.</p>
                                 <div class="d-flex align-items-center">
                                     <div class="user-img"
-                                         style="background-image:url(images/xperson_2.jpg.pagespeed.ic.yyrmjBH91b.jpg)"></div>
+                                         style="background-image:url(https://ss-images.saostar.vn/pc/1608962665828/do-mixi-1.png)"></div>
                                     <div class="pl-3">
-                                        <p class="name">Roger Scott</p>
-                                        <span class="position">Marketing Manager</span>
+                                        <p class="name">Phùng Thanh Độ</p>
+                                        <span class="position">Streamer</span>
                                     </div>
                                 </div>
                             </div>
