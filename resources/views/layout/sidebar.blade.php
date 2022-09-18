@@ -14,6 +14,9 @@
                 <li class="nav-item @if($url == "tuyen-duong")
                     active
 @endif"><a href="{{route('applicant.schedule')}}" class="nav-link">Tuyến Đường</a></li>
+                <li class="nav-item @if($url == "dat-ve-xe")
+                    active
+@endif"><a href="#" class="nav-link">Chuyến Đi</a></li>
                 <li class="nav-item"><a href="contact.html" class="nav-link">Tin tức</a></li>
                 <li class="nav-item @if($url == "kiem-tra-ve")
                     active
