@@ -133,7 +133,6 @@ Breadcrumbs::for('show_ticket', function ($trail, $ticket) {
     $trail->push('Xem', route('admin.tickets.show', $ticket->id));
 });
 
-
 // Trang Chủ > Khách hàng
 Breadcrumbs::for('customers', function ($trail) {
     $trail->parent('home');
@@ -144,4 +143,22 @@ Breadcrumbs::for('customers', function ($trail) {
 Breadcrumbs::for('show', function ($trail, $customer) {
     $trail->parent('customers');
     $trail->push('Xem', route('admin.customers.show', $customer->id));
+});
+
+// Trang Chủ > Địa điểm đón - trả
+Breadcrumbs::for('locations', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Địa điểm đón - trả', route('admin.locations.index'));
+});
+
+//Trang Chủ > Địa điểm đón - trả > Thêm
+Breadcrumbs::for('create_location', function ($trail) {
+    $trail->parent('locations');
+    $trail->push('Thêm', route('admin.locations.create'));
+});
+
+//Trang Chủ > Địa điểm đón - trả > Sửa
+Breadcrumbs::for('edit_location', function ($trail, $location) {
+    $trail->parent('locations');
+    $trail->push('Sửa', route('admin.locations.edit', $location->id));
 });

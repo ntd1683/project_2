@@ -41,6 +41,11 @@
                     @endif>
                     <a href="{{route('admin.customers.index')}}"><i class="fas fa-user"></i> <span> Quản Lý Khách Hàng</span></a>
                 </li>
+                <li @if($route === 'locations')
+                    class="active"
+                    @endif>
+                    <a href="{{route('admin.locations.index')}}"><i class="fas fa-location-arrow"></i> <span> Quản Lý Địa Điểm Đón - Trả</span></a>
+                </li>
             </ul>
         </div>
     </div>

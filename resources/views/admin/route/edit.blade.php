@@ -224,7 +224,7 @@
                     $("#select-city").append(`
                 <option data-path='${each.file_path}'>
                     ${index}
-                </option>`)
+                </option>`);
 
                     string_end += `<option data-path='${each.file_path}'`;
                     if (city_end_1 === index) {
