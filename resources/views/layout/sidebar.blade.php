@@ -18,7 +18,7 @@
                     active
 @endif"><a href="#" class="nav-link">Chuyến Đi</a></li>
                 <li class="nav-item"><a href="contact.html" class="nav-link">Tin tức</a></li>
-                <li class="nav-item @if($url == "kiem-tra-ve")
+                <li class="nav-item @if($url == "kiem-tra-ve"||$url == "booking")
                     active
 @endif"><a href="{{route('applicant.check_ticket')}}" class="nav-link">Kiểm Tra Vé</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">Liên Hệ</a></li>

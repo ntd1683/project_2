@@ -13,7 +13,7 @@ class StoreLocationRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,24 @@ class StoreLocationRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'address' =>[
+                'required',
+                'unique:App\Models\Location,address'
+            ],
+            'district' =>[
+                'required',
+            ],
+            'city' =>[
+                'required',
+            ],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'Bạn đang bỏ trống ô nào đó',
+            'unique'=>'Địa chỉ bị trùng rồi'
         ];
     }
 }

@@ -14,8 +14,7 @@ class TestController extends Controller
 
     public function test()
     {
-        session()->flash('error123','1234');
-        return redirect()->route('test1');
+        return redirect()->route('test1')->with('error123','1234');
     }
     public function test1()
     {

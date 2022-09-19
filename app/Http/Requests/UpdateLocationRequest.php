@@ -13,7 +13,7 @@ class UpdateLocationRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,22 @@ class UpdateLocationRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'address' =>[
+                'required',
+            ],
+            'district' =>[
+                'required',
+            ],
+            'city' =>[
+                'required',
+            ],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'Bạn đang bỏ trống ô nào đó',
         ];
     }
 }

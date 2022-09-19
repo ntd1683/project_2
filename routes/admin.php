@@ -6,6 +6,7 @@ use App\Http\Controllers\BillController;
 use App\Http\Controllers\BillDetailController;
 use App\Http\Controllers\BusesController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\RouteDriverCarController;
 use App\Http\Controllers\TestController;
@@ -211,4 +212,23 @@ Route::group([
     Route::get('/apiTicket', [TicketController::class, 'api'])->name('api');
     Route::get('/apiGetPhonePassenger', [TicketController::class, 'apiPhonePassenger'])->name('api.phone_passenger');
     Route::get('/apiGetCodeTickets', [TicketController::class, 'apiCodeTickets'])->name('api.code_tickets');
+});
+
+//Location
+Route::group([
+    'as' => 'locations.',
+    'prefix' => 'locations',
+    'middleware' => CheckStaffMiddleware::class,
+], function () {
+    Route::get('/', [LocationController::class, 'index'])->name('index');
+    Route::get('/create', [LocationController::class, 'create'])->name('create');
+    Route::post('/store', [LocationController::class, 'store'])->name('store');
+    Route::get('/edit/{location}', [LocationController::class, 'edit'])->name('edit');
+    Route::post('/update/{location}', [LocationController::class, 'update'])->name('update');
+    Route::delete('/destroy/{location}', [LocationController::class, 'destroy'])->name('destroy');
+    //    api
+    Route::get('/apiLocation', [LocationController::class, 'api'])->name('api');
+    Route::get('/apiName', [LocationController::class, 'apiName'])->name('api.name');
+    Route::get('/apiAddress', [LocationController::class, 'apiAddress'])->name('api.address');
+    Route::get('/apiDistrict', [LocationController::class, 'apiDistrict'])->name('api.district');
 });

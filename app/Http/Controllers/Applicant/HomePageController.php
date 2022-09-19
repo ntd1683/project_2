@@ -48,18 +48,6 @@ class HomePageController extends Controller
     public function index()
     {
 //        dd(session()->get('success'));
-        if(session()->has('error')){
-            $get_error = session()->get('error');
-            session()->forget('error');
-            session()->flush();
-            session()->flash('error',$get_error);
-        }
-        else if(session()->has('success')){
-            $get_success = session()->get('success');
-            session()->forget('success');
-            session()->flush();
-            session()->flash('success',$get_success);
-        }
         $routes = Route::query()->with('city_start')->with('city_end')
             ->selectRaw("routes.*,sum(route_driver_cars.price) as price")
             ->leftJoin('route_driver_cars','routes.id','=','route_driver_cars.route_id')
@@ -113,12 +101,7 @@ class HomePageController extends Controller
 
     public function book_ticket_step_1(Request $request){
         $url = "dat-ve-xe";
-        if(session()->has('error')){
-            session()->forget('error');
-            session()->flush();
-            $request->session()->flash('error','Không tim thấy tuyến xe hoặc nhà xe không có chuyến');
-        }
-        else if(!isset($request->city_start)
+        if(!isset($request->city_start)
             ||!isset($request->city_end)
             ||!isset($request->departure_time)
             ||$request->city_start==-1
@@ -182,16 +165,12 @@ class HomePageController extends Controller
             'city_end' => $array['city_end'],
             'request'=>$request,
             'routes'=>$arr_routes,
+            'url'=>$url
         ]);
     }
 
     public function book_ticket_step_2(Request $request){
         $url = "dat-ve-xe";
-        if(session()->has('error')){
-            session()->forget('error');
-            session()->flush();
-            $request->session()->flash('error','Không tim thấy tuyến xe hoặc nhà xe không có chuyến');
-        }
 //        tạo array
         if(!isset($request->city_start)
             ||!isset($request->city_end)
@@ -199,7 +178,7 @@ class HomePageController extends Controller
             ||$request->city_start==-1
             ||$request->city_end ==-1)
         {
-            return redirect()->route('applicant.book_ticket_1');
+            return redirect()->route('applicant.book_ticket_1')->with('error','Bạn đang nhập thiếu thông tin , vui lòng điền đầy đủ');
         }
 //        dd($request);
         $array =[];
@@ -273,8 +252,7 @@ class HomePageController extends Controller
                     return $each;
                 });
             if($arr_bus->isEmpty()){
-                session()->put('error', 'yes');
-                return redirect()->back();
+                return redirect()->back()->with('error','Không tìm thấy chuyến hoặc nhà xe chưa có chuyến');
             }
 //                lấy danh sách các điểm đón
             $select_locations = Location::query()->where('city_id',$city_start)->get()->toArray();
@@ -288,7 +266,7 @@ class HomePageController extends Controller
             }
         }
         catch(\Throwable $e){
-            session()->put('error', 'Lỗi không tìm thấy chuyến xe , vui lòng thử lại');
+            session()->flash('error', 'Lỗi không tìm thấy chuyến xe , vui lòng thử lại');
             return redirect()->back();
         }
         $array = New Fluent($array);
@@ -303,6 +281,7 @@ class HomePageController extends Controller
             'arr_location'=>$arr_location,
             'bus'=>$bus,
             'seatTypes'=>$seatTypes,
+            'url'=>$url
         ]);
     }
 
@@ -311,6 +290,7 @@ class HomePageController extends Controller
         $url = "dat-ve-xe";
         return view('applicant/book_ticket',[
             'request'=>$request,
+            'url'=>$url
         ]);
     }
 
@@ -337,6 +317,7 @@ class HomePageController extends Controller
 //        dd($request);
          return view('applicant/book_ticket',[
              'request'=>$request,
+             'url'=>$url
          ]);
     }
 
@@ -346,7 +327,7 @@ class HomePageController extends Controller
         $carriage = Carriage::query()->find($car_id);
         $default_number_seat = $carriage->default_number_seat;
         if ($default_number_seat < $request->arr_bus['quantity']) {
-            session()->put('error', 'Xe không đủ số lượng ghế, số ghế còn lại '.$default_number_seat);
+            session()->flash('error', 'Xe không đủ số lượng ghế, số ghế còn lại '.$default_number_seat);
             return redirect()->route('index');
         }
         $arr_customer = $request->arr_customer;
@@ -392,7 +373,7 @@ class HomePageController extends Controller
         $object_ticket->create($arr_tickets);
 //            dd($request);
         ApplicantOrderEvent::dispatch($request);
-        session()->put('success', 'Bạn đã đặt vé thành công !!!');
+        session()->flash('success', 'Bạn đã đặt vé thành công !!!');
         return redirect()->route('index');
     }
 

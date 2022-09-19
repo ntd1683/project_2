@@ -27,21 +27,17 @@ class AuthController extends Controller
     public function processLogin(Request $request)
     {
         $remember = $request->has('remember');
+//        dd($remember);
         $arr = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
         if(Auth::attempt($arr,$remember)){
             session()->flash('success','Đăng nhập thành công');
-//            $request->session()->regenerate();
             $user = User::query()
                 ->where('email',$request->get('email'))
                 ->firstOrFail();
             Auth::login($user, $remember);
-            if (Auth::viaRemember()) {
-//                @todo Lưu vào cookie
-                dd('1');
-            }
             return redirect()->intended('/admin/');
         }
         session()->flash('error','Email hoặc mật khẩu không đúng');
