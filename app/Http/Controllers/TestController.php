@@ -19,7 +19,7 @@ class TestController extends Controller
     public function test1(request $request)
     {
         function getCaptcha($SecretKey){
-            $Response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=6LczziwiAAAAAAoTeOjGssm_aGCLNe9TkjXAYpXC"."&response={$SecretKey}");
+            $Response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret="."&response={$SecretKey}");
             $Return = json_decode($Response);
             return $Return;
         }
