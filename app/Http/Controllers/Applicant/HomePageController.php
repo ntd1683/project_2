@@ -6,13 +6,10 @@ use App\Enums\CarriageCategoryEnum;
 use App\Enums\PaymentMethodEnum;
 use App\Enums\SeatTypeEnum;
 use App\Events\ApplicantOrderEvent;
-use App\Events\UserCreateEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookingTicketRequest;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\StoreInfoCustomerRequest;
-use App\Http\Requests\StoreTicketRequest;
-use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Bill;
 use App\Models\Bill_detail;
 use App\Models\Buses;
@@ -24,8 +21,6 @@ use App\Models\Route_driver_car;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
@@ -108,7 +103,6 @@ class HomePageController extends Controller
             ||$request->city_end ==-1){
             $request->session()->flash('error', 'Bạn đang nhập thiếu thông tin , vui lòng điền đầy đủ');
         }
-//        dd(session()->has('error'));
         $array =[];
         $arr_routes = [];
         $request->step = 1;
@@ -384,39 +378,50 @@ class HomePageController extends Controller
 
     public function check_ticket()
     {
-        return view('applicant.check_ticket');
+        $siteRecaptcha = env('RECAPTCHA_SITE_KEY');
+        return view('applicant.check_ticket',[
+            'siteRecaptcha'=>$siteRecaptcha
+        ]);
     }
 
     public function booking(BookingTicketRequest $request)
     {
-//        dd($request);
-        $ticket = Ticket::query()->where('phone_passenger',$request->phone)
-            ->where('code',$request->code_ticket)->get();
-        if($ticket->isEmpty()){
-            return redirect()->back()->with('errors','Không tồn tại mã code này');
+        define('SECRET_KEY', env('RECAPTCHA_SECRET_KEY'));
+        function getCaptcha($SecretKey){
+            $Response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=".SECRET_KEY."&response={$SecretKey}");
+            $Return = json_decode($Response);
+            return $Return;
         }
-        $ticket = Ticket::query()
-            ->selectRaw('tickets.*,tickets.code as code_ticket,bill_details.*,bills.*,
+        $Return = getCaptcha($_POST['g-recaptcha-reponse']);
+        if($Return->success == true && $Return->score > 0.5){
+            $ticket = Ticket::query()->where('phone_passenger',$request->phone)
+                ->where('code',$request->code_ticket)->get();
+            if($ticket->isEmpty()){
+                return redirect()->back()->with('errors','Không tồn tại mã code này');
+            }
+            $ticket = Ticket::query()
+                ->selectRaw('tickets.*,tickets.code as code_ticket,bill_details.*,bills.*,
             bills.code as code_bill,buses.departure_time,locations.*,routes.name as route_name,routes.time,cities.name as city_name_end')
-            ->join('bill_details','bill_details.id','bill_detail_id')
-            ->join('buses','buses.id','buses_id')
-            ->join('bills','bills.id','bill_id')
-            ->join('locations','locations.id','address_passenger_id')
-            ->join('route_driver_cars','route_driver_cars.id','route_driver_car_id')
-            ->join('routes','routes.id','route_id')
-            ->join('cities','cities.id','city_end_id')
-            ->where('phone_passenger',$request->phone)
-            ->where('tickets.code',$request->code_ticket)->first();
-        $ticket->location = $ticket->name.', '?? '';
-        $ticket->location .= $ticket->address .', '.$ticket->district;
-        $departure_time = \DateTime::createFromFormat('Y-m-d H:i:s', $ticket->departure_time);
-        $departure_time = $departure_time->format('H:i:s d-m-Y');
-        $ticket->departure_time = $departure_time;
-        $ticket->payment_method = PaymentMethodEnum::getKeyByValue($ticket->payment_method);
-//        dd($ticket);
-        return view('applicant.booking',[
-            'ticket' => $ticket,
-        ]);
+                ->join('bill_details','bill_details.id','bill_detail_id')
+                ->join('buses','buses.id','buses_id')
+                ->join('bills','bills.id','bill_id')
+                ->join('locations','locations.id','address_passenger_id')
+                ->join('route_driver_cars','route_driver_cars.id','route_driver_car_id')
+                ->join('routes','routes.id','route_id')
+                ->join('cities','cities.id','city_end_id')
+                ->where('phone_passenger',$request->phone)
+                ->where('tickets.code',$request->code_ticket)->first();
+            $ticket->location = $ticket->name.', '?? '';
+            $ticket->location .= $ticket->address .', '.$ticket->district;
+            $departure_time = \DateTime::createFromFormat('Y-m-d H:i:s', $ticket->departure_time);
+            $departure_time = $departure_time->format('H:i:s d-m-Y');
+            $ticket->departure_time = $departure_time;
+            $ticket->payment_method = PaymentMethodEnum::getKeyByValue($ticket->payment_method);
+            return view('applicant.booking',[
+                'ticket' => $ticket,
+            ]);
+        }
+        return redirect()->route('applicant.check_ticket')->with('error','Có vẻ bạn là robot');
     }
 
     public function api_schedule(){

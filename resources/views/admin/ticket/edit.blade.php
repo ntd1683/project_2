@@ -110,7 +110,7 @@
                                 </div>
                             @if($level == 2)
                                 <div class="form-group row">
-                                    <label class="col-form-label col-md-2">Mã hàng hoá</label>
+                                    <label class="col-form-label col-md-2">Mã hoá đơn</label>
                                     <div class="col-md-10">
                                         <input type="text" readonly class="form-control" id="code_bill" value="{{$ticket->code_bill}}" style="color:red;font-weight:bold;">
                                     </div>
