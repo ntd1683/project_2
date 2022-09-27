@@ -25,7 +25,7 @@ Route::post('/order/', [HomePageController::class, 'order'])->name('applicant.or
 Route::post('/thanh-toan/', [HomePageController::class, 'payment'])->name('applicant.payment');
 Route::get('/tuyen-duong/', [HomePageController::class, 'schedule'])->name('applicant.schedule');
 Route::get('/kiem-tra-ve/', [HomePageController::class, 'check_ticket'])->name('applicant.check_ticket');
-Route::get('/booking', [HomePageController::class, 'booking'])->name('applicant.booking');
+Route::post('/booking', [HomePageController::class, 'booking'])->name('applicant.booking');
 
 //redirect book ticket step 1
 Route::get('/book-ticket-step-1/', [HomePageController::class, 'book_ticket_step_1'])
@@ -46,4 +46,5 @@ Route::group(['middleware' => ['web']], function()
 {
     Route::get('/test/', [TestController::class, 'test'])->name('test');
     Route::get('/test1/', [TestController::class, 'test1'])->name('test1');
+    Route::get('/test2/', [TestController::class, 'test2'])->name('test2');
 });

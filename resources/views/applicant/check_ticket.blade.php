@@ -9,6 +9,15 @@
             margin-left: 18px !important;
         }
     </style>
+    <script src="https://www.google.com/recaptcha/api.js?render={{$siteRecaptcha}}"></script>
+    <script>
+        grecaptcha.ready(function() {
+            grecaptcha.execute('{{$siteRecaptcha}}', {action: 'submit'}).then(function(token) {
+                document.getElementById('g-recaptcha-reponse').value = token;
+                console.log(token);
+            });
+        });
+    </script>
 @endpush
 @section('content')
     <section class="ftco-section" style="padding: 3em 0em 0em 0em !important;">
@@ -25,7 +34,9 @@
             <div class="row">
                 <div class="col-md-12 mb-5">
                     <div class="search-wrap-1 search-wrap-notop ftco-animate p-4">
-                        <form action="{{route('applicant.booking')}}" class="search-property-1" method="get" id="form_check_ticket">
+                        <form action="{{route('applicant.booking')}}" class="search-property-1" method="post" id="form_check_ticket">
+                            @csrf
+                            <input type="hidden" name="g-recaptcha-reponse" id="g-recaptcha-reponse">
                             <div class="row">
                                 <div class="col-lg align-items-end">
                                     <div class="form-group">
@@ -90,6 +101,7 @@
     </section>
 @push('js')
     <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{asset('js/jquery.toast.min.js')}}"></script>
     <script>
         $(function() {
             @if ($errors->any())

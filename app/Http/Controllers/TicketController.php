@@ -94,11 +94,11 @@ class TicketController extends Controller
 
     public function create()
     {
-        return redirect()->route('index')->with('success','Bạn vui lòng đặt ở trang chủ để đầy đủ tính năng nhất');
-//        $breadcumbs = Breadcrumbs::render('create_ticket');
-//        return view('admin.ticket.create', [
-//            'breadcumbs' => $breadcumbs,
-//        ]);
+//        return redirect()->route('index')->with('success','Bạn vui lòng đặt ở trang chủ để đầy đủ tính năng nhất');
+        $breadcumbs = Breadcrumbs::render('create_ticket');
+        return view('admin.ticket.create', [
+            'breadcumbs' => $breadcumbs,
+        ]);
     }
 
     /**

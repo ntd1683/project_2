@@ -1,6 +1,17 @@
 @extends('admin.layout.master')
 @push('css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script>
+        function callbackThen(response){
+            response.json().then(function(data) {
+                console.log(data);
+            })
+        }
+        function callbackCatch(error){
+            console.log('error: ' + error);
+        }
+    </script>
+    <meta name="csrf_token" content="{{csrf_token()}}">
     <style>
         .error {
             color: red !important;
@@ -23,6 +34,10 @@
             opacity:1;
         }
     </style>
+    {!! htmlScriptTagJsApi([
+        'callback_then'=>'callbackThen',
+        'callback_catch'=>'callbackCatch',
+    ]) !!}
 @endpush
 @section('content')
     <div class="row">
