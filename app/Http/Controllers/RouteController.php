@@ -17,6 +17,7 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Http\JsonResponse;
 
 use Throwable;
+use function PHPUnit\Framework\isEmpty;
 
 class RouteController extends Controller
 {
@@ -100,12 +101,20 @@ class RouteController extends Controller
     {
         $id = $request->get('id');
         $q = $request->get('q');
+        $city_start_id = $request->get('city_start');
+        $city_end_id = $request->get('city_end');
         $query = $this->model;
         $query->when($id, function ($query, $id) {
             return $query->where('id', '!=', $id);
         });
         $query->when($q, function ($query, $q) {
             return $query->where('name', 'like', '%' . $q . '%');
+        });
+        $query->When(isset($city_start_id),function($q) use($city_start_id){
+            return $q->where('routes.city_start_id', '=', $city_start_id);
+        });
+        $query->When(isset($city_end_id),function($q) use($city_end_id){
+            return $q->where('routes.city_end_id', '=', $city_end_id);
         });
         return $query->get();
     }
@@ -123,12 +132,41 @@ class RouteController extends Controller
 
     public function apiCityStart(Request $request)
     {
-        return City::where('name', 'like', '%' . $request->get('q') . '%')->get();
+//        dd($request);
+        $route_name = $request->get('route_name');
+        $city_end_id = $request->get('city_end');
+        $city = City::query()
+            ->selectRaw('cities.id,cities.name')
+            ->join('routes','cities.id','routes.city_start_id');
+        return $city
+            ->where('cities.name', 'like', '%' . $request->get('q') . '%')
+            ->When(isset($route_name),function($q) use($route_name){
+                return $q->where('routes.name', 'like', '%' . $route_name . '%');
+            })
+            ->When(isset($city_end_id),function($q) use($city_end_id){
+                return $q->where('routes.city_end_id', '=', $city_end_id);
+            })
+            ->distinct()
+            ->get();
     }
 
     public function apiCityEnd(Request $request)
     {
-        return City::where('name', 'like', '%' . $request->get('q') . '%')->get();
+        $route_name = $request->get('route_name');
+        $city_start_id = $request->get('city_start');
+        $city = City::query()
+            ->selectRaw('cities.id,cities.name')
+            ->join('routes','cities.id','routes.city_end_id');
+        return $city
+            ->where('cities.name', 'like', '%' . $request->get('q') . '%')
+            ->When(isset($route_name),function($q) use($route_name){
+                return $q->where('routes.name', 'like', '%' . $route_name . '%');
+            })
+            ->When(isset($city_start_id),function($q) use($city_start_id){
+                return $q->where('routes.city_start_id', '=', $city_start_id);
+            })
+            ->distinct()
+            ->get();
     }
 
     public function apiGetFirstRoute()
