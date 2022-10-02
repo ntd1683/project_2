@@ -97,7 +97,15 @@
     @push('js')
         <script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
         <script>
-
+            let select_name = $("#select-name").val();
+            let select_city_start_id = $("#select-city-start-id").val();
+            let select_city_end_id = $("#select-city-end-id").val();
+            function select(){
+                select_name = $("#select-name").val();
+                select_city_start_id = $("#select-city-start-id").val();
+                select_city_end_id = $("#select-city-end-id").val();
+                console.log(select_name,select_city_start_id,select_city_end_id);
+            }
             $(document).ready(function(){
 
                 $("#select-name").select2({
@@ -105,8 +113,11 @@
                         url: "{{route('admin.routes.api.name_routes')}}",
                         dataType: 'json',
                         data: function (params) {
+                            select();
                             return {
                                 q: params.term, // search term
+                                city_start : select_city_start_id,
+                                city_end : select_city_end_id,
                             };
                         },
                         processResults: function (data, params) {
@@ -125,19 +136,20 @@
                     placeholder: 'Nhập tên tuyến đường',
                     allowClear:true
                 });
-
                 $("#select-city-start-id").select2({
                     ajax: {
                         url: "{{route('admin.routes.api.city_start')}}",
                         dataType: 'json',
                         data: function (params) {
+                            select();
                             return {
                                 q: params.term, // search term
+                                route_name : select_name,
+                                city_end : select_city_end_id,
                             };
                         },
                         processResults: function (data, params) {
                             params.page = params.page || 1;
-
                             return {
                                 results: $.map(data, function (item) {
                                     return {
@@ -157,8 +169,11 @@
                         url: "{{route('admin.routes.api.city_end')}}",
                         dataType: 'json',
                         data: function (params) {
+                            select();
                             return {
                                 q: params.term, // search term
+                                route_name : select_name,
+                                city_start : select_city_start_id,
                             };
                         },
                         processResults: function (data, params) {
@@ -227,12 +242,15 @@
                     ],
                 });
                 $('#select-name').change(function () {
+                    select();
                     table.columns(4).search(this.value).draw();
                 });
                 $('#select-city-start-id').change(function () {
+                    select();
                     table.columns(2).search(this.value).draw();
                 });
                 $('#select-city-end-id').change(function () {
+                    select();
                     table.columns(3).search(this.value).draw();
                 });
                 $(document).on('click','#btn-delete',function(){
