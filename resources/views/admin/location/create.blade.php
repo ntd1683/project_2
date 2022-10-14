@@ -172,7 +172,8 @@
             const city = $("#select-city").val();
             async function loadDistrict(parent) {
                 parent.find("#select-district").empty();
-                const path = parent.find("#select-city option:selected").data('path');
+                const path_tmp = parent.find("#select-city option:selected").data('path');
+                let path = path_tmp.substr(1, path_tmp.length);
                 if (!path) {
                     return;
                 }
@@ -195,7 +196,7 @@
             $(document).ready(async function () {
                 $("#select-city").select2({tags: true});
                 $("#select-city-2").select2({tags: true});
-                const response = await fetch('{{ asset('locations/index.json') }}');
+                const response = await fetch('{{ asset('locations/Index.json') }}');
                 const cities = await response.json();
                 $.each(cities, function (index, each) {
                     $("#select-city").append(`

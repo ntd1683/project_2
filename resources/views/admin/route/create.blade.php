@@ -206,7 +206,7 @@
                 $("#city_start_id").select2({tags: true});
                 $("#select-city").select2({tags: true});
                 $("#city_end_id").select2({tags: true});
-                const response_start = await fetch('{{ asset('locations/index.json') }}');
+                const response_start = await fetch('{{ asset('locations/Index.json') }}');
                 const cities_start = await response_start.json();
                 $.each(cities_start, function (index, each) {
                     $("#city_start_id").append(`
