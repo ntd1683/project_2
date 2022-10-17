@@ -18,7 +18,6 @@ class CreateSchedulesTable extends Migration
             $table->foreignId('route_driver_car_id')->constrained('route_driver_cars');
             $table->integer('day_of_week');
             $table->time('time_of_day');
-            $table->boolean('pin_double_week')->default(0);
             $table->timestamps();
             $table->unique(['route_driver_car_id', 'day_of_week', 'time_of_day']);
         });
