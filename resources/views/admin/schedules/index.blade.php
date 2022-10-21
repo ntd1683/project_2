@@ -28,61 +28,23 @@
     top: -61px;
 ">
                 <a class="btn btn-white filter-btn" id="filter_search">
-                    <i class="fas fa-filter"></i>
-                </a>
-                <a class="btn btn-white filter-btn add-button ml-3" id="add_btn">
-                    <i class="fas fa-plus"></i>
+                    <i class="fas fa-info"></i>
                 </a>
             </div>
         </div>
     </div>
-    {{--  Add  --}}
-    <div class="card filter-card" id="add_show" style="display: none;" >
-        <div class="card-body">
-            <div class="justify-content-center text-center">
-                <a href="{{route('admin.buses.create')}}">
-                    <button type="button" class="btn btn-primary btn-lg submit-btn">
-                    Tạo Mới</button>
-                </a>
-                <a href="{{route('admin.buses.quickCreate')}}">
-                    <button type="button" class="btn btn-info btn-lg submit-btn" style="color: #ffffff;">
-                    Tạo Nhanh</button>
-                </a>
-                <a href="{{route('admin.buses.quickDelete')}}">
-                    <button type="button" class="btn btn-danger btn-lg submit-btn">
-                    Xóa nhanh</button>
-                </a>
-            </div>
-        </div>
-    </div>
-    {{-- End Add --}}
     {{-- Filter --}}
-    {{-- <div class="card filter-card" id="filter_inputs">
+    <div class="card filter-card" id="filter_inputs">
         <div class="card-body pb-0">
             <div class="row filter-row">     
                 <div class="col-sm-6 col-md-3">
-                    <form>
-                        <div class="form-group">
-                            <label for="level">Route</label>
-                            <select class="form-control" style="text-align: center">
-                            </select>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
     {{-- End Filter --}}
 
     {{-- nav tab --}}
-    <ul class="nav nav-tabs menu-tabs">
-        <li class="nav-item active">
-            <a class="nav-link" href="{{route('admin.buses.calendar')}}">Lịch trình</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{route('admin.buses.index')}}">Danh sách</a>
-        </li>
-    </ul>
     {{-- End nav tab --}}
 
     {{-- calendar --}}
@@ -115,7 +77,8 @@
         <div class="col-lg-9 col-md-8">
             <div class="card">
                 <div class="card-body">
-                    <div id="calendar"></div>
+                    <div id="schedule-1"></div>
+                    <div id="schedule-2"></div>
                 </div>
             </div>
         </div>
@@ -215,38 +178,245 @@
     @push('js')
         <script src="{{asset('js/jquery-ui.min.js')}}"></script>
         <script src="{{asset('plugins/fullcalendar/fullcalendar-3-10.min.js')}}"></script>
-        <script src="{{asset('plugins/fullcalendar/jquery.fullcalendar.js')}}"></script>
+        {{-- <script src="{{asset('plugins/fullcalendar/jquery.fullcalendar.js')}}"></script> --}}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
         <script>
             let modal_carriages = $('#carriages');
             let form_carriages = $('#form-carriages')
             let calendar_event = $('#license-plate');
+            let schedule_1 = $('#schedule-1');
             let route_id;
             let route_id_inverse;
 
-            $(document).on('click', '#add_btn', function() {
-                $('#add_show').slideToggle("slow");
+            let popTemplate = `
+                <div class="popover">
+                <div class="card flex-fill">
+                <div class="popover-header">
+                </div>
+                <div class="popover-body">
+                </div>
+            `;
+
+            let updateSchedule = function(){
+                let confirm_update = confirm('Bạn có muốn lưu thay đổi?');
+                if (confirm_update) {
+                    let scheduleData = calendarURL.fullCalendar("clientEvents");
+                    let data=[];
+                    scheduleData.forEach(element => {
+                        let obj = {
+                            id: element.id == null ? 0 : element.id,
+                            car_id: element.car_id,
+                            color: element.color,
+                            day_of_week: element.day_of_week,
+                            license_plate: element.license_plate,
+                            time_of_day: element.time_of_day,
+                        };
+                        // data+=JSON.stringify(obj) + ',';
+                        Array.prototype.push.apply(data,new Array(obj));
+                    });
+                    $.ajax({
+                        url: "{{route('admin.schedules.store')}}",
+                        type: "post",
+                        data: {
+                            data: JSON.stringify(data),
+                            route_id: route_id,
+                        },
+                        success: function(response){
+                            notify(response);
+                        },
+                        error: function(response) {
+                            notify(response.responseJSON);
+                        },
+                    });
+                }
+            };
+
+            /* Start functions calendar */
+            /* on drop */
+            let onDrop = function (eventObj, date) {
+                let start = moment(date).format('YYYY-MM-DD HH:mm:ss');
+                let color = eventObj.children().attr('class').split(' ').pop().split('-').pop();
+                let licensePlate = eventObj.text();
+                let carId = eventObj.attr('value');
+                let dayOfWeek = moment(date).day();
+                let timeOfDay = moment(date).format('HH:mm:ss');
+                calendarURL.fullCalendar('renderEvent', {
+                    route_id: route_id,
+                    car_id: carId,
+                    color: color,
+                    day_of_week: dayOfWeek,
+                    time_of_day: timeOfDay,
+                    license_plate: licensePlate,
+                    // eventId: id,
+                    start: start,
+                    end: moment(start).add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss'),
+                    title: licensePlate,
+                    className: 'bg-' + color,
+                }, true);
+            };
+
+            let enableDrag = function() {
+                //init events
+                $(".calendar-events").each(function () {
+                    // it doesn't need to have a start or end
+                    var eventObject = {
+                        title: $.trim($(this).text()) // use the element's text as the event title
+                    };
+                    // store the Event Object in the DOM element so we can get to it later
+                    $(this).data('eventObject', eventObject);
+                    // make the event draggable using jQuery UI
+                    $(this).draggable({
+                        zIndex: 999,
+                        revert: true,      // will cause the event to go back to its
+                        revertDuration: 0  //  original position after the drag
+                    });
+                });
+            };
+
+            // list schedules
+            let calendarURL = schedule_1.fullCalendar({
+                header: {
+                    left: 'route1',
+                    center: 'title',
+                    right: 'route2',
+                },
+                footer: {
+                    left: '',
+                    center: '',
+                    right: 'saveChange',
+                },
+                height: 600,
+                titleFormat: '[Thời gian biểu]',
+                columnHeader: true,
+                allDaySlot: false,
+                editable: true,
+                droppable: true, // this allows things to be dropped onto the calendar !!!
+                slotDuration: '0:30:00',
+                columnFormat: 'dddd', // Format the day to only show like 'Monday'
+                slotLabelFormat: 'HH:mm',
+                scrollTime: '04:00:00',
+                defaultView: 'agendaWeek',
+                drop: function(date) { onDrop($(this), date); },
+                eventDrop: function( event){
+                    event.day_of_week = moment(event.start).day();
+                    event.time_of_day = moment(event.start).format("HH:mm:ss");
+                    calendarURL.fullCalendar('updateEvent', event);
+                },
+                customButtons: {
+                    route1: {
+                        text: 'Tuyến đi',
+                        click: function() {
+                            alert('Bấm nút này sẽ chuyển sang lịch Tuyến đi!');
+                        }
+                    },
+                    route2: {
+                        text: 'Tuyến về',
+                        click: function() {
+                            alert('Bấm nút này sẽ chuyển sang lịch Tuyến về!');
+                        }
+                    },
+                    saveChange:{
+                        text: 'Lưu',
+                        click: updateSchedule,
+                    }
+                },
+                eventRender: function (event, element) {
+                    element.popover({
+                        title: `
+                                <ul role="tablist" class="nav nav-tabs card-header-tabs float-end">
+                                <li class="nav-item icon-popover">
+                                <a href="#" class="edit"><i class="fa fa-fw fa-edit"></i></a>
+                                </li>
+                                <li class="nav-item icon-popover">
+                                <a href="#" class="delete-popover"><i class="fa fa-fw fa-trash"></i></a>
+                                </li>
+                                <li class="nav-item icon-popover">
+                                <a href="#" class="close"><i class="fa fa-fw fa-times"></i></a>
+                                </li>
+                                <li class="">
+                                </li>
+                                </ul>
+                                `,
+                                
+                                // <a href="#"><i class="fa fa-fw fa-home"></i></a>
+                                // <a href="#" id="${event._id}" class="delete-popover"><i class="fa fa-fw fa-trash"></i></a>
+                                // <a href="#"><i class="fa fa-fw fa-envelope"></i></a>
+                                // <a href="#"><i class="fa fa-fw fa-user"></i></a>
+                        content: `
+                                <div class="tab-content pt-0">
+                                <div role="tabpanel" id="tab-1" class="tab-pane fade show active">
+                                <h5 class="card-title"><i class="fas fa-circle text-${event.color}"></i> ${event.license_plate}</h5>
+                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                <p class="card-text"><i class="fa fa-fw fa-clock"></i> ${event.time_of_day}</p>
+                                <a class="btn btn-primary" href="#">Go somewhere</a>
+                                </div>
+                                </div>
+                                `,
+                        html: true,
+                        template: popTemplate,
+                        trigger: 'manual',
+                        toggle: 'popover',
+                        animation: true,
+                        placement: 'left',
+                    }).on("click", function() {
+                        var _this = this;
+                        $(".popover").popover("hide");
+                        $(".popover").addClass('fc-ctpopover');
+                        $(this).popover("show");
+                        $(".popover").on("focus", function() {
+                            $(_this).popover('show');
+                        });
+                        $(".close").click(function() {
+                            $(_this).popover('hide');
+                            return false;
+                        });
+
+                        $(".delete-popover").click(function() {
+                            $(_this).popover('hide');
+                            calendarURL.fullCalendar("removeEvents", event._id);
+                            return false;
+                        });
+                    });
+                        // }).on("mouseleave", function() {
+                        //     var _this = this;
+                        //     setTimeout(function() {
+                        //         if (!$(".popover:hover").length) {
+                        //             $(_this).popover("hide");
+                        //         }
+                        //     }, 300);
+                        //     $(".close").click(function(e) {
+                        //         e.stopPropagation();
+                        //         $(this).trigger("click");
+                        //     });
+
+                        // });
+                },
             });
 
-            let loadEventCalendar = function(){
+            // load data schedule
+            let loadDataSchedule = function(){
                 // load ajax event
                 $.ajax({
-                    url: '{{route('admin.buses.api.calendar')}}',
+                    url: '{{route('admin.schedules.apiSchedule')}}',
                     type: 'GET',
                     data: {
                         route_id: route_id,
                     },
                     success: function(data){
+                        calendarURL.fullCalendar('removeEvents');
+                        let today = new Date();
                         data.map(function(item){
-                                item.eventId = item.id;
-                                item.start = item.departure_time;
-                                item.end = moment(item.departure_time).add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss');
-                                item.title = item.license_plate;
-                                item.className = 'bg-' + item.color;
-                                // item.backgroundColor = '#722ED1';
-                            });
-                        $.CalendarApp.$calendarObj.fullCalendar('removeEvents');
-                        $.CalendarApp.$calendarObj.fullCalendar('addEventSource', data);
+                            let day = new Date(moment(today).format('YYYY-MM-DD') + 'T' + item.time_of_day);
+                            let start = moment(day.setDate(day.getDate() - (day.getDay()-item.day_of_week))).format('YYYY-MM-DD HH:mm:ss');
+                            item.eventId = item.id;
+                            item.start = start;
+                            item.end = moment(start).add(30, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+                            item.title = item.license_plate;
+                            item.className = 'bg-' + item.color;
+                            calendarURL.fullCalendar('renderEvent', item, true);
+                        });
+                        // calendarURL.fullCalendar('removeEvents');
+                        // calendarURL.fullCalendar('addEventSource', data);
                     }
                 });
             };
@@ -469,6 +639,9 @@
                     var regex = /^[0-9]{1,2}-[A-Z0-9]{1,2}-[0-9]{4,5}$/;
                     return value.trim().match(regex);
                 });
+                
+
+
                 // select2 route
                 let route = $('#route').select2({
                     ajax: {
@@ -563,7 +736,7 @@
                                 carriages_html = `<div class="calendar-events" value="${value.id}" style="cursor: pointer;"><i class="fas fa-circle text-${value.color}"></i> ${value.license_plate} </div>`;
                                 calendar_event.append(carriages_html);
                             });
-                            $.CalendarApp.enableDrag();
+                            enableDrag();
 
                             var elements = document.getElementsByClassName("calendar-events");
 
@@ -583,8 +756,8 @@
                         }
                     });
 
-                    // load calendar
-                    loadEventCalendar();
+                    // load schedule
+                    loadDataSchedule();
 
                 });
                 // Validate carriages

@@ -22,6 +22,11 @@
                     @endif>
                     <a href="{{route('admin.buses.calendar')}}"><i class="fas fa-shuttle-van"></i> <span> Quản Lý Chuyến Xe</span></a>
                 </li>
+                <li @if($route === 'schedules')
+                    class="active"
+                    @endif>
+                    <a href="{{route('admin.schedules.index')}}"><i class="fas fa-plus-circle"></i> <span> Tự Động Tạo Chuyến Xe</span></a>
+                </li>
                 <li @if($route === 'routes')
                     class="active"
                     @endif>

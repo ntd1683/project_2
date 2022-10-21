@@ -227,7 +227,7 @@
         var day = calEvent.start.format('YYYY-MM-DD');
         var time = calEvent.start.format('HH:mm');
         var price = calEvent.price;
-        var form = $("<form action='"+this.$domain+"admin/buses/update/" + calEvent._id + "') }} method='POST'></form>");
+        var form = $("<form action='"+this.$domain+"admin/buses/update/" + calEvent.id + "') }} method='POST'></form>");
         form.append("<div class='event-inputs'></div>");
         form.find(".event-inputs")
             .append("<div class='form-group row'><label class='col-form-label col-md-3'>Xe</label><div class='col-md-9'><select class='form-control' name='car' id='car'></select></div></div>")
@@ -283,7 +283,7 @@
             let confirm_delete = confirm('Bạn có chắc chắn muốn xóa?');
             let domain = $.CalendarApp.$domain;
             if (confirm_delete) {
-                var form_delete = $("<form action='"+domain+"admin/buses/destroy/" + calEvent._id + "') }} method='POST'></form>");
+                var form_delete = $("<form action='"+domain+"admin/buses/destroy/" + calEvent.id + "') }} method='POST'></form>");
                 form_delete.append("<input type='hidden' name='_method' value='DELETE' />");
                 $.ajax({
                     url: form_delete.attr('action'),
@@ -378,8 +378,7 @@
             header: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'month,agendaWeek,listDay'
-                // agendaWeek,agendaDay đang bị lỗi
+                right: 'month,agendaWeek,agendaDay',
             },
             editable: true,
             droppable: true, // this allows things to be dropped onto the calendar !!!

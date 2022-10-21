@@ -226,6 +226,9 @@ textarea.form-control {
 label {
     margin-bottom: 0.5rem;
 }
+.icon-popover {
+	padding: 0px 6px 6px 6px;
+}
 
 /* Avatar */
 
@@ -4048,7 +4051,11 @@ input[type="file"] {
 	font-size: 14px;
 	line-height: 20px;
 	padding: 10px 0;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
+}
+.fc .fc-axis {
+    vertical-align: middle;
+    padding: 0 4px !important;
 }
 .fc-unthemed th,
 .fc-unthemed td,

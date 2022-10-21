@@ -14,6 +14,7 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\CarriageController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckAdminMiddleware;
 use App\Http\Middleware\CheckLoginMiddleware;
@@ -49,7 +50,7 @@ Route::post('reset_password', [AuthController::class, 'processResetPassword'])->
 Route::group([
     'as' => 'users.',
     'prefix' => 'users',
-    'middleware' => CheckAdminMiddleware::class,
+    // 'middleware' => CheckAdminMiddleware::class,
 ], function () {
     Route::get('/', [UserController::class, 'show_users'])->name('show_users');
     Route::get('/create', [UserController::class, 'create'])->name('create');
@@ -68,7 +69,7 @@ Route::group([
 Route::group([
     'as' => 'customers.',
     'prefix' => 'customers',
-    'middleware' => CheckAdminMiddleware::class,
+    // 'middleware' => CheckAdminMiddleware::class,
 ], function () {
     Route::get('/', [CustomerController::class, 'index'])->name('index');
     Route::get('/show/{customer}', [CustomerController::class, 'show'])->name('show');
@@ -85,7 +86,7 @@ Route::group([
 Route::group([
     'as' => 'carriages.',
     'prefix' => 'carriages',
-    'middleware' => CheckAdminMiddleware::class,
+    // 'middleware' => CheckAdminMiddleware::class,
 ], function () {
     Route::get('/', [CarriageController::class, 'index'])->name('index');
     Route::get('/create', [CarriageController::class, 'create'])->name('create');
@@ -107,7 +108,7 @@ Route::group([
 Route::group([
     'as' => 'routes.',
     'prefix' => 'routes',
-    'middleware' => CheckStaffMiddleware::class,
+    // 'middleware' => CheckStaffMiddleware::class,
 ], function () {
     Route::get('/', [RouteController::class, 'index'])->name('index');
     Route::get('/show/{route}', [RouteController::class, 'show'])->name('show');
@@ -131,7 +132,7 @@ Route::group([
 Route::group([
     'as' => 'cities.',
     'prefix' => 'cities',
-    'middleware' => CheckStaffMiddleware::class,
+    // 'middleware' => CheckStaffMiddleware::class,
 ], function () {
     Route::post('/store', [CityController::class, 'store'])->name('store');
     //    api
@@ -143,7 +144,7 @@ Route::group([
 Route::group([
     'as' => 'route_driver_car.',
     'prefix' => 'route_driver_car',
-    'middleware' => CheckStaffMiddleware::class,
+    // 'middleware' => CheckStaffMiddleware::class,
 ], function () {
     //    api
     Route::get('/api/{id}', [RouteDriverCarController::class, 'api'])->name('api');
@@ -173,7 +174,7 @@ Route::group([
 Route::group([
     'as' => 'buses.',
     'prefix' => 'buses',
-    'middleware' => CheckStaffMiddleware::class,
+    // 'middleware' => CheckStaffMiddleware::class,
 ], function () {
     Route::get('/index', [BusesController::class, 'index'])->name('index');
     Route::get('/', [BusesController::class, 'calendar'])->name('calendar');
@@ -231,4 +232,17 @@ Route::group([
     Route::get('/apiName', [LocationController::class, 'apiName'])->name('api.name');
     Route::get('/apiAddress', [LocationController::class, 'apiAddress'])->name('api.address');
     Route::get('/apiDistrict', [LocationController::class, 'apiDistrict'])->name('api.district');
+});
+
+//Location
+Route::group([
+    'as' => 'schedules.',
+    'prefix' => 'schedules',
+    // 'middleware' => CheckStaffMiddleware::class,
+], function () {
+    Route::get('/', [ScheduleController::class, 'index'])->name('index');
+    Route::get('/create', [ScheduleController::class, 'create'])->name('create');
+    Route::post('/store', [ScheduleController::class, 'store'])->name('store');
+    //    api
+    Route::get('/apiSchedule', [ScheduleController::class, 'apiSchedule'])->name('apiSchedule');
 });
