@@ -28,50 +28,20 @@
     top: -61px;
 ">
                 <a class="btn btn-white filter-btn" id="filter_search">
-                    <i class="fas fa-filter"></i>
-                </a>
-                <a class="btn btn-white filter-btn add-button ml-3" id="add_btn">
-                    <i class="fas fa-plus"></i>
+                    <i class="fas fa-info"></i>
                 </a>
             </div>
         </div>
     </div>
-    {{--  Add  --}}
-    <div class="card filter-card" id="add_show" style="display: none;" >
-        <div class="card-body">
-            <div class="justify-content-center text-center">
-                <a href="{{route('admin.buses.create')}}">
-                    <button type="button" class="btn btn-primary btn-lg submit-btn">
-                    Tạo Mới</button>
-                </a>
-                <a href="{{route('admin.buses.quickCreate')}}">
-                    <button type="button" class="btn btn-info btn-lg submit-btn" style="color: #ffffff;">
-                    Tạo Nhanh</button>
-                </a>
-                <a href="{{route('admin.buses.quickDelete')}}">
-                    <button type="button" class="btn btn-danger btn-lg submit-btn">
-                    Xóa nhanh</button>
-                </a>
-            </div>
-        </div>
-    </div>
-    {{-- End Add --}}
     {{-- Filter --}}
-    {{-- <div class="card filter-card" id="filter_inputs">
+    <div class="card filter-card" id="filter_inputs">
         <div class="card-body pb-0">
             <div class="row filter-row">     
                 <div class="col-sm-6 col-md-3">
-                    <form>
-                        <div class="form-group">
-                            <label for="level">Route</label>
-                            <select class="form-control" style="text-align: center">
-                            </select>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
     {{-- End Filter --}}
 
     {{-- nav tab --}}
@@ -227,35 +197,38 @@
                 </div>
             `;
 
-            $(document).on('click', '#add_btn', function() {
-                $('#add_show').slideToggle("slow");
-            });
-
             let updateSchedule = function(){
-                let scheduleData = calendarURL.fullCalendar("clientEvents");
-                let data=[];
-                scheduleData.forEach(element => {
-                    console.log(element);
-                    let obj = {
-                        id: element.id,
-                        license_plate: element.license_plate,
-                    };
-                    console.log(obj);
-                    // data+=JSON.stringify(obj) + ',';
-                    Array.prototype.push.apply(data,new Array(obj));
-                });
-                console.log(data);
-                $.ajax({
-                    url: "{{route('admin.schedules.store')}}",
-                    type: "post",
-                    data: {data: JSON.stringify(data)},
-                    success: function(response){
-                        console.log(response);
-                    },
-                    error: function(response) {
-                        console.log("Lỗi quá chời");
-                    },
-                });
+                let confirm_update = confirm('Bạn có muốn lưu thay đổi?');
+                if (confirm_update) {
+                    let scheduleData = calendarURL.fullCalendar("clientEvents");
+                    let data=[];
+                    scheduleData.forEach(element => {
+                        let obj = {
+                            id: element.id == null ? 0 : element.id,
+                            car_id: element.car_id,
+                            color: element.color,
+                            day_of_week: element.day_of_week,
+                            license_plate: element.license_plate,
+                            time_of_day: element.time_of_day,
+                        };
+                        // data+=JSON.stringify(obj) + ',';
+                        Array.prototype.push.apply(data,new Array(obj));
+                    });
+                    $.ajax({
+                        url: "{{route('admin.schedules.store')}}",
+                        type: "post",
+                        data: {
+                            data: JSON.stringify(data),
+                            route_id: route_id,
+                        },
+                        success: function(response){
+                            notify(response);
+                        },
+                        error: function(response) {
+                            notify(response.responseJSON);
+                        },
+                    });
+                }
             };
 
             /* Start functions calendar */
