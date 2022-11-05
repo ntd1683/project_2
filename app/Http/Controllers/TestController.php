@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bill;
+use App\Models\Buses;
+use App\Models\Location;
+use App\Models\Seat;
 use Illuminate\Http\Request;
 
 class TestController extends Controller
@@ -14,7 +18,21 @@ class TestController extends Controller
 
     public function test()
     {
-        return view('test');
+        $arr = [];
+        for ($i = 1; $i <= 5; $i++) {
+            if($i == 3){
+                $i = 1;
+                $arr[]=[
+                    $i,$i,$i
+                ];
+                $i = 3;
+            }else{
+                $arr[]=[
+                    $i,$i,$i
+                ];
+            }
+        }
+        return array_unique($arr);
     }
     public function test1(request $request)
     {
