@@ -24,7 +24,6 @@ class BusesSeeder extends Seeder
                 'route_driver_car_id' => $faker->randomElement($route_driver_car),
                 'departure_time' => $faker->dateTimeBetween('-1 years', 'now'),
                 'status' => $faker->randomElement([1, 0]),
-                'slot' => $faker->randomElement([1, 2, 3, 4, 5, 6]),
                 'price' => $faker->numberBetween(80000, 1000000),
             ];
             if ($i % 100 == 0) {

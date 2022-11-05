@@ -22,8 +22,9 @@ class DatabaseSeeder extends Seeder
         $this->call(BillSeeder::class);
         $this->call(RouteDriverCarSeeder::class);
         $this->call(BusesSeeder::class);
-        $this->call(BillDetailSeeder::class);
+        $this->call(SeatSeeder::class);
+        $this->call(SeatMapSeeder::class);
         $this->call(TicketSeeder::class);
-        $this->call(ScheduleSeeder::class);
+        $this->call(GoodSeeder::class);
     }
 }

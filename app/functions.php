@@ -90,3 +90,30 @@ if(!function_exists('hour_to_day')){
         return $date .' Ngày '.$new_hour .' giờ';
     }
 }
+if(!function_exists('check_not_exist_in_array_ticket_seat')){
+    function check_not_exist_in_array_ticket_seat($array,$check): bool
+    {
+        $bus_id = $check['bus'];
+        $bill_id = $check['bill'];
+        $seat_id = $check['seat'];
+        foreach($array as $key){
+            if($key['bus_id'] == $bus_id&&$key['bill_id'] == $bill_id&&$key['seat_id'] == $seat_id){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+if(!function_exists('check_not_exist_in_array_good_seat')){
+    function check_not_exist_in_array_good_seat($array,$check): bool
+    {
+        $bus_id = $check['bus'];
+        $bill_id = $check['bill'];
+        foreach($array as $key){
+            if($key['bus_id'] == $bus_id&&$key['bill_id'] == $bill_id){
+                return false;
+            }
+        }
+        return true;
+    }
+}
