@@ -92,6 +92,20 @@ class TicketController extends Controller
         return $this->model->where('code', 'like', '%' . $request->get('q') . '%')->get();
     }
 
+    public function apiRouteCommons()
+    {
+        $result = $this->model
+            ->selectRaw("routes.name,COUNT('id') as count")
+            ->leftJoin('buses', 'tickets.bus_id', '=', 'buses.id')
+            ->leftJoin('route_driver_cars', 'buses.route_driver_car_id', '=', 'route_driver_cars.id')
+            ->leftJoin('routes', 'route_driver_cars.route_id', '=', 'routes.id')
+            ->groupBy('routes.name')
+            ->orderBy('count','desc')
+            ->get();
+//        return $result;
+        return DataTables::of($result)->make(true);
+    }
+
     public function create()
     {
         $breadcumbs = Breadcrumbs::render('create_ticket');

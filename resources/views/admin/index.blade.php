@@ -326,7 +326,7 @@
                 select: true,
                 processing: true,
                 serverSide: true,
-                ajax: '{!! route('admin.bill_details.api.route_commons') !!}',
+                ajax: '{!! route('admin.tickets.api.route_commons') !!}',
                 columns: [
                     {data: 'name', name: 'name'},
                     {data: 'count', name: 'count'},

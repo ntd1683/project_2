@@ -213,6 +213,7 @@ Route::group([
     Route::get('/apiTicket', [TicketController::class, 'api'])->name('api');
     Route::get('/apiGetPhonePassenger', [TicketController::class, 'apiPhonePassenger'])->name('api.phone_passenger');
     Route::get('/apiGetCodeTickets', [TicketController::class, 'apiCodeTickets'])->name('api.code_tickets');
+    Route::get('/apiRouteCommons', [TicketController::class, 'apiRouteCommons'])->name('api.route_commons');
 });
 
 //Location
