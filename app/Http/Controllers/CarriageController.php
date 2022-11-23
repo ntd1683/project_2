@@ -54,10 +54,13 @@ class CarriageController extends Controller
 
     public function api()
     {
-        $data = $this->model;
+        $data = $this->model
+            ->selectRaw('carriages.*,count(seat_maps.seat_id) as default_number_seat')
+            ->join('seat_maps','carriage_id','carriages.id')
+            ->groupBy('carriage_id');
         return DataTables::of($data)
-            ->editColumn('seat_type', function ($model) {
-                return SeatTypeEnum::getKeyByValue($model->seat_type);
+            ->editColumn('type', function ($model) {
+                return SeatTypeEnum::getKeyByValue($model->type);
             })
             ->editColumn('category', function ($model) {
                 return CarriageCategoryEnum::getKeyByValue($model->category);
@@ -78,7 +81,7 @@ class CarriageController extends Controller
         $query = $this->model
             ->select('carriages.id', 'carriages.license_plate', 'carriages.color')
             ->where('license_plate', 'like', '%' . $q . '%');
-        $query->when($route_id != null, function ($query) use ($route_id) 
+        $query->when($route_id != null, function ($query) use ($route_id)
         {
             return $query->join('route_driver_cars', 'route_driver_cars.car_id', '=', 'carriages.id')
             ->where('route_driver_cars.route_id', $route_id)
@@ -92,7 +95,12 @@ class CarriageController extends Controller
 
     public function apiNumberSeats(Request $request)
     {
-        return $this->model->where('default_number_seat', 'like', '%' . $request->get('q') . '%')->distinct()->orderBy('default_number_seat', 'desc')->get('default_number_seat');
+        return $this->model
+            ->selectRaw('carriages.*,count(seat_maps.seat_id) as default_number_seat')
+            ->join('seat_maps','carriage_id','carriages.id')
+            ->groupBy('carriage_id')
+            ->having(DB::raw('count(seat_id)'), 'like', '%' . $request->get('q') . '%')
+            ->distinct()->orderBy('default_number_seat', 'desc')->get('default_number_seat');
     }
 
     public function apiCarriageByID(Request $request){

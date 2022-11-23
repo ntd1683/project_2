@@ -33,9 +33,6 @@ class UpdateTicketRequest extends FormRequest
             'email_passenger'=>[
                 'required',
             ],
-            'quantity' =>[
-                'required',
-            ],
             'price'=>[
                 'required',
             ],

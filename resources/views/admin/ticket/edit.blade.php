@@ -135,9 +135,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-form-label col-md-2">Số ghế</label>
+                                    <label class="col-form-label col-md-2">Vị trí ghế</label>
                                     <div class="col-md-10">
-                                        <input type="text" class="form-control" name="quantity" id="quantity" value="{{$ticket->quantity}}">
+                                        <input type="text" readonly class="form-control" name="seat" id="seat" value="{{$ticket->seat_name}} Tầng {{$ticket->floor}}">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -179,6 +179,14 @@
                                         <br>
                                     </div>
                                 </div>
+                                @if($ticket->status == 1 && $level == 2)
+                                    <div class="form-group row">
+                                        <label class="col-form-label col-md-2">Người duyệt thanh toán </label>
+                                        <div class="col-md-10">
+                                            <input type="text" readonly class="form-control" name="user_id" id="route_name" value="{{$ticket->name_staff}}">
+                                        </div>
+                                    </div>
+                                @endif
                         </div>
                     <hr>
                     <div class="card-header">
@@ -208,6 +216,9 @@
                     <div class="card-header">
                         <div class="mt-4 text-center">
                             <button class="btn btn-primary" type="submit" id="btn-submit">Sửa Thông Tin</button>
+                            @if($level == 2)
+                                <a class="btn btn-danger" href="{{route('admin.tickets.destroy', $ticket->id_ticket)}}">Xoá Vé Xe</a>
+                            @endif
                             <a href="{{route('admin.tickets.index')}}" class="btn btn-warning" style="color:white;">Quay Lại</a>
                         </div>
                     </div>
@@ -318,9 +329,6 @@
                         email_passenger: {
                             required:"Không được bỏ trống",
                             email:"Email không hợp lệ",
-                        },
-                        quantity: {
-                            required:"Không được bỏ trống",
                         },
                         price_tmp: {
                             required:"Không được bỏ trống",
