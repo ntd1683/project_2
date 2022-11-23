@@ -19,7 +19,7 @@
 @section('content')
     <div class="page-header">
         <div class="row" style="position:relative">
-                <div class="col-auto text-right" 
+                <div class="col-auto text-right"
                         style="
                     position: absolute;
                     right: 0;
@@ -86,7 +86,7 @@
         </div>
     </div>
 
-                
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -184,9 +184,9 @@
                         { data: 'license_plate', name: 'license_plate' },
                         // { data: 'route_name', name:'route_name'},
                         { data: 'category', name: 'category' },
-                        { data: 'seat_type', name: 'seat_type' },
+                        { data: 'type', name: 'type' },
                         { data: 'default_number_seat', name: 'default_number_seat' },
-                        {   
+                        {
                             data: 'edit',
                             targets: 4,
                             orderable: false,
@@ -195,7 +195,7 @@
                                 return `<a class="btn btn-sm bg-success-light mr-2" href="${data}"><i class="far fa-edit mr-1"></i>Edit</a>`;
                             }
                         },
-                        {                             
+                        {
                             data: 'delete',
                             targets: 5,
                             orderable: false,
