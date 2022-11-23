@@ -73,10 +73,11 @@
                                 <th>SĐT khách hàng</th>
                                 <th>Mã vé</th>
                                 <th>Tên chuyến</th>
-                                <th>Số ghế đặt</th>
+                                <th>Ghế đã đặt</th>
                                 <th>Giá</th>
                                 <th>Phương thức thanh toán</th>
                                 <th>Tình Trạng</th>
+                                <th>Người duyệt đơn</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -167,13 +168,14 @@
                         {data: 'phone_passenger', name: 'phone_passenger'},
                         {data: 'code_ticket', name: 'code'},
                         {data: 'route_name', name: 'route_name'},
-                        {data: 'quantity', name: 'quantity'},
+                        {data: 'seat_id', name: 'seat_id'},
                         {data: 'price', name: 'price'},
                         {data: 'payment_method', name: 'payment_method'},
                         {data: 'status', name: 'status'},
+                        {data: 'user_id', name: 'user_id'},
                         {
                             data: 'edit',
-                            targets: 7,
+                            targets: 8,
                             orderable: false,
                             searchable: false,
                             render: function (data, type, row, meta) {

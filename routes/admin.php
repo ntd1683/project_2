@@ -208,7 +208,8 @@ Route::group([
     Route::get('/create', [TicketController::class, 'create'])->name('create');
     Route::post('/store', [TicketController::class, 'store'])->name('store');
     Route::get('/edit/{ticket}', [TicketController::class, 'edit'])->name('edit');
-    Route::post('/update/{route}', [TicketController::class, 'update'])->name('update');
+    Route::post('/update/{ticket}', [TicketController::class, 'update'])->name('update');
+    Route::delete('/destroy/{ticket}', [TicketController::class, 'destroy'])->name('destroy');
     //    api
     Route::get('/apiTicket', [TicketController::class, 'api'])->name('api');
     Route::get('/apiGetPhonePassenger', [TicketController::class, 'apiPhonePassenger'])->name('api.phone_passenger');

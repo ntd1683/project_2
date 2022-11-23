@@ -47,7 +47,7 @@
                             </div>
                         @if($level == 2)
                             <div class="form-group row">
-                                <label class="col-form-label col-md-2">Mã hàng hoá</label>
+                                <label class="col-form-label col-md-2">Mã chuyến xe</label>
                                 <div class="col-md-10">
                                     <input type="text" readonly class="form-control" name="code_ticket" id="code_ticket" value="{{$ticket->code_bill}}" style="color:red;font-weight:bold;">
                                 </div>
@@ -72,9 +72,9 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-form-label col-md-2">Số ghế</label>
+                                <label class="col-form-label col-md-2">Vị trí ghế</label>
                                 <div class="col-md-10">
-                                    <input type="text" readonly class="form-control" name="route_name" id="route_name" value="{{$ticket->quantity}}">
+                                    <input type="text" readonly class="form-control" name="route_name" id="route_name" value="{{$ticket->seat_name}} Tầng {{$ticket->floor}}">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -126,6 +126,14 @@
 {{--                                    </div>--}}
                                 </div>
                             </div>
+                            @if($ticket->status == 1 && $level == 2)
+                                <div class="form-group row">
+                                    <label class="col-form-label col-md-2">Người duyệt thanh toán </label>
+                                    <div class="col-md-10">
+                                        <input type="text" readonly class="form-control" name="user_id" id="route_name" value="{{$ticket->name_staff}}">
+                                    </div>
+                                </div>
+                            @endif
                     </div>
                 <hr>
                 <div class="card-header">

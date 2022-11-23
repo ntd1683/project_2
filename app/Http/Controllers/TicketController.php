@@ -11,6 +11,7 @@ use App\Models\Bill;
 use App\Models\Bill_detail;
 use App\Models\Location;
 use App\Models\Route;
+use App\Models\Seat;
 use App\Models\Ticket;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
@@ -54,10 +55,9 @@ class TicketController extends Controller
     public function api()
     {
         $arr =  $this->model
-            ->selectRaw('tickets.*,tickets.code as code_ticket,tickets.id as id_ticket,bill_details.*,bills.*,
+            ->selectRaw('tickets.*,tickets.code as code_ticket,tickets.id as id_ticket,bills.*,
             bills.code as code_bill,buses.departure_time,locations.*,routes.name as route_name,routes.time,cities.name as city_name_end')
-            ->join('bill_details','bill_details.id','bill_detail_id')
-            ->join('buses','buses.id','buses_id')
+            ->join('buses','buses.id','bus_id')
             ->join('bills','bills.id','bill_id')
             ->join('locations','locations.id','address_passenger_id')
             ->join('route_driver_cars','route_driver_cars.id','route_driver_car_id')
@@ -72,6 +72,21 @@ class TicketController extends Controller
             })
             ->editColumn('price', function ($object) {
                 return number_shorten($object->price);
+            })
+            ->editColumn('seat_id', function ($object) {
+                $seat = Seat::query()->where('id',$object->seat_id)->first();
+                return $seat->name . ' Tầng ' .$seat->floor;
+            })
+            ->editColumn('user_id', function ($object) {
+                if($object->status == 1){
+                    if($object->user_id){
+                        $name_user = User::query()->where('id',$object->user_id)->first();
+                        return $name_user->name.' đã duyệt';
+                    }
+
+                    return 'Khách hàng đóng tiền thẳng';
+                }
+                return '';
             })
             ->addColumn('show', function ($object) {
                 return route('admin.tickets.show', $object->id_ticket);
@@ -102,7 +117,6 @@ class TicketController extends Controller
             ->groupBy('routes.name')
             ->orderBy('count','desc')
             ->get();
-//        return $result;
         return DataTables::of($result)->make(true);
     }
 
@@ -130,14 +144,15 @@ class TicketController extends Controller
 //        dd('1');
         $breadcumbs = Breadcrumbs::render('show_ticket',$ticket);
         $ticket_tmp = Ticket::query()
-            ->selectRaw('tickets.*,tickets.code as code_ticket,tickets.id as id_ticket,bill_details.*,bills.*,
+            ->selectRaw('tickets.*,tickets.code as code_ticket,tickets.id as id_ticket,bills.*,
             bills.code as code_bill,buses.departure_time,locations.*,
             routes.name as route_name,routes.time,
             users.name as user_name,users.phone as user_phone,
             carriages.license_plate as license_plate,
-            cities.name as city_name_end')
-            ->join('bill_details','bill_details.id','bill_detail_id')
-            ->join('buses','buses.id','buses_id')
+            cities.name as city_name_end,
+            seats.name as seat_name,seats.floor'
+            )
+            ->join('buses','buses.id','bus_id')
             ->join('bills','bills.id','bill_id')
             ->join('locations','locations.id','address_passenger_id')
             ->join('route_driver_cars','route_driver_cars.id','route_driver_car_id')
@@ -145,6 +160,7 @@ class TicketController extends Controller
             ->join('carriages','route_driver_cars.car_id','carriages.id')
             ->join('routes','routes.id','route_id')
             ->join('cities','cities.id','city_end_id')
+            ->join('seats','seats.id','seat_id')
             ->where('tickets.id',$ticket->id)->first();
         $ticket_tmp->location = '('.$ticket_tmp->name.')'?? '';
         $ticket_tmp->location = $ticket_tmp->address .', '.$ticket_tmp->district .$ticket_tmp->location;
@@ -153,7 +169,15 @@ class TicketController extends Controller
         $ticket_tmp->departure_time = $departure_time;
         $ticket_tmp->price = number_shorten($ticket_tmp->price);
         $ticket_tmp->payment_method = PaymentMethodEnum::getKeyByValue($ticket_tmp->payment_method);
-//        dd($ticket_tmp);
+        if($ticket_tmp->status==1){
+            if($ticket_tmp->user_id){
+                $name_user = User::query()->where('id',$ticket_tmp->user_id)->first();
+                $ticket_tmp->name_staff = $name_user->name.' đã duyệt';
+            }else{
+                $ticket_tmp->name_staff =  'Khách hàng đóng tiền thẳng';
+            }
+        }
+//        return $ticket_tmp;
         $level = Auth::user()->level;
         return view('admin.ticket.show',[
             'breadcumbs'=>$breadcumbs,
@@ -166,15 +190,16 @@ class TicketController extends Controller
     {
         $breadcumbs = Breadcrumbs::render('edit_ticket',$ticket);
         $ticket_tmp = Ticket::query()
-            ->selectRaw('tickets.*,tickets.code as code_ticket,tickets.id as id_ticket,bill_details.*,bills.*,
+            ->selectRaw('tickets.*,tickets.code as code_ticket,tickets.id as id_ticket,bills.*,
             bills.code as code_bill,buses.departure_time,locations.*,locations.id as id_location,
             buses.price as bus_price,
             routes.name as route_name,routes.time,routes.city_start_id,
             users.name as user_name,users.phone as user_phone,
             carriages.license_plate as license_plate,
-            cities.name as city_name_end')
-            ->join('bill_details','bill_details.id','bill_detail_id')
-            ->join('buses','buses.id','buses_id')
+            cities.name as city_name_end,
+            seats.name as seat_name,seats.floor
+            ')
+            ->join('buses','buses.id','bus_id')
             ->join('bills','bills.id','bill_id')
             ->join('locations','locations.id','address_passenger_id')
             ->join('route_driver_cars','route_driver_cars.id','route_driver_car_id')
@@ -182,6 +207,7 @@ class TicketController extends Controller
             ->join('carriages','route_driver_cars.car_id','carriages.id')
             ->join('routes','routes.id','route_id')
             ->join('cities','cities.id','city_end_id')
+            ->join('seats','seats.id','seat_id')
             ->where('tickets.id',$ticket->id)->first();
         $ticket_tmp->location = '('.$ticket_tmp->name.')'?? '';
         $ticket_tmp->location = $ticket_tmp->address .', '.$ticket_tmp->district . ' '.$ticket_tmp->location;
@@ -190,6 +216,15 @@ class TicketController extends Controller
         $ticket_tmp->departure_time = $departure_time;
         $ticket_tmp->price = number_shorten($ticket_tmp->price);
         $ticket_tmp->payment_method = PaymentMethodEnum::getKeyByValue($ticket_tmp->payment_method);
+
+        if($ticket_tmp->status==1){
+            if($ticket_tmp->user_id){
+                $name_user = User::query()->where('id',$ticket_tmp->user_id)->first();
+                $ticket_tmp->name_staff = $name_user->name.' đã duyệt';
+            }else{
+                $ticket_tmp->name_staff =  'Khách hàng đóng tiền thẳng';
+            }
+        }
 //        dd($ticket_tmp);
 
         $city_start = $ticket_tmp->city_start_id;
@@ -217,6 +252,7 @@ class TicketController extends Controller
 
     public function update(UpdateTicketRequest $request,$ticket)
     {
+//        dd($request);
         try{
 //            ticket
             $arr_ticket = $request->only([
@@ -225,20 +261,13 @@ class TicketController extends Controller
                 "email_passenger",
                 "location",
             ]);
+            if($request->status){
+                $arr_ticket['user_id'] = Auth::id();
+            }
             $object = $this->model->find($ticket);
-//            dd($info_ticket);
-//            dd($object);
             $object -> fill($arr_ticket);
             $object->save();
             $info_ticket = $object;
-//            bill_detail
-            $arr_bill_detail = $request->only([
-                "quantity",
-                "price",
-            ]);
-            $object = Bill_detail::query()->find($request->id_bill_detail);
-            $object -> fill($arr_bill_detail);
-            $object->save();
 //            bill
             $arr_bill = $request->only([
                 "quantity",
@@ -258,15 +287,9 @@ class TicketController extends Controller
             return redirect()->back()->with('error','Bạn sửa thất bại rồi,vui lòng thử lại sau !!!');
         }
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Ticket  $ticket
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Ticket $ticket)
+    public function destroy($ticket)
     {
-        //
+        Ticket::destroy($ticket);
+        return $this->successResponse();
     }
 }
