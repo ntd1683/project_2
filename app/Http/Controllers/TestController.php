@@ -11,6 +11,7 @@ use App\Models\Buses;
 use App\Models\Carriage;
 use App\Models\Location;
 use App\Models\Seat;
+use App\Models\Seat_map;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -26,24 +27,21 @@ class TestController extends Controller
 
     public function test()
     {
-        $data = Carriage::query()
-            ->selectRaw('carriages.*,count(seat_maps.seat_id) as default_number_seat')
-            ->join('seat_maps','carriage_id','carriages.id')
-            ->groupBy('carriage_id');
-        return \Yajra\DataTables\Facades\DataTables::of($data)
-            ->editColumn('type', function ($model) {
-                return SeatTypeEnum::getKeyByValue($model->type);
-            })
-            ->editColumn('category', function ($model) {
-                return CarriageCategoryEnum::getKeyByValue($model->category);
-            })
-            ->addColumn('edit', function ($object) {
-                return route('admin.carriages.edit', $object);
-            })
-            ->addColumn('delete', function ($object) {
-                return route('admin.carriages.destroy', $object);
-            })
-            ->make(true);
+        $arr = [];
+        $faker = \Faker\Factory::create('vi_VN');
+        $carriages = Carriage::query()->pluck('id')->toArray();
+        for ($i = 1; $i <= 100; $i++) {
+            $carriage_id = $faker->unique()->randomElement($carriages);
+            $number_seat = $faker->randomElement([30, 32,40]);
+            for($j = 1; $j<=$number_seat; $j++){
+                $arr[] = [
+                    'carriage_id' => $carriage_id,
+                    'seat_id' => $j,
+                ];
+            }
+            dd($arr);
+        }
+        return $arr;
     }
     public function test1(request $request)
     {
