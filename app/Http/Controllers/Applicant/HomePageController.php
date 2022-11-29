@@ -98,7 +98,6 @@ class HomePageController extends Controller
         $url = "dat-ve-xe";
         if(!isset($request->city_start)
             ||!isset($request->city_end)
-            ||!isset($request->departure_time)
             ||$request->city_start==-1
             ||$request->city_end ==-1){
             $request->session()->flash('error', 'Bạn đang nhập thiếu thông tin , vui lòng điền đầy đủ');
@@ -174,7 +173,6 @@ class HomePageController extends Controller
         {
             return redirect()->route('applicant.book_ticket_1')->with('error','Bạn đang nhập thiếu thông tin , vui lòng điền đầy đủ');
         }
-//        dd($request);
         $array =[];
         $arr_routes = [];
         $arr_location = [];
