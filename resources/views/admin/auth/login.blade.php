@@ -67,7 +67,7 @@
                         <div class="form-group mb-4" style="position:relative">
                             <label class="control-label" for="password">Mật khẩu</label>
                             <input class="form-control" type="password" placeholder="Vui lòng nhập mật khẩu" name="password" id="password">
-                            <i class="ti-eye" onclick="show_password()"></i>
+                            <i class="ti-eye" onclick="show_password()" id="show_pass"></i>
                         </div>
 
                         <div class="form-group row">
@@ -100,10 +100,12 @@
 <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 <script src="{{asset('js/admin.js')}}"></script>
 <script>
+    let eye = $("#show_pass")[0];
     function show_password(){
         let password = $("#password");
         if(password.attr("type") === "password"){
             password.attr("type","text");
+            eye.style.color = "cyan";
         }
         else{
             password.attr("type","password");
