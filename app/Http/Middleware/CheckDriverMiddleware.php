@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CheckLoginMiddleware
+class CheckDriverMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,12 +17,9 @@ class CheckLoginMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::guest()){
-            return redirect()->route('admin.login')->with('error','Bạn chưa đăng nhập !!!');
-        }
         if(Auth::user()->level==0){
-            return redirect()->route('driver.index')->with('success','Chúc mừng bạn đăng nhập thành công');
+            return $next($request);
         }
-        return $next($request);
+        return redirect()->route('admin.login')->with('error','Bạn chưa đăng nhập !!!');
     }
 }
