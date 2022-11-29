@@ -21,10 +21,20 @@ class SeatMapSeeder extends Seeder
         $carriages = Carriage::query()->pluck('id')->toArray();
         $seats = Seat::query()->pluck('id')->toArray();
         for ($i = 1; $i <= 100; $i++) {
-            $arr[] = [
-                'carriage_id' => $faker->randomElement($carriages),
-                'seat_id' => $faker->randomElement($seats),
-            ];
+            $carriage_id = $faker->unique()->randomElement($carriages);
+            $number_seat = $faker->randomElement([30, 32,40]);
+            for($j = 1; $j<=$number_seat/2; $j++){
+                $arr[] = [
+                    'carriage_id' => $carriage_id,
+                    'seat_id' => $j,
+                ];
+            }
+            for($j = 1; $j<=$number_seat/2; $j++){
+                $arr[] = [
+                    'carriage_id' => $carriage_id,
+                    'seat_id' => $j+20,
+                ];
+            }
         }
         Seat_map::insert($arr);
     }
