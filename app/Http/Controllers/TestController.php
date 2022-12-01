@@ -27,20 +27,10 @@ class TestController extends Controller
 
     public function test()
     {
-        $arr = [];
-        $faker = \Faker\Factory::create('vi_VN');
-        $carriages = Carriage::query()->pluck('id')->toArray();
-        for ($i = 1; $i <= 100; $i++) {
-            $carriage_id = $faker->unique()->randomElement($carriages);
-            $number_seat = $faker->randomElement([30, 32,40]);
-            for($j = 1; $j<=$number_seat; $j++){
-                $arr[] = [
-                    'carriage_id' => $carriage_id,
-                    'seat_id' => $j,
-                ];
-            }
-            dd($arr);
-        }
+        $arr = Seat_map::query()
+            ->selectRaw('count(*)')
+            ->where('carriage_id','=','2')
+            ->get();
         return $arr;
     }
     public function test1(request $request)

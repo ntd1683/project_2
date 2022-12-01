@@ -18,6 +18,7 @@ use App\Models\Customer;
 use App\Models\Location;
 use App\Models\Route;
 use App\Models\Route_driver_car;
+use App\Models\Seat_map;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -50,14 +51,15 @@ class HomePageController extends Controller
             ->orderBy("pin","desc")
         ->get()
             ->map(function ($each) {
-//                dd($each);
                 $each->city_start_name = $each->city_start->name;
                 $each->city_end_name = $each->city_end->name;
                 $each->img = "upload/" . $each->images;
                 if(isset($each->pin)){
                     $price = Route_driver_car::query()
-                        ->selectRaw("route_id,MIN(price) as price")
+                        ->selectRaw("route_id,MIN(route_driver_cars.price) as price")
+                        ->join('buses','buses.route_driver_car_id','route_driver_cars.id')
                         ->where('route_id','=',$each->id)
+                        ->whereDate('departure_time','=',date("Y-m-d"))
                         ->groupBy('route_id')
                         ->pluck('price')
                         ->toArray();
@@ -70,9 +72,9 @@ class HomePageController extends Controller
                 unset($each->city_start);
                 unset($each->city_end);
                 unset($each->images);
+//                dd($each);
                 return $each;
             });
-//        dd($routes);
         $i = 0;
         foreach ($routes as $each){
             $arr['city_start'][$each->city_start_id] = $each->city_start_name;
@@ -212,12 +214,13 @@ class HomePageController extends Controller
             $route_id = Route::query()->where('city_start_id',$city_start)->where('city_end_id',$city_end)->pluck('id')[0];
             $arr_route = Route::query()->where('id',$route_id)->get()->toArray()[0];
             $arr_bus = Buses::query()
-                ->select('buses.*', 'routes.name as route_name', 'routes.id as route_id', 'routes.time',
+                ->select('buses.*','buses.id as bus_id',
+                    'routes.name as route_name', 'routes.id as route_id', 'routes.time',
                     'routes.distance', 'carriages.id as car_id',
-                    'carriages.category','carriages.seat_type',
-                    'carriages.default_number_seat','carriages.license_plate as license_plate_car',
+                    'carriages.category','carriages.type',
+                    'carriages.license_plate as license_plate_car',
                     'route_driver_cars.price as route_price')
-                ->selectRaw('carriages.default_number_seat-buses.slot as remaining_seats')
+//                ->selectRaw('carriages.default_number_seat-buses.slot as remaining_seats')
                 ->join('route_driver_cars', 'route_driver_cars.id', '=', 'buses.route_driver_car_id')
                 ->join('routes',function($join) use ($city_start,$city_end) {
                     $join->on('routes.id', '=', 'route_driver_cars.route_id');
@@ -226,23 +229,37 @@ class HomePageController extends Controller
                 })
                 ->join('carriages',function($join){
                     $join->on('carriages.id', '=', 'route_driver_cars.car_id');
-                    $join->whereRaw('carriages.default_number_seat-buses.slot > 0');
                 })
                 ->where('departure_time', '>=',$departure_time. ' '. $arr_filter_hour['start'])
                 ->where('departure_time', '<', $departure_time. ' '.$arr_filter_hour['end'])
                 ->where('routes.city_start_id','=',$city_start)
                 ->where('routes.city_end_id','=',$city_end)
                 ->When(!empty($filter_seat_type),function($q) use($filter_seat_type){
-                    return $q->where('carriages.seat_type','=',$filter_seat_type);
+                    return $q->where('carriages.type','=',$filter_seat_type);
                 })
                 ->When(!empty($filter_price),function($q) use($filter_price){
                     return $q->orderBy('buses.price',$filter_price);
                 })
                 ->get()->map(function($each){
+                    $default_number_seat = Seat_map::query()
+                        ->selectRaw('count(*) as `seat_number`')
+                        ->where('carriage_id','=',$each->car_id)
+                        ->first()->seat_number;
+
+                    $slot = Ticket::query()
+                        ->selectRaw('count(*) as `slot`')
+                        ->where('bus_id','=',$each->bus_id)
+                        ->first()->slot;
+                    $remaining_seats = $default_number_seat - $slot;
+
+                    $each->remaining_seats = $remaining_seats;
                     $each->category_car = CarriageCategoryEnum::getKeyByValue(($each->category));
-                    $each->seat_type_car = SeatTypeEnum::getKeyByValue(($each->seat_type));
-                    return $each;
-                });
+                    $each->seat_type_car = SeatTypeEnum::getKeyByValue(($each->type));
+                    if($remaining_seats > 0){
+                        return $each;
+                    }
+                })->filter();
+//            dd($arr_bus);
             if($arr_bus->isEmpty()){
                 return redirect()->back()->with('error','Không tìm thấy chuyến hoặc nhà xe chưa có chuyến');
             }
