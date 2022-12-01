@@ -59,7 +59,7 @@
     {{-- Filter --}}
     {{-- <div class="card filter-card" id="filter_inputs">
         <div class="card-body pb-0">
-            <div class="row filter-row">     
+            <div class="row filter-row">
                 <div class="col-sm-6 col-md-3">
                     <form>
                         <div class="form-group">
@@ -89,7 +89,7 @@
     <div class="row">
         <div class="col-lg-3 col-md-4">
             <h5 class="card-title">Tuyến đường</h5>
-            <div class="row filter-row">                        
+            <div class="row filter-row">
                 {{-- Filter time --}}
                 {{-- End Filter time --}}
                 <div class="mb-3">
@@ -179,11 +179,11 @@
                         <div class="form-group row">
                             <div class="col-md-6 mb-3">
                                 <label>Số ghế</label>
-                                <input type="number" class="form-control" name="default_number_seat" >
+                                <input type="number" class="form-control" name="default_number_seat" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label>Giá</label>
-                                <input type="number" class="form-control" name="price" id="price">
+                                <input type="number" class="form-control" name="price" id="price" readonly>
                             </div>
                         </div>
                         <div class="form-group">
@@ -391,7 +391,7 @@
                     success: function(response) {
                         form_carriages.find("input[name='license_plate']").val(response.license_plate);
                         form_carriages.find("select[name='category']").val(response.category);
-                        form_carriages.find("select[name='seat_type']").val(response.seat_type);
+                        form_carriages.find("select[name='seat_type']").val(response.type);
                         form_carriages.find("input[name='price']").val(response.price);
                         form_carriages.find("input[name='default_number_seat']").val(response.default_number_seat);
                         form_carriages.find("select[name='color']").val(response.color);
@@ -458,10 +458,10 @@
                 form_carriages.attr('action', "{{route('admin.carriages.store')}}");
                 modal_carriages.find('.create-car').unbind('click').click(function () {
                     if(form_carriages.valid()){
-                        submitAddFormCarriages();  
+                        submitAddFormCarriages();
                     }
                 });
-                    
+
             };
 
             $(document).ready(function() {

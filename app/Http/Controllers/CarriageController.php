@@ -106,9 +106,12 @@ class CarriageController extends Controller
     public function apiCarriageByID(Request $request){
         $id = $request->get('car_id');
         $result = $this->model
+                ->selectRaw('carriages.*,route_driver_cars.price,driver_id,users.name,count(seat_id) as `default_number_seat`')
                 ->join('route_driver_cars', 'route_driver_cars.car_id', '=', 'carriages.id')
                 ->join('users', 'route_driver_cars.driver_id', '=', 'users.id')
+                ->join('seat_maps','carriage_id','carriages.id')
                 ->where('carriages.id', $id)
+                ->groupBy('driver_id','price','category','color','deleted_at','license_plate','name','type')
                 ->first();
         return $result;
     }
