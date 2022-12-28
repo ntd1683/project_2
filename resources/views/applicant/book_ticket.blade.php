@@ -22,6 +22,9 @@
         @endif
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="{{asset('css/jquery.toast.min.css')}}">
+        @if($request->step == 2)
+            <link rel="stylesheet" href="{{asset('css/2196462.css')}}">
+        @endif
         @if($request->step == 3)
 {{--            <link rel="stylesheet" href="{{asset('css/b00274d.css')}}">--}}
             <link rel="stylesheet" href="{{asset('css/2196462.css')}}">
@@ -525,7 +528,7 @@
     <?php $check_tmp = 0 ?>
     @foreach($arr_bus as $each_bus)
     <section class="ftco-section" style="padding:0px !important;text-align:center">
-        <div class="route-option" data-v-008a65cb="" id="select_route_{{$check_tmp}}">
+        <div class="route-option select_route" data-v-008a65cb="" id="select_route_{{$check_tmp}}">
             <div class="header" data-v-008a65cb="">
                 <p>Các giờ xuất phát : {{date("H:i", strtotime($each_bus->departure_time))}}
                 <img alt="fromto" width="28" height="7" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAAOCAYAAAB6pd+uAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAOKADAAQAAAABAAAADgAAAAAjNiV1AAABjklEQVRIDWNgGGQgraTRO7OiXZBazmKilkHUMuffPwaFX39+ZaSXN+lTw8xB50FGRgYmxn8MbH9//w9ILmoMLezr46TEo4POg/8ZgV6EAiBD68uTL5nAJKsEEyOVZiZVA63VG1nYWzIwMHIg2cP+7+9ffWMrRw4/d4eHBw4c+IckR5A56GIQGGtY3fT/P4PFk0+MqSlVreIEfYWkAKthSPJ0ZyInUSyWizH+/JuaVNJk+f//f3hSxqIOLjToPMgALGTgrsPCAHqMmenff7fUsubY3IYGPixKUITwGoaikk4cYAlKnJv+/lf88YUxM7W8SRuf04gzDJ8JVJYjkERRbPv/j4Hj/+//IamFjYG5kyaxo0hCOYwpRY312CSGntj/j0ysHOtmdVY8Qnb7oItBZMeRxmbk//f7ZyKwceAcumoVvPobRh6EBAewaLXhP3kjOa24QQQkwmxk6egAkRqcJDBP/mcAImDpCkQgBgMom/4DYmBFAaorgMUSAwMEMzL+BSr5BxTkBNabeqZ2Tp8BQTlvqFxYe+QAAAAASUVORK5CYII=" data-v-008a65cb="">
@@ -539,7 +542,7 @@
             <div class="label" data-v-008a65cb="">
 {{--                {{number_shorten($each_bus->price)}} <span class="dot" data-v-008a65cb=""></span>--}}
 {{--                tạm thời --}}
-                {{number_shorten($each_bus->price)}} <span class="dot" data-v-008a65cb=""></span>
+                <span id="price_bus_{{$check_tmp}}">{{number_shorten($each_bus->price)}}</span><span class="dot" data-v-008a65cb=""></span>
                 {{$each_bus->seat_type_car}} <span class="dot" data-v-008a65cb=""></span> <span data-v-008a65cb="">Còn {{$each_bus->remaining_seats}} chỗ</span>
             </div>
             <div class="route-line-container" data-v-008a65cb="">
@@ -555,15 +558,15 @@
                     </div>
                 </div>
                 <div class="action" data-v-008a65cb="" onclick="select_checkbox({{$check_tmp}})">
-                    <img alt="checkbox" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAMAAAApWqozAAAAtFBMVEUAAAAAgICAgL+Upa2Pl5+bo6uVoKuWoKqfqLGWn6mapK2Zo62dpq+apa6dp7Cep6+ep7CbprCdp7Ccpa+cpq+bpq6ep7Gcpq+dp7Ccp7Cbpq+dprD////+///+/v76+vv6+vr4+fn29/f19vfx8vTs7vDr7e/i5efa3uHa3eDV2d3U2d3S1tvM0ta7wsixucCvt76psrqmrregqrKgqbKfqLKeqLGdp7CdprCcpq+bpa+bpa4Vzj1GAAAAHHRSTlMAAgQfID1GS1JoeX2Mp7m6v8zT4uPk7vP4+/v86VxdYgAAAX1JREFUeNqVldmSgjAQRaO44bjhrpNBZWBAQSBsmab//7/GoqgpXJDkPJ+HTtK5lzygdNXxfL3drudjtauQd/SnC8g45Ig58OxzOenXme2elgImLPCvN/yAJQip1mu/cjuzPUd2sQydFujGz4Uh3886z+5gAxg6tDRLn55DhM3gQW2NdhB7R/rEyYthN2rduUPAyKYvsSP8/ajaI4DApDWYAcCoMu8OgwOt5RDg7n/uzgYik77BjGDTKe93BrFN32LHMGsXcm+PHm3Aw32vkDUeHpvkY8i1Yh9SdGgjDqb9mzwF1ux+UQZTQpQVurQZ/YILhXQhsagAVgJdombMEJG/WaaSMQ90EVkP+JjMwadC+DAn6/wqJl/zNdmiqIxbKVlqDKkDSl2d8KMYLFOlnlt0kaiLS6Vc0WYYTISX/4xpX/RbnUKuSX1YqSiQCRmZ+JIJRvHIhWFLKMyPZZi/rIkHnKIm6grIrRSQ5ZYFJFFt9aW5qpQmrKb3pSlVx3/OLLyF52G6QAAAAABJRU5ErkJggg==" width="22" height="22" data-v-008a65cb="" id="select_img_bus_{{$check_tmp}}"> <!---->
-                    <img alt="checkbox" class="div-hide" id="select_img_2_bus_{{$check_tmp}}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAFqADAAQAAAABAAAAFgAAAAAcITNaAAACSUlEQVQ4EbWVP2gUQRTGvzc7MedtzGljYWIhQoQYLTQSFQKKtSYgNkZFxE4sLERJQGOnpLCzUBQRsbGIsRJsbBW7gIUERZIcIv65i3fH5XK7z3kjs+xddol3kmlm5s17v5n3duZbQkornN6zhauVESKMgLmfibaJKzHnQfSBGTOUyc5sfjb7KwlBzUY+fyRTXFq4whReAyPXvN4wJxSJ1Z1cd+9devymGl9rAFdO9fXUwuAFMw/GndYaE9H7DcobzT7/uOh8I7BAl8PgrUm7xy221BMtdipvyMGVBEv6ctK2oRbCf7M1LJlasK1pi+lLcHOTEgpL7GS//nL585ofqpmSNpcP2unvUHKl2oF6u/Yhe3nK5Ow1bmFukjC13FNzJ1tqXv8BdI0/RPg9nxgnTCWXP3E1xah3D6Fr4pGFlm6OAWGw2tMwlXtR8VU9eAwdwyfiJjvWA4fgT5iTfptH6cYYuPhjlY8YhKmTVvTAQWSOX0DF70bt1VProvcehn/9AcKvX1CaPANe+pkUGtm0vH1T4r7IYgbVJ7ehtvZi48VJIKibEy4Y6H2E+U8Gehb8O1EeIoQwqXBy57S5f6OR1Q10B/yr96D3HwXqNQTzcyjfOgcuFZxHak+gaSUqlehRX0F56hJW3r1GMDeLsqT/D1BhmQq8XL8HInoq0pd46jaMwhKm1Qqrp0b62uA0hIh8CkuM6yubsoPoqOip7CrzVprExLVYYm0pHETguU3bhwlq3ORSdPbUXpTM+EqME3jnG5XCGVz/vz/TPwESC7rVdcaIAAAAAElFTkSuQmCC" width="22" height="22" data-v-008a65cb="">
-                    <div data-v-008a65cb id="select_text_bus_{{$check_tmp}}">
+                    <img class="select_img_bus" alt="checkbox" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAMAAAApWqozAAAAtFBMVEUAAAAAgICAgL+Upa2Pl5+bo6uVoKuWoKqfqLGWn6mapK2Zo62dpq+apa6dp7Cep6+ep7CbprCdp7Ccpa+cpq+bpq6ep7Gcpq+dp7Ccp7Cbpq+dprD////+///+/v76+vv6+vr4+fn29/f19vfx8vTs7vDr7e/i5efa3uHa3eDV2d3U2d3S1tvM0ta7wsixucCvt76psrqmrregqrKgqbKfqLKeqLGdp7CdprCcpq+bpa+bpa4Vzj1GAAAAHHRSTlMAAgQfID1GS1JoeX2Mp7m6v8zT4uPk7vP4+/v86VxdYgAAAX1JREFUeNqVldmSgjAQRaO44bjhrpNBZWBAQSBsmab//7/GoqgpXJDkPJ+HTtK5lzygdNXxfL3drudjtauQd/SnC8g45Ig58OxzOenXme2elgImLPCvN/yAJQip1mu/cjuzPUd2sQydFujGz4Uh3886z+5gAxg6tDRLn55DhM3gQW2NdhB7R/rEyYthN2rduUPAyKYvsSP8/ajaI4DApDWYAcCoMu8OgwOt5RDg7n/uzgYik77BjGDTKe93BrFN32LHMGsXcm+PHm3Aw32vkDUeHpvkY8i1Yh9SdGgjDqb9mzwF1ux+UQZTQpQVurQZ/YILhXQhsagAVgJdombMEJG/WaaSMQ90EVkP+JjMwadC+DAn6/wqJl/zNdmiqIxbKVlqDKkDSl2d8KMYLFOlnlt0kaiLS6Vc0WYYTISX/4xpX/RbnUKuSX1YqSiQCRmZ+JIJRvHIhWFLKMyPZZi/rIkHnKIm6grIrRSQ5ZYFJFFt9aW5qpQmrKb3pSlVx3/OLLyF52G6QAAAAABJRU5ErkJggg==" width="22" height="22" data-v-008a65cb="" id="select_img_bus_{{$check_tmp}}"> <!---->
+                    <img alt="checkbox" class="div-hide select_img_2_bus" id="select_img_2_bus_{{$check_tmp}}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAFqADAAQAAAABAAAAFgAAAAAcITNaAAACSUlEQVQ4EbWVP2gUQRTGvzc7MedtzGljYWIhQoQYLTQSFQKKtSYgNkZFxE4sLERJQGOnpLCzUBQRsbGIsRJsbBW7gIUERZIcIv65i3fH5XK7z3kjs+xddol3kmlm5s17v5n3duZbQkornN6zhauVESKMgLmfibaJKzHnQfSBGTOUyc5sfjb7KwlBzUY+fyRTXFq4whReAyPXvN4wJxSJ1Z1cd+9devymGl9rAFdO9fXUwuAFMw/GndYaE9H7DcobzT7/uOh8I7BAl8PgrUm7xy221BMtdipvyMGVBEv6ctK2oRbCf7M1LJlasK1pi+lLcHOTEgpL7GS//nL585ofqpmSNpcP2unvUHKl2oF6u/Yhe3nK5Ow1bmFukjC13FNzJ1tqXv8BdI0/RPg9nxgnTCWXP3E1xah3D6Fr4pGFlm6OAWGw2tMwlXtR8VU9eAwdwyfiJjvWA4fgT5iTfptH6cYYuPhjlY8YhKmTVvTAQWSOX0DF70bt1VProvcehn/9AcKvX1CaPANe+pkUGtm0vH1T4r7IYgbVJ7ehtvZi48VJIKibEy4Y6H2E+U8Gehb8O1EeIoQwqXBy57S5f6OR1Q10B/yr96D3HwXqNQTzcyjfOgcuFZxHak+gaSUqlehRX0F56hJW3r1GMDeLsqT/D1BhmQq8XL8HInoq0pd46jaMwhKm1Qqrp0b62uA0hIh8CkuM6yubsoPoqOip7CrzVprExLVYYm0pHETguU3bhwlq3ORSdPbUXpTM+EqME3jnG5XCGVz/vz/TPwESC7rVdcaIAAAAAElFTkSuQmCC" width="22" height="22" data-v-008a65cb="">
+                    <div data-v-008a65cb id="select_text_bus_{{$check_tmp}}" class="select_text_bus">
                         Chọn
                     </div>
                 </div>
             </div>
         </div>
-        <div class="route-option div-hide" data-v-008a65cb id="select_route_2_{{$check_tmp}}">
+        <div class="route-option div-hide select_route_2" data-v-008a65cb id="select_route_2_{{$check_tmp}}">
             <div class="form-group mb-0 row">
                 <form action="{{route('applicant.book_ticket')}}" method="get">
                     <input type="hidden" name="step" value="3">
@@ -572,6 +575,11 @@
                     <input type="hidden" name="departure_time" value="{{$request->departure_time}}">
                     <input type="hidden" name="price" value="{{$each_bus->price}}">
                     <input type="hidden" name="bus" value="{{$each_bus}}">
+
+{{--                    Seat Map Dữ Liệu --}}
+                    <input type="hidden" value="{{$each_bus->seats_booked}}" id="seats_booked_{{$check_tmp}}">
+                    <input type="hidden" value="{{$each_bus->remaining_seats}}" id="remaining_seats_{{$check_tmp}}">
+                    <input type="hidden" value="{{$each_bus->default_number_seat}}" id="default_number_seat_{{$check_tmp}}">
                     <div class="col-md-10" style="width:100%;">
                         <div class="input-group">
                             <label class="col-form-label col-md-2">Địa điểm đón : </label>
@@ -581,12 +589,1470 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="input-group">
-                            <label class="col-form-label col-md-2">số lượng ghế : </label>
-                            <input type="number" class="form-control" name="slot">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="submit" style="background-color: #0d6efd !important;border:1px solid #0d6efd !important;">Tiếp Theo</button>
+                        <div class="input-group" id="seat_map" style="margin-top:10px;justify-content:center">
+                            <div class="route-option selected" data-v-008a65cb="">
+                                <div data-v-5c79fc2e="" data-v-008a65cb="" class="seat-map-container margin">
+                                    <div data-v-5c79fc2e="" id="booking-seat-map" class="set-map-wrap">
+                                        <div data-v-5c79fc2e="" class="tab">
+                                            <div id="down_floor" data-v-5c79fc2e="" class="active">
+                                                <img id="img_down_floor" data-v-5c79fc2e="" width="14" height="14" alt="down_floor_active"
+                                                                                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAvUlEQVRYR+2WzQ2AIAyFixsYN3AkF1IXYiQ2MG6gpiYkHOiPxuKlXDjQ9H28toEARmubxgVTDzHdO7WChT6KdwAz5j4AVg4i7NN4aiD6mFSwpXjOS0FgbBOAmhMZ9HMAFKu5UEKU5yYAEkTuD4wzA+Agyp4zBdBAqAGkSeGmhOqJRyV4C8CJmwNI4qYAGnFTAKlk+bxJE7KPkfYt0N6IiqOm5DMHJEAHcAd+d4D8E7YaQwdwB9wBd8AdoBy4APhpmgw2jnc3AAAAAElFTkSuQmCC">
+
+                                                Tầng dưới
+                                            </div>
+                                            <div id="upper_floor" data-v-5c79fc2e="" class="">
+                                                <img id="img_upper_floor" data-v-5c79fc2e="" width="14" height="14" alt="up_floor"
+                                                                                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAtUlEQVRYR+2Vuw6AIAxF7Q/rxgqsbvrDNU0kQaW0JoCDdTHK4x5OKMB0Ps5vYQLw6Zt7r2EGqc+b9stkGoiuAEQuQWgBXNhRY6KoswbRHeBTA1I4Ke1mgA1HjHl1dAGoha9xCXl7cwAp/H5OJADtLpcqAYoAiJFWfh9MfdP/ZgCP2mfCHzDKOhcNXBTTLi+svDRJUwMS5T8BWimW7LJXqwGYgWEGRgVx1QAGYAbMgBkwA18bOABT2ZbzfT1Q/QAAAABJRU5ErkJggg==">
+                                                Tầng trên
+                                            </div>
+                                        </div>
+                                        <div data-v-5c79fc2e="" class="floor-title">
+                                            <div data-v-5c79fc2e="">Tầng dưới</div>
+                                            <div data-v-5c79fc2e="">Tầng trên</div>
+                                        </div>
+                                        <div data-v-5c79fc2e="" class="seat-tables">
+                                            <!---->
+                                            <!---->
+                                            <div data-v-7a185f94="" data-v-5c79fc2e="" class="alert alert-info noinfo" style="display: none;">
+                                                <p data-v-7a185f94="" style="text-align: center;">Chưa có thông tin</p>
+                                            </div>
+                                            <div id="down_floor_table" data-v-be38f442="" data-v-5c79fc2e="" class="seat-table-container" >
+                                                <!---->
+                                                <table data-v-be38f442="" class="table seat-table" id="seat_table">
+                                                    <tbody data-v-be38f442="">
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat">
+                                                            <svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                 xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                 pos="0">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A01
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg>
+                                                        </td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="1">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="2">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A02
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="3">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="4">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A03
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="5">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A04
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="6">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="7">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A05
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="8">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="9">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A06
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="10">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A07
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="11">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="12">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A08
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="13">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="14">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A09
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="15">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A10
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="16">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="17">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A11
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="18">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="19">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A12
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background" pos="20">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="21">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat hidden animated-background"
+                                                                                                       pos="22">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A14
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="23">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="24">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A15
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="25">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A16
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="26">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="27">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="28">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="29">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A17
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="30">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A18
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="31">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A19
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="32">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A20
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="33">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A21
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="34">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        A22
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    <tr data-v-be38f442="" class="hide">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="35">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="36">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="37">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="38">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="39">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div id="upper_floor_table" data-v-be38f442="" data-v-5c79fc2e="" class="seat-table-container hide-mobile">
+                                                <!---->
+                                                <table data-v-be38f442="" class="table seat-table" id="seat_table_b">
+                                                    <tbody data-v-be38f442="">
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="0">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B01
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="1">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="2">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B02
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="3">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="4">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B03
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="5">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B04
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="6">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="7">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B05
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="8">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="9">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B06
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="10">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B07
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="11">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="12">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B08
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="13">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="14">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B09
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="15">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B10
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="16">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="17">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B11
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="18">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="19">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B12
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="20">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B13
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="21">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat hidden animated-background"
+                                                                                                       pos="22">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B14
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="23">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="24">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B15
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="25">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B16
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="26">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="27">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"
+                                                                                                       class="seat hidden animated-background isSmall" pos="28">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="disabled-seat">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="29">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B17
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    <tr data-v-be38f442="" class="">
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="30">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B18
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="31">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B19
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="32">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B20
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="33">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B21
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                        <td data-v-be38f442="" class="class-seat"><svg data-v-7d216ab5="" data-v-be38f442=""
+                                                                                                       xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" class="seat isSmall"
+                                                                                                       pos="34">
+                                                                <g data-v-7d216ab5="" fill="none" fill-rule="evenodd">
+                                                                    <g data-v-7d216ab5="" class="active">
+                                                                        <path data-v-7d216ab5=""
+                                                                              d="M8.625.5c-3.038 0-5.5 2.462-5.5 5.5v27.875c0 .828.672 1.5 1.5 1.5h32.75c.828 0 1.5-.672 1.5-1.5V6c0-3.038-2.462-5.5-5.5-5.5H8.625zM5.75 35.5V38c0 1.933 1.567 3.5 3.5 3.5h23.5c1.933 0 3.5-1.567 3.5-3.5v-2.5H5.75z">
+                                                                        </path>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x=".5" y="13.625" rx="2.563"></rect>
+                                                                        <rect data-v-7d216ab5="" width="5.125" height="16.5" x="36.375" y="13.625" rx="2.563"></rect>
+                                                                    </g>
+                                                                </g> <text data-v-7d216ab5="">
+                                                                    <tspan data-v-7d216ab5="" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                                                           class="active-seat-text">
+                                                                        B22
+                                                                    </tspan>
+                                                                </text>
+                                                            </svg></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div data-v-5c79fc2e="" class="seat-statuses">
+                                            <div data-v-5c79fc2e="" class="status-item">
+                                                <div data-v-5c79fc2e="" class="active"></div>
+                                                <div data-v-5c79fc2e="" class="status-text">Trống</div>
+                                            </div>
+                                            <div data-v-5c79fc2e="" class="status-item">
+                                                <div data-v-5c79fc2e="" class="select"></div>
+                                                <div data-v-5c79fc2e="" class="status-text">Đang chọn</div>
+                                            </div>
+                                            <div data-v-5c79fc2e="" class="status-item">
+                                                <div data-v-5c79fc2e="" class="disable"></div>
+                                                <div data-v-5c79fc2e="" class="status-text">Đã đặt</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div data-v-5c79fc2e="" class="footer">
+                                        <div data-v-5c79fc2e="">
+                                            <div data-v-5c79fc2e="">
+                                                <span id="total-seat">0 Vé</span>
+                                                <span data-v-5c79fc2e="">
+              <!---->
+              <span id="name-seat"></span>
+            </span>
+                                            </div>
+                                            <div data-v-5c79fc2e="">
+                                                Tổng tiền:
+                                                <span data-v-5c79fc2e="" class="total" id="total-money">
+              0</span>
+              <sup data-v-5c79fc2e="">₫</sup>
+                                            </div>
+                                        </div> <button data-v-5c79fc2e="" class="next-button">
+                                            Tiếp tục
+                                            <img data-v-5c79fc2e="" width="24" height="24" alt="next"
+                                                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAMKADAAQAAAABAAAAMAAAAADbN2wMAAABFklEQVRoBe2W3Q2DMAyESTeggTG6REdknw7RskZ3SM8VD1aUPEAgxOgsuaUoP3ef3ShdxyABEiABEiABEjBMIITQI6clvTkri3B8/eODz7GmidvOmz2w3qu2iSIPEOuRQl5H9UqUmhigniaKKO4xGVW4bCVmmKt6OhUVJFMJmiiiumXylSrxhhkdJtspZcLO3Qn45YiNTUxbWlPP2fsupNeOnx1exPuFeFCTv0F+RErf65Bq3JsUrEVBZE78oMc1+ZwRL5c+M+JTN1SKP7TdlrYh+UMppxaXPybSLHnT4r1Z8tJKED8hdUgbVTsq47tJqr3XvJsx+Omc+66ZdOpY0O6RUgVJO9fjU6lxcxIgARIgARK4CoEf/uti7K0v/UAAAAAASUVORK5CYII="></button>
+                                    </div>
+                                </div>
                             </div>
+{{--                            <div class="input-group-append">--}}
+{{--                                <button class="btn btn-primary" type="submit" style="background-color: #0d6efd !important;border:1px solid #0d6efd !important;">Tiếp Theo</button>--}}
+{{--                            </div>--}}
                         </div>
                     </div>
                 </form>
@@ -1044,6 +2510,89 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
         <script src="{{asset('js/jquery.toast.min.js')}}"></script>
             <script>
+                let down_floor = document.getElementById("down_floor");
+                let upper_floor = document.getElementById("upper_floor");
+                let img_down_floor = document.getElementById("img_down_floor");
+                let img_upper_floor = document.getElementById("img_upper_floor");
+                let down_floor_table = document.getElementById("down_floor_table");
+                let upper_floor_table = document.getElementById("upper_floor_table");
+
+                let down_floor_no_active = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAtUlEQVRYR+2WwQqAIAyG3QvXzWt27VYvbCgYBs6t6I+geelg7P/4toHkQMdPa0ill3nMX+4QIj+HE025doxzD4J82KIGYgmDCvYUXgozEOnfdwAaJgro4wApq2mhgqjvIQASxDEfzjkYQBeiGjoogAZCDSBtSm9L2Jm40oK7AL3wVBNqQAqHAmjCoQBSy8o9tAUaiMcApDBuSwzADPzHAPsm1D7JpDW7e/9aC8yAGTADZuCzBnZRX6I60CupQgAAAABJRU5ErkJggg==";
+                let down_floor_active = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAvUlEQVRYR+2WzQ2AIAyFixsYN3AkF1IXYiQ2MG6gpiYkHOiPxuKlXDjQ9H28toEARmubxgVTDzHdO7WChT6KdwAz5j4AVg4i7NN4aiD6mFSwpXjOS0FgbBOAmhMZ9HMAFKu5UEKU5yYAEkTuD4wzA+Agyp4zBdBAqAGkSeGmhOqJRyV4C8CJmwNI4qYAGnFTAKlk+bxJE7KPkfYt0N6IiqOm5DMHJEAHcAd+d4D8E7YaQwdwB9wBd8AdoBy4APhpmgw2jnc3AAAAAElFTkSuQmCC";
+                let upper_floor_no_active = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAtUlEQVRYR+2Vuw6AIAxF7Q/rxgqsbvrDNU0kQaW0JoCDdTHK4x5OKMB0Ps5vYQLw6Zt7r2EGqc+b9stkGoiuAEQuQWgBXNhRY6KoswbRHeBTA1I4Ke1mgA1HjHl1dAGoha9xCXl7cwAp/H5OJADtLpcqAYoAiJFWfh9MfdP/ZgCP2mfCHzDKOhcNXBTTLi+svDRJUwMS5T8BWimW7LJXqwGYgWEGRgVx1QAGYAbMgBkwA18bOABT2ZbzfT1Q/QAAAABJRU5ErkJggg==";
+                let upper_floor_active = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAu0lEQVRYR+2VYQ5AMAxGOzcQN3AkFzIX2pHcQNwAaWLJLKtO0uJH/VnY+F4fNQfnsQy9bwDGeE6NbZgdt+bJ/OVhNRCqAEjOQdQCrEO/15go6ryDUAf41AAXjkrVDFDhG8CUdocKwF14F2afzosDcOH5fyIC1H7lXCe4EgBqx8rzm3FtvC4GkPc+FZ7DiAJECBxLlZc0igNw70rdwO8ApBRzhZFbqwGYgdcMvBVEdYMzADNgBsyAGfjawAEEl42dnlTOTQAAAABJRU5ErkJggg==";
+
+                down_floor.addEventListener('click',(e)=>{
+                    upper_floor.classList.remove("active");
+                    upper_floor_table.classList.add("hide-mobile");
+                    img_upper_floor.setAttribute("src",upper_floor_no_active);
+
+                    down_floor.classList.toggle("active");
+                    down_floor_table.classList.remove("hide-mobile");
+                    img_down_floor.setAttribute("src",down_floor_active);
+                });
+                upper_floor.addEventListener('click',(e)=>{
+                    down_floor.classList.remove("active");
+                    down_floor_table.classList.add("hide-mobile");
+                    img_down_floor.setAttribute("src",down_floor_no_active);
+
+                    upper_floor.classList.toggle("active");
+                    upper_floor_table.classList.remove("hide-mobile");
+                    img_upper_floor.setAttribute("src",upper_floor_active);
+                });
+
+                let price_bus;
+                var seat;
+                let element_total_seat = document.getElementById("total-seat");
+                let element_name_seat = document.getElementById("name-seat");
+                let element_total_money = document.getElementById("total-money");
+                let total_seat=0;
+                let name_seat='';
+                let seat_value;
+                let seat_map = document.getElementById("seat_table");
+                seat_map.addEventListener('click', (e) => {
+                    seat = e.target.closest('.class-seat');
+                    let seat_active = seat.querySelector(".active");
+                    let seat_value_tmp = seat.querySelector(".active-seat-text").textContent;
+                    seat_value_tmp = seat_value_tmp.replace(/\s+/g, '');
+                    seat_value = seat_value_tmp.replace(/\n+/g, '');
+
+                    seat_active.classList.toggle("selecting");
+                    if(seat_active.className.animVal.includes("selecting")==true){
+                        total_seat++;
+                        name_seat = name_seat + ' '+ seat_value;
+                    }else{
+                        total_seat--;
+                        name_seat = name_seat.replace(" "+seat_value,"");
+                        console.log(name_seat);
+                    }
+                    element_total_seat.innerHTML=total_seat+' Vé :';
+                    element_name_seat.innerHTML=name_seat;
+                    element_total_money.innerHTML = total_seat * price_bus + '.000';
+                });
+
+                let seat_map_b = document.getElementById("seat_table_b");
+                seat_map_b.addEventListener('click', (e) => {
+                    console.log(price_bus);
+                    seat = e.target.closest('.class-seat');
+                    let seat_active = seat.querySelector(".active");
+                    let seat_value_tmp = seat.querySelector(".active-seat-text").textContent;
+                    seat_value_tmp = seat_value_tmp.replace(/\s+/g, '');
+                    seat_value = seat_value_tmp.replace(/\n+/g, '');
+
+                    seat_active.classList.toggle("selecting");
+                    if(seat_active.className.animVal.includes("selecting")==true){
+                        total_seat++;
+                        name_seat = name_seat + ' '+ seat_value;
+                    }else{
+                        total_seat--;
+                        name_seat = name_seat.replace(" "+seat_value,"");
+                    }
+                    element_total_seat.innerHTML=total_seat+' Vé :';
+                    element_name_seat.innerHTML=name_seat;
+                    element_total_money.innerHTML = total_seat * price_bus + '.000';
+                });
+
                 let check_payment_method = false;
                 @if($request->step == 4)
                 function payment(key){
@@ -1091,23 +2640,56 @@
                     });
                     @endif
                 });
+
+                var class_select_text_bus = document.getElementsByClassName("select_text_bus");
+                var class_select_img = document.getElementsByClassName("select_img_bus");
+                var class_select_img_2 = document.getElementsByClassName("select_img_2_bus");
+                var class_select_route = document.getElementsByClassName("select_route");
+                var class_select_route_2 = document.getElementsByClassName("select_route_2");
             function select_checkbox(key){
+                let id_price_bus = 'price_bus_'+key;
                 let id_text = 'select_text_bus_'+key;
                 let id_img = 'select_img_bus_'+key;
                 let id_img_2 = 'select_img_2_bus_'+key;
                 let id_route = 'select_route_'+key;
                 let id_route_2 = 'select_route_2_'+key;
+                let id_seats_booked = 'seats_booked_'+key;
+                let id_remaining_seats = 'remaining_seats_'+key;
+                let id_default_number_seat = 'default_number_seat_'+key;
+
+                let select_price_bus = document.getElementById(id_price_bus).innerHTML;
                 let select_text_bus = document.getElementById(id_text);
                 let select_img = document.getElementById(id_img);
                 let select_img_2 = document.getElementById(id_img_2);
                 let select_route = document.getElementById(id_route);
                 let select_route_2 = document.getElementById(id_route_2);
+                let seats_booked = document.getElementById(id_seats_booked).value;
+                let remaining_seats = document.getElementById(id_remaining_seats).value;
+                let default_number_seat = document.getElementById(id_default_number_seat).value;
+                seats_booked = seats_booked.slice(1,-1);
+                seats_booked = seats_booked.split(',');
+                let price_bus_tmp = select_price_bus.slice(0,-1);
+                price_bus = parseInt(price_bus_tmp);
+                console.log(price_bus);
+
+                console.log(remaining_seats,seats_booked,default_number_seat);
+
+                for(let tmp = 0; tmp < class_select_route.length; tmp++){
+                    class_select_text_bus[tmp].classList.remove("selected");
+                    class_select_img[tmp].classList.remove("div-hide");
+                    class_select_img_2[tmp].classList.remove("div-block");
+                    class_select_route[tmp].classList.remove("selected");
+                    class_select_route_2[tmp].classList.remove("selected");
+                    class_select_route_2[tmp].classList.remove("div-block");
+                }
+
                 select_text_bus.classList.toggle("selected");
                 select_img.classList.toggle("div-hide");
                 select_img_2.classList.toggle("div-block");
                 select_route.classList.toggle("selected");
                 select_route_2.classList.toggle("selected");
                 select_route_2.classList.toggle("div-block");
+
             }
 
             function book_ticket(city_start_id, city_end_id){
