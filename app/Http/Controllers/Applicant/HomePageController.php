@@ -252,9 +252,21 @@ class HomePageController extends Controller
                         ->first()->slot;
                     $remaining_seats = $default_number_seat - $slot;
 
+//                    Những ghế đã đặt
+                    $seats_booked = Ticket::query()
+                        ->select('seat_id')
+                        ->where('bus_id','=',$each->bus_id)
+                        ->pluck('seat_id');
+                    $each->seats_booked = $seats_booked;
+//                    dd($seats_booked);
+
                     $each->remaining_seats = $remaining_seats;
+                    $each->default_number_seat = $default_number_seat;
                     $each->category_car = CarriageCategoryEnum::getKeyByValue(($each->category));
                     $each->seat_type_car = SeatTypeEnum::getKeyByValue(($each->type));
+                    if($each->price == 0){
+                        $each->price = $each->route_price;
+                    }
                     if($remaining_seats > 0){
                         return $each;
                     }
@@ -273,6 +285,7 @@ class HomePageController extends Controller
                 }
                 $arr_location[$each['id']] .= $each['address'].' - '.$each['district'];
             }
+
         }
         catch(\Throwable $e){
             session()->flash('error', 'Lỗi không tìm thấy chuyến xe , vui lòng thử lại');
