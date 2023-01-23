@@ -83,7 +83,7 @@ if(!function_exists('hour_to_day')){
     function hour_to_day($hour): string
     {
         if($hour<=24){
-            return $hour . 'Giờ';
+            return $hour . ' Giờ';
         }
         (int)$date = floor($hour/24);
         $new_hour = $hour - $date*24;

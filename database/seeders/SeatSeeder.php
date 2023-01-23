@@ -21,7 +21,7 @@ class SeatSeeder extends Seeder
         $check = false;
         $i = 1;
         do{
-            if($i === 21){
+            if($i === 23){
                 $name = 'B';
                 $floor++;
                 $i = 1;
@@ -31,7 +31,7 @@ class SeatSeeder extends Seeder
                 'floor' => $floor,
             ];
             $i++;
-            if($i === 21 && $floor === 2){
+            if($i === 23 && $floor === 2){
                 $check = true;
             }
         }while($check == false);

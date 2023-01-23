@@ -292,7 +292,7 @@ class HomePageController extends Controller
             return redirect()->back();
         }
         $array = New Fluent($array);
-//        dd($arr_bus);
+//        dd($arr_bus[0]->seats_booked[1]);
         return view('applicant/book_ticket',[
             'city_start' => $array['city_start'],
             'city_end' => $array['city_end'],
