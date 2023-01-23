@@ -22,7 +22,7 @@ class SeatMapSeeder extends Seeder
         $seats = Seat::query()->pluck('id')->toArray();
         for ($i = 1; $i <= 100; $i++) {
             $carriage_id = $faker->unique()->randomElement($carriages);
-            $number_seat = $faker->randomElement([30, 32,40]);
+            $number_seat = $faker->randomElement([20, 34,42]);
             for($j = 1; $j<=$number_seat/2; $j++){
                 $arr[] = [
                     'carriage_id' => $carriage_id,
