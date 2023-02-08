@@ -575,6 +575,7 @@
                     <input type="hidden" name="departure_time" value="{{$request->departure_time}}">
                     <input type="hidden" name="price" value="{{$each_bus->price}}">
                     <input type="hidden" name="bus" value="{{$each_bus}}">
+                    <input type="hidden" name="arr_seat" id="arr_seat_{{$check_tmp}}">
 
 {{--                    Seat Map Dữ Liệu --}}
                     <input type="hidden" value="{{$each_bus->seats_booked}}" id="seats_booked_{{$check_tmp}}">
@@ -594,14 +595,14 @@
                                 <div data-v-5c79fc2e="" data-v-008a65cb="" class="seat-map-container margin">
                                     <div data-v-5c79fc2e="" id="booking-seat-map" class="set-map-wrap">
                                         <div data-v-5c79fc2e="" class="tab">
-                                            <div id="down_floor" data-v-5c79fc2e="" class="active">
-                                                <img id="img_down_floor" data-v-5c79fc2e="" width="14" height="14" alt="down_floor_active"
+                                            <div id="down_floor_{{$check_tmp}}" data-v-5c79fc2e="" class="active">
+                                                <img id="img_down_floor_{{$check_tmp}}" data-v-5c79fc2e="" width="14" height="14" alt="down_floor_active"
                                                                                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAvUlEQVRYR+2WzQ2AIAyFixsYN3AkF1IXYiQ2MG6gpiYkHOiPxuKlXDjQ9H28toEARmubxgVTDzHdO7WChT6KdwAz5j4AVg4i7NN4aiD6mFSwpXjOS0FgbBOAmhMZ9HMAFKu5UEKU5yYAEkTuD4wzA+Agyp4zBdBAqAGkSeGmhOqJRyV4C8CJmwNI4qYAGnFTAKlk+bxJE7KPkfYt0N6IiqOm5DMHJEAHcAd+d4D8E7YaQwdwB9wBd8AdoBy4APhpmgw2jnc3AAAAAElFTkSuQmCC">
 
                                                 Tầng dưới
                                             </div>
-                                            <div id="upper_floor" data-v-5c79fc2e="" class="">
-                                                <img id="img_upper_floor" data-v-5c79fc2e="" width="14" height="14" alt="up_floor"
+                                            <div id="upper_floor_{{$check_tmp}}" data-v-5c79fc2e="" class="">
+                                                <img id="img_upper_floor_{{$check_tmp}}" data-v-5c79fc2e="" width="14" height="14" alt="up_floor"
                                                                                   src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAtUlEQVRYR+2Vuw6AIAxF7Q/rxgqsbvrDNU0kQaW0JoCDdTHK4x5OKMB0Ps5vYQLw6Zt7r2EGqc+b9stkGoiuAEQuQWgBXNhRY6KoswbRHeBTA1I4Ke1mgA1HjHl1dAGoha9xCXl7cwAp/H5OJADtLpcqAYoAiJFWfh9MfdP/ZgCP2mfCHzDKOhcNXBTTLi+svDRJUwMS5T8BWimW7LJXqwGYgWEGRgVx1QAGYAbMgBkwA18bOABT2ZbzfT1Q/QAAAABJRU5ErkJggg==">
                                                 Tầng trên
                                             </div>
@@ -636,15 +637,15 @@
                                     <div data-v-5c79fc2e="" class="footer">
                                         <div data-v-5c79fc2e="">
                                             <div data-v-5c79fc2e="">
-                                                <span id="total_seat">0 Ghế</span>
+                                                <span id="total_seat_{{$check_tmp}}">0 Ghế</span>
                                                 <span data-v-5c79fc2e="">
               <!---->
-              <span id="name_seat"></span>
+              <span id="name_seat_{{$check_tmp}}"></span>
             </span>
                                             </div>
                                             <div data-v-5c79fc2e="">
                                                 Tổng tiền:
-                                                <span data-v-5c79fc2e="" class="total" id="total_money">
+                                                <span data-v-5c79fc2e="" class="total" id="total_money_{{$check_tmp}}">
               0</span>
               <sup data-v-5c79fc2e="">₫</sup>
                                             </div>
@@ -1115,88 +1116,34 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
         <script src="{{asset('js/jquery.toast.min.js')}}"></script>
             <script>
-                let down_floor = document.getElementById("down_floor");
-                let upper_floor = document.getElementById("upper_floor");
-                let img_down_floor = document.getElementById("img_down_floor");
-                let img_upper_floor = document.getElementById("img_upper_floor");
-                let down_floor_table = document.getElementById("down_floor_table");
-                let upper_floor_table = document.getElementById("upper_floor_table");
-
                 let down_floor_no_active = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAtUlEQVRYR+2WwQqAIAyG3QvXzWt27VYvbCgYBs6t6I+geelg7P/4toHkQMdPa0ill3nMX+4QIj+HE025doxzD4J82KIGYgmDCvYUXgozEOnfdwAaJgro4wApq2mhgqjvIQASxDEfzjkYQBeiGjoogAZCDSBtSm9L2Jm40oK7AL3wVBNqQAqHAmjCoQBSy8o9tAUaiMcApDBuSwzADPzHAPsm1D7JpDW7e/9aC8yAGTADZuCzBnZRX6I60CupQgAAAABJRU5ErkJggg==";
                 let down_floor_active = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAvUlEQVRYR+2WzQ2AIAyFixsYN3AkF1IXYiQ2MG6gpiYkHOiPxuKlXDjQ9H28toEARmubxgVTDzHdO7WChT6KdwAz5j4AVg4i7NN4aiD6mFSwpXjOS0FgbBOAmhMZ9HMAFKu5UEKU5yYAEkTuD4wzA+Agyp4zBdBAqAGkSeGmhOqJRyV4C8CJmwNI4qYAGnFTAKlk+bxJE7KPkfYt0N6IiqOm5DMHJEAHcAd+d4D8E7YaQwdwB9wBd8AdoBy4APhpmgw2jnc3AAAAAElFTkSuQmCC";
                 let upper_floor_no_active = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAtUlEQVRYR+2Vuw6AIAxF7Q/rxgqsbvrDNU0kQaW0JoCDdTHK4x5OKMB0Ps5vYQLw6Zt7r2EGqc+b9stkGoiuAEQuQWgBXNhRY6KoswbRHeBTA1I4Ke1mgA1HjHl1dAGoha9xCXl7cwAp/H5OJADtLpcqAYoAiJFWfh9MfdP/ZgCP2mfCHzDKOhcNXBTTLi+svDRJUwMS5T8BWimW7LJXqwGYgWEGRgVx1QAGYAbMgBkwA18bOABT2ZbzfT1Q/QAAAABJRU5ErkJggg==";
                 let upper_floor_active = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAu0lEQVRYR+2VYQ5AMAxGOzcQN3AkFzIX2pHcQNwAaWLJLKtO0uJH/VnY+F4fNQfnsQy9bwDGeE6NbZgdt+bJ/OVhNRCqAEjOQdQCrEO/15go6ryDUAf41AAXjkrVDFDhG8CUdocKwF14F2afzosDcOH5fyIC1H7lXCe4EgBqx8rzm3FtvC4GkPc+FZ7DiAJECBxLlZc0igNw70rdwO8ApBRzhZFbqwGYgdcMvBVEdYMzADNgBsyAGfjawAEEl42dnlTOTQAAAABJRU5ErkJggg==";
 
-                down_floor.addEventListener('click',(e)=>{
-                    upper_floor.classList.remove("active");
-                    upper_floor_table.classList.add("hide-mobile");
-                    img_upper_floor.setAttribute("src",upper_floor_no_active);
-
-                    down_floor.classList.toggle("active");
-                    down_floor_table.classList.remove("hide-mobile");
-                    img_down_floor.setAttribute("src",down_floor_active);
-                });
-                upper_floor.addEventListener('click',(e)=>{
-                    down_floor.classList.remove("active");
-                    down_floor_table.classList.add("hide-mobile");
-                    img_down_floor.setAttribute("src",down_floor_no_active);
-
-                    upper_floor.classList.toggle("active");
-                    upper_floor_table.classList.remove("hide-mobile");
-                    img_upper_floor.setAttribute("src",upper_floor_active);
-                });
+                let down_floor;
+                let upper_floor;
+                let img_down_floor;
+                let img_upper_floor;
+                let down_floor_table;
+                let upper_floor_table;
 
                 let price_bus;
-                var seat;
-                let element_total_seat = document.getElementById("total_seat");
-                let element_name_seat = document.getElementById("name_seat");
-                let element_total_money = document.getElementById("total_money");
+                let seat;
+
+                let element_total_seat;
+                let element_name_seat;
+                let element_total_money;
+                let element_arr_seat;
+
                 let total_seat=0;
                 let name_seat='';
                 let seat_value;
-                let seat_map = document.getElementById("seat_table");
-                seat_map.addEventListener('click', (e) => {
-                    seat = e.target.closest('.class-seat');
-                    let seat_active = seat.querySelector(".active");
-                    let seat_value_tmp = seat.querySelector(".active-seat-text").textContent;
-                    seat_value_tmp = seat_value_tmp.replace(/\s+/g, '');
-                    seat_value = seat_value_tmp.replace(/\n+/g, '');
+                let seat_map;
 
-                    seat_active.classList.toggle("selecting");
-                    if(seat_active.className.animVal.includes("selecting")==true){
-                        total_seat++;
-                        name_seat = name_seat + ' '+ seat_value;
-                    }else{
-                        total_seat--;
-                        name_seat = name_seat.replace(" "+seat_value,"");
-                        console.log(name_seat);
-                    }
-                    element_total_seat.innerHTML=total_seat+' Vé :';
-                    element_name_seat.innerHTML=name_seat;
-                    element_total_money.innerHTML = total_seat * price_bus + '.000';
-                });
+                let arr_seat=[];
 
-                let seat_map_b = document.getElementById("seat_table_b");
-                seat_map_b.addEventListener('click', (e) => {
-                    console.log(price_bus);
-                    seat = e.target.closest('.class-seat');
-                    let seat_active = seat.querySelector(".active");
-                    let seat_value_tmp = seat.querySelector(".active-seat-text").textContent;
-                    seat_value_tmp = seat_value_tmp.replace(/\s+/g, '');
-                    seat_value = seat_value_tmp.replace(/\n+/g, '');
-
-                    seat_active.classList.toggle("selecting");
-                    if(seat_active.className.animVal.includes("selecting")==true){
-                        total_seat++;
-                        name_seat = name_seat + ' '+ seat_value;
-                    }else{
-                        total_seat--;
-                        name_seat = name_seat.replace(" "+seat_value,"");
-                    }
-                    element_total_seat.innerHTML=total_seat+' Vé :';
-                    element_name_seat.innerHTML=name_seat;
-                    element_total_money.innerHTML = total_seat * price_bus + '.000';
-                });
+                let seat_map_b;
 
                 let check_payment_method = false;
                 @if($request->step == 4)
@@ -1251,16 +1198,52 @@
                 var class_select_img_2 = document.getElementsByClassName("select_img_2_bus");
                 var class_select_route = document.getElementsByClassName("select_route");
                 var class_select_route_2 = document.getElementsByClassName("select_route_2");
-            function select_checkbox(key){
-                let id_price_bus = 'price_bus_'+key;
-                let id_text = 'select_text_bus_'+key;
-                let id_img = 'select_img_bus_'+key;
-                let id_img_2 = 'select_img_2_bus_'+key;
-                let id_route = 'select_route_'+key;
-                let id_route_2 = 'select_route_2_'+key;
-                let id_seats_booked = 'seats_booked_'+key;
-                let id_remaining_seats = 'remaining_seats_'+key;
-                let id_default_number_seat = 'default_number_seat_'+key;
+            function select_checkbox(key) {
+                total_seat=0;
+                name_seat='';
+                arr_seat = [];
+
+                let id_price_bus = 'price_bus_' + key;
+                let id_text = 'select_text_bus_' + key;
+                let id_img = 'select_img_bus_' + key;
+                let id_img_2 = 'select_img_2_bus_' + key;
+                let id_route = 'select_route_' + key;
+                let id_route_2 = 'select_route_2_' + key;
+                let id_seats_booked = 'seats_booked_' + key;
+                let id_remaining_seats = 'remaining_seats_' + key;
+                let id_default_number_seat = 'default_number_seat_' + key;
+
+                let id_down_floor = "down_floor_" + key;
+                let id_upper_floor = "upper_floor_" + key;
+                let id_img_down_floor = "img_down_floor_" + key;
+                let id_img_upper_floor = "img_upper_floor_" + key;
+                let id_down_floor_table = "down_floor_table_" + key;
+                let id_upper_floor_table = "upper_floor_table_" + key;
+
+                let id_element_total_seat = "total_seat_" + key;
+                let id_element_name_seat = "name_seat_" + key;
+                let id_element_total_money = "total_money_"+key;
+
+                let id_seat_map = "seat_table_" + key;
+                let id_seat_map_b = "seat_table_b_" + key;
+
+                let id_arr_seat = "arr_seat_" + key;
+
+                element_arr_seat = document.getElementById(id_arr_seat);
+
+                seat_map = document.getElementById(id_seat_map);
+                seat_map_b = document.getElementById(id_seat_map_b);
+
+                element_total_seat = document.getElementById(id_element_total_seat);
+                element_name_seat = document.getElementById(id_element_name_seat);
+                element_total_money = document.getElementById(id_element_total_money);
+
+                down_floor = document.getElementById(id_down_floor);
+                upper_floor = document.getElementById(id_upper_floor);
+                img_down_floor = document.getElementById(id_img_down_floor);
+                img_upper_floor = document.getElementById(id_img_upper_floor);
+                down_floor_table = document.getElementById(id_down_floor_table);
+                upper_floor_table = document.getElementById(id_upper_floor_table);
 
                 let select_price_bus = document.getElementById(id_price_bus).innerHTML;
                 let select_text_bus = document.getElementById(id_text);
@@ -1271,15 +1254,32 @@
                 let seats_booked = document.getElementById(id_seats_booked).value;
                 let remaining_seats = document.getElementById(id_remaining_seats).value;
                 let default_number_seat = document.getElementById(id_default_number_seat).value;
-                seats_booked = seats_booked.slice(1,-1);
+                seats_booked = seats_booked.slice(1, -1);
                 seats_booked = seats_booked.split(',');
-                let price_bus_tmp = select_price_bus.slice(0,-1);
+
+                //seat_booked
+                let td_elements = document.querySelectorAll('td.class-seat');
+                seats_booked.forEach((a)=>{
+                    td_elements.forEach((e)=>{
+                        console.log("kkkkkkkkkkkkkkkkkkkkk",e.childNodes[0]);
+                        if(e.childNodes[0].tagName == 'svg'){
+                            if(e.childNodes[0].getAttribute('pos') == a){
+                                e.classList.add("s-disabled");
+                                console.log("kkkk",e.childNodes[0].childNodes[1].childNodes[1]);
+                                e.childNodes[0].childNodes[1].childNodes[1].classList.replace("active","disabled-seat");
+                            }
+                        }
+                    });
+                })
+
+                console.log(seats_booked);
+                let price_bus_tmp = select_price_bus.slice(0, -1);
                 price_bus = parseInt(price_bus_tmp);
-                console.log(price_bus);
+                console.log("check price", price_bus);
 
-                console.log(remaining_seats,seats_booked,default_number_seat);
+                console.log(remaining_seats, seats_booked, default_number_seat);
 
-                for(let tmp = 0; tmp < class_select_route.length; tmp++){
+                for (let tmp = 0; tmp < class_select_route.length; tmp++) {
                     class_select_text_bus[tmp].classList.remove("selected");
                     class_select_img[tmp].classList.remove("div-hide");
                     class_select_img_2[tmp].classList.remove("div-block");
@@ -1295,6 +1295,76 @@
                 select_route_2.classList.toggle("selected");
                 select_route_2.classList.toggle("div-block");
 
+
+                down_floor.addEventListener('click',(e)=>{
+                    upper_floor.classList.remove("active");
+                    upper_floor_table.classList.add("hide-mobile");
+                    img_upper_floor.setAttribute("src",upper_floor_no_active);
+
+                    down_floor.classList.toggle("active");
+                    down_floor_table.classList.remove("hide-mobile");
+                    img_down_floor.setAttribute("src",down_floor_active);
+                });
+
+                upper_floor.addEventListener('click',(e)=>{
+                    down_floor.classList.remove("active");
+                    down_floor_table.classList.add("hide-mobile");
+                    img_down_floor.setAttribute("src",down_floor_no_active);
+
+                    upper_floor.classList.toggle("active");
+                    upper_floor_table.classList.remove("hide-mobile");
+                    img_upper_floor.setAttribute("src",upper_floor_active);
+                });
+
+                seat_map.addEventListener('click', (e) => {
+                    seat = e.target.closest('.class-seat');
+                    let seat_active = seat.querySelector(".active");
+                    let seat_value_tmp = seat.querySelector(".active-seat-text").textContent;
+                    seat_value_tmp = seat_value_tmp.replace(/\s+/g, '');
+                    seat_value = seat_value_tmp.replace(/\n+/g, '');
+
+                    let seat_pos = seat.querySelector('.isSmall');
+                    let pos = seat_pos.getAttribute("pos");
+                    arr_seat.push(pos);
+
+                    seat_active.classList.toggle("selecting");
+                    if(seat_active.className.animVal.includes("selecting")==true){
+                        total_seat++;
+                        name_seat = name_seat + ' '+ seat_value;
+                    }else{
+                        total_seat--;
+                        name_seat = name_seat.replace(" "+seat_value,"");
+                    }
+                    element_total_seat.innerHTML=total_seat+' Vé :';
+                    element_name_seat.innerHTML=name_seat;
+                    element_total_money.innerHTML = total_seat * price_bus + '.000';
+                    element_arr_seat.value = arr_seat;
+                });
+
+                seat_map_b.addEventListener('click', (e) => {
+                    seat = e.target.closest('.class-seat');
+                    let seat_active = seat.querySelector(".active");
+                    let seat_value_tmp = seat.querySelector(".active-seat-text").textContent;
+                    seat_value_tmp = seat_value_tmp.replace(/\s+/g, '');
+                    seat_value = seat_value_tmp.replace(/\n+/g, '');
+
+                    let seat_pos = seat.querySelector('.isSmall');
+                    let pos = seat_pos.getAttribute("pos");
+                    arr_seat.push(pos);
+
+                    seat_active.classList.toggle("selecting");
+                    if(seat_active.className.animVal.includes("selecting")==true){
+                        total_seat++;
+                        name_seat = name_seat + ' '+ seat_value;
+                    }else{
+                        total_seat--;
+                        name_seat = name_seat.replace(" "+seat_value,"");
+                    }
+                    element_total_seat.innerHTML=total_seat+' Vé :';
+                    element_name_seat.innerHTML=name_seat;
+                    element_total_money.innerHTML = total_seat * price_bus + '.000';
+                    element_arr_seat.value = arr_seat;
+                });
             }
 
             function book_ticket(city_start_id, city_end_id){
