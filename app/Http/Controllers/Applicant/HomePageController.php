@@ -320,7 +320,7 @@ class HomePageController extends Controller
     public function payment(StoreInfoCustomerRequest $request)
     {
         $url = "dat-ve-xe";
-//        dd($request);
+        dd($request);
         $request->bus = json_decode($request->bus,true);
         $location = Location::query()->with('city')
             ->where('locations.id',$request->address_location)
