@@ -310,6 +310,7 @@ class HomePageController extends Controller
     public function book_ticket(Request $request)
     {
         $url = "dat-ve-xe";
+//        dd($request);
         return view('applicant/book_ticket',[
             'request'=>$request,
             'url'=>$url

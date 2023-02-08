@@ -27,11 +27,14 @@ class TestController extends Controller
 
     public function test()
     {
-        $arr = Seat_map::query()
-            ->selectRaw('count(*)')
-            ->where('carriage_id','=','2')
-            ->get();
-        return $arr;
+        $tmp = "SOPXRJSXKVUQ5PZIY";
+        $originalFlag = 'J2TEAM_FD6KCHPHKEQOWZUZWQ8DCAFCE'; // censored
+        $input = "QOWZUZWQ8DCAFCEJ2TEAM_FD6KCHPHKEQOWZUZWQ8DCAFCE ";
+        if (substr($input, 15) === $originalFlag) {
+            // good
+        }
+        $result = substr($input, 15);
+        return $result;
     }
     public function test1(request $request)
     {
