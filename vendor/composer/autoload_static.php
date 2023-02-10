@@ -626,6 +626,7 @@ class ComposerStaticInit555cbbc8c7569b1010614d8d4b516573
         'App\\Events\\ApprovalPaymentEvent' => __DIR__ . '/../..' . '/app/Events/ApprovalPaymentEvent.php',
         'App\\Events\\UserCreateEvent' => __DIR__ . '/../..' . '/app/Events/UserCreateEvent.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Http\\Controllers\\Applicant\\CheckoutPaymentController' => __DIR__ . '/../..' . '/app/Http/Controllers/Applicant/CheckoutPaymentController.php',
         'App\\Http\\Controllers\\Applicant\\HomePageController' => __DIR__ . '/../..' . '/app/Http/Controllers/Applicant/HomePageController.php',
         'App\\Http\\Controllers\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/AuthController.php',
         'App\\Http\\Controllers\\BillController' => __DIR__ . '/../..' . '/app/Http/Controllers/BillController.php',

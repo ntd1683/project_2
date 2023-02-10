@@ -7,8 +7,10 @@ use App\Enums\PaymentMethodEnum;
 use App\Enums\SeatTypeEnum;
 use App\Events\ApplicantOrderEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BillRequest;
 use App\Http\Requests\BookingTicketRequest;
 use App\Http\Requests\OrderRequest;
+use App\Http\Requests\PaymentMethodRequest;
 use App\Http\Requests\StoreInfoCustomerRequest;
 use App\Models\Bill;
 use App\Models\Bill_detail;
@@ -18,6 +20,7 @@ use App\Models\Customer;
 use App\Models\Location;
 use App\Models\Route;
 use App\Models\Route_driver_car;
+use App\Models\Seat;
 use App\Models\Seat_map;
 use App\Models\Ticket;
 use App\Models\User;
@@ -26,6 +29,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
+use function PHPUnit\Framework\isEmpty;
 use function PHPUnit\Framework\isNull;
 
 class HomePageController extends Controller
@@ -320,7 +324,6 @@ class HomePageController extends Controller
     public function payment(StoreInfoCustomerRequest $request)
     {
         $url = "dat-ve-xe";
-        dd($request);
         $request->bus = json_decode($request->bus,true);
         $location = Location::query()->with('city')
             ->where('locations.id',$request->address_location)
@@ -337,6 +340,18 @@ class HomePageController extends Controller
         $request->driver_name = $driver->name;
         $request->driver_phone = $driver->phone;
         $request->step = 4;
+
+        $arr_seat = explode(',', $request->arr_seat);
+        $arr_name_seat = [];
+        foreach ($arr_seat as $seat){
+            $name_seat = Seat::query()->where('id',$seat)->first()->name;
+            $arr_name_seat[] = $name_seat;
+        }
+
+        $request->arr_name_seat = implode(',',$arr_name_seat);
+
+        $request->slot = count($arr_seat);
+        $request->total_price = $request->price * count($arr_seat);
 //        dd($request);
          return view('applicant/book_ticket',[
              'request'=>$request,
@@ -344,15 +359,29 @@ class HomePageController extends Controller
          ]);
     }
 
-    public function order(OrderRequest $request)
+    public function order(Request $request)
     {
+//        dd($request);
+        $arr_seat = explode(',', $request->arr_seat);
+        foreach ($arr_seat as $each){
+            $test_ticket = Ticket::query()
+                ->where('bus_id',$request->arr_bus['id'])
+                ->where('phone_passenger',$request->arr_customer['phone'])
+                ->where('seat_id',$each)->first();
+            if(isEmpty($test_ticket)){
+                session()->flash('error', 'Có vẻ như ghế đã được đặt');
+                return redirect()->route('index');
+            }
+        }
         $car_id = $request->arr_bus['car_id'];
         $carriage = Carriage::query()->find($car_id);
         $default_number_seat = $carriage->default_number_seat;
         if ($default_number_seat < $request->arr_bus['quantity']) {
             session()->flash('error', 'Xe không đủ số lượng ghế, số ghế còn lại '.$default_number_seat);
-            return redirect()->route('index');
+//            return redirect()->route('index');
         }
+//        seat
+
         $arr_customer = $request->arr_customer;
         $address = $arr_customer['address'].', '.$arr_customer['district'].', '
             .$arr_customer['city'];
@@ -365,39 +394,52 @@ class HomePageController extends Controller
         $object_customer = Customer::query()->find($customer_id);
         $object_customer->fill($arr_customer);
         $object_customer->save();
+//        dd($request);
 //        bills
         $arr_bill['customer_id'] = $customer_id;
         $arr_bill['code'] = 'B'.strtoupper(Str::random(8));
-        $arr_bill['price'] = $request->arr_bus['price'];
-        $arr_bill['payment_method']
-            = PaymentMethodEnum::getValue(strtoupper($request->payment_method));
+        $bill_code = $arr_bill['code'];
+        $arr_bill['price'] = $request->arr_bus['price']*$request->arr_bus['quantity'];
         $arr_bill['status'] = '0';
         $object_bill = Bill::query();
         $bill_id = $object_bill->create($arr_bill)->id;
-//        bill_detail
-        $arr_bill_detail['buses_id'] = $request->arr_bus['id'];
-        $arr_bill_detail['bill_id'] = $bill_id;
-        $arr_bill_detail['quantity'] = $request->arr_bus['quantity'];
-        $arr_bill_detail['price'] = $request->arr_bus['price'];
-        $object_bill_detail = Bill_detail::query();
-        $bill_detail_id = $object_bill_detail->create($arr_bill_detail)->id;
-//        dd($bill_detail_id);
 //        tickets
-        $arr_tickets['bill_detail_id'] = $bill_detail_id;
-        $arr_tickets['code'] = 'T'.strtoupper(Str::random(8));
+        foreach ($arr_seat as $each){
+            $arr_tickets['code'] = 'T'.strtoupper(Str::random(8));
 //        gửi code cho khách hàng
-        $request->code_ticket = $arr_tickets['code'];
-
-        $arr_tickets['name_passenger'] = $request->arr_customer['name'];
-        $arr_tickets['phone_passenger'] = $request->arr_customer['phone'];
-        $arr_tickets['email_passenger'] = $request->arr_customer['email'];
-        $arr_tickets['address_passenger_id'] = $request->location;
-        $object_ticket = Ticket::query();
-        $object_ticket->create($arr_tickets);
-//            dd($request);
-        ApplicantOrderEvent::dispatch($request);
+            $request->code_ticket = $arr_tickets['code'];
+            $arr_tickets['name_passenger'] = $request->arr_customer['name'];
+            $arr_tickets['phone_passenger'] = $request->arr_customer['phone'];
+            $arr_tickets['email_passenger'] = $request->arr_customer['email'];
+            $arr_tickets['address_passenger_id'] = $request->location;
+            $arr_tickets['bus_id'] = $request->arr_bus['id'];
+            $arr_tickets['seat_id'] = $each;
+            $arr_tickets['bill_id'] = $bill_id;
+            $object_ticket = Ticket::query();
+            $object_ticket->create($arr_tickets);
+        }
+//        ApplicantOrderEvent::dispatch($request);
         session()->flash('success', 'Bạn đã đặt vé thành công !!!');
-        return redirect()->route('index');
+        return redirect()->route('applicant.payment_methods','code='.$bill_code);
+    }
+
+    public function payment_methods(Request $request)
+    {
+        $request->validate([
+            'code' => ['required'],
+        ]);
+        $bill_code = $request->code;
+        $bill = Bill::query()
+            ->where('code', $bill_code)->first();
+        if($bill->status == '1'){
+            session()->flash('success', 'Bạn đã thanh toán rồi !!!');
+            return redirect()->route('index');
+        }
+        $request->step = 5;
+        return view('applicant/book_ticket',[
+            'request'=>$request,
+            'bill'=>$bill
+        ]);
     }
 
     public function schedule()
@@ -409,6 +451,13 @@ class HomePageController extends Controller
     {
         $siteRecaptcha = env('RECAPTCHA_SITE_KEY');
         return view('applicant.check_ticket',[
+            'siteRecaptcha'=>$siteRecaptcha
+        ]);
+    }
+
+    public function check_bill(){
+        $siteRecaptcha = env('RECAPTCHA_SITE_KEY');
+        return view('applicant.check_bill',[
             'siteRecaptcha'=>$siteRecaptcha
         ]);
     }
@@ -428,16 +477,18 @@ class HomePageController extends Controller
             if($ticket->isEmpty()){
                 return redirect()->back()->with('errors','Không tồn tại mã code này');
             }
+//            dd($ticket);
             $ticket = Ticket::query()
-                ->selectRaw('tickets.*,tickets.code as code_ticket,bill_details.*,bills.*,
-            bills.code as code_bill,buses.departure_time,locations.*,routes.name as route_name,routes.time,cities.name as city_name_end')
-                ->join('bill_details','bill_details.id','bill_detail_id')
-                ->join('buses','buses.id','buses_id')
+                ->selectRaw('tickets.*,tickets.code as code_ticket,bills.*,
+            bills.code as code_bill,buses.departure_time,locations.*,routes.name as route_name,
+            routes.time,cities.name as city_name_end,seats.name as name_seat')
+                ->join('buses','buses.id','bus_id')
                 ->join('bills','bills.id','bill_id')
                 ->join('locations','locations.id','address_passenger_id')
                 ->join('route_driver_cars','route_driver_cars.id','route_driver_car_id')
                 ->join('routes','routes.id','route_id')
                 ->join('cities','cities.id','city_end_id')
+                ->join('seats','seat_id','seats.id')
                 ->where('phone_passenger',$request->phone)
                 ->where('tickets.code',$request->code_ticket)->first();
             $ticket->location = $ticket->name.', '?? '';
@@ -449,6 +500,63 @@ class HomePageController extends Controller
             return view('applicant.booking',[
                 'ticket' => $ticket,
             ]);
+        }
+        return redirect()->route('applicant.check_ticket')->with('error','Có vẻ bạn là robot');
+    }
+
+    public function bill(BillRequest $request)
+    {
+        define('SECRET_KEY', env('RECAPTCHA_SECRET_KEY'));
+        function getCaptcha($SecretKey){
+            $Response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=".SECRET_KEY."&response={$SecretKey}");
+            $Return = json_decode($Response);
+            return $Return;
+        }
+        $Return = getCaptcha($_POST['g-recaptcha-reponse']);
+        if($Return->success == true && $Return->score > 0.5){
+        $bill = Bill::query()
+            ->join('customers','customers.id','customer_id')
+            ->where('phone',$request->phone)
+            ->where('code',$request->code_bill)->get();
+        if($bill->isEmpty()){
+            return redirect()->back()->with('errors','Không tồn tại mã code này');
+        }
+        $tickets = Ticket::query()
+            ->selectRaw('tickets.*,tickets.code as code_ticket,bills.*,
+            bills.code as code_bill,bills.price as bill_price,
+            buses.departure_time,buses.price as buses_price,locations.*,routes.name as route_name,
+            routes.time,cities.name as city_name_end,seats.name as name_seat')
+            ->join('buses','buses.id','bus_id')
+            ->join('bills','bills.id','bill_id')
+            ->join('locations','locations.id','address_passenger_id')
+            ->join('route_driver_cars','route_driver_cars.id','route_driver_car_id')
+            ->join('routes','routes.id','route_id')
+            ->join('cities','cities.id','city_end_id')
+            ->join('seats','seat_id','seats.id')
+            ->where('phone_passenger',$request->phone)
+            ->where('bill_id',$bill[0]->id)->get();
+//        dd($ticket);
+        $arr_ticket = [];
+        foreach ($tickets as $each){
+            $tmp = [];
+            $tmp['name_seat'] = $each->name_seat;
+            $tmp['code_ticket'] = $each->code_ticket;
+            $arr_ticket[] = $tmp;
+        }
+        $count_seat = count($arr_ticket);
+        $ticket = $tickets[0];
+        $ticket->location = $ticket->name.', '?? '';
+        $ticket->location .= $ticket->address .', '.$ticket->district;
+        $departure_time = \DateTime::createFromFormat('Y-m-d H:i:s', $ticket->departure_time);
+        $departure_time = $departure_time->format('H:i:s d-m-Y');
+        $ticket->departure_time = $departure_time;
+        $ticket->payment_method = PaymentMethodEnum::getKeyByValue($ticket->payment_method);
+        $ticket->quantity = $count_seat;
+//        dd($ticket,$count_seat,$arr_ticket);
+        return view('applicant.bill',[
+            'ticket' => $ticket,
+            'arr_ticket'=>$arr_ticket
+        ]);
         }
         return redirect()->route('applicant.check_ticket')->with('error','Có vẻ bạn là robot');
     }

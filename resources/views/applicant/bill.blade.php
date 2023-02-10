@@ -136,7 +136,7 @@
                                     <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
                                 </svg>
                             </span>
-                            <h3 style="display:inline-block;font-weight: bold;">Đã thanh toán</h3>
+                            <h3 style="display:inline-block;font-weight: bold;">Thanh toán thành công</h3>
                             @endif
                             @if($ticket->status === 0)
 {{--                            Chưa thanh toán--}}
@@ -155,7 +155,7 @@
                             <div class="booking-success-checking">
                                 <div class="booking-success-checking-line">Chúng tôi đã gửi thông tin vé đến email: <span class="phone-bold"
                                     >{{$ticket->email_passenger}}</span></div>
-                                <div class="booking-success-checking-line">15 phút Sau khi thanh toán thành công, nếu
+                                <div class="booking-success-checking-line">15 phút sau khi thanh toán thành công, nếu
                                     quý khách vẫn chưa nhận được tin nhắn, vui lòng liên hệ chúng tôi qua số điện thoại:
                                     <span class="hotline-bold">02623 815815</span></div>
                             </div>
@@ -192,9 +192,15 @@
                         <div class="ticket-box white-bg border-beauty">
                             <div class="ticket-info-title">Thông tin vé</div>
                             <div class="table-info">
-                                <div class="info-label">Mã vé</div>
-                                <div class="value">{{$ticket->code_ticket}}</div>
+                                <div class="info-label">Số lượng ghế</div>
+                                <div class="value">{{$ticket->quantity}}</div>
                                 <hr>
+                                @foreach($arr_ticket as $each_ticket)
+                                <div class="info-label">Ghế : <b>{{$each_ticket['name_seat']}}</b></div>
+                                <div class="info-label">Mã vé</div>
+                                <div class="value">{{$each_ticket['code_ticket']}}</div>
+                                <hr>
+                                @endforeach
                                 <div class="info-label">Họ tên</div>
                                 <div class="value">{{$ticket->name_passenger}}</div>
                                 <hr>
@@ -209,10 +215,23 @@
                                 <hr>
                                 <div class="info-label">Tuyến đường</div>
                                 <div class="value">{{$ticket->route_name}} (TĐ)</div>
-                                <hr>
-                                <div class="info-label">Vị trí ghế ngồi</div>
-                                <div class="value">{{$ticket->name_seat}}</div>
                             </div>
+                        </div>
+                        <div class="trip-info white-bg border-beauty">
+                            <div class="trip-info-title">Thông tin giao dịch</div>
+                            <div class="payment-method">Hình thức</div>
+                            <div class="payment-method-content">Chuyển khoản "{{$ticket->payment_method}}"</div>
+                            <div class="payment-status">Trạng thái</div>
+                            <div class="payment-status-content">Đã thanh toán</div>
+                            <hr>
+                            <div class="ticket-fare">Tổng tiền :</div>
+                            <div class="group-fare-item">
+                                <div class="ticket-box-price">≈{{number_shorten($ticket->buses_price)}}&nbsp;₫</div>
+                                <div class="ticket-box-seat-num">Số lượng ghế: {{$ticket->quantity}}</div>
+                                <hr>
+                            </div>
+                            <div class="total-price-label">Tổng tiền</div>
+                            <div class="total-price-amount"><span>{{$ticket->bill_price}}₫</span></div>
                         </div>
                     </div>
                 </div>

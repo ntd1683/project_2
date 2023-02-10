@@ -18,6 +18,7 @@ return array(
     'App\\Events\\ApprovalPaymentEvent' => $baseDir . '/app/Events/ApprovalPaymentEvent.php',
     'App\\Events\\UserCreateEvent' => $baseDir . '/app/Events/UserCreateEvent.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
+    'App\\Http\\Controllers\\Applicant\\CheckoutPaymentController' => $baseDir . '/app/Http/Controllers/Applicant/CheckoutPaymentController.php',
     'App\\Http\\Controllers\\Applicant\\HomePageController' => $baseDir . '/app/Http/Controllers/Applicant/HomePageController.php',
     'App\\Http\\Controllers\\AuthController' => $baseDir . '/app/Http/Controllers/AuthController.php',
     'App\\Http\\Controllers\\BillController' => $baseDir . '/app/Http/Controllers/BillController.php',
