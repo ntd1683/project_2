@@ -361,14 +361,13 @@ class HomePageController extends Controller
 
     public function order(Request $request)
     {
-//        dd($request);
         $arr_seat = explode(',', $request->arr_seat);
         foreach ($arr_seat as $each){
             $test_ticket = Ticket::query()
                 ->where('bus_id',$request->arr_bus['id'])
                 ->where('phone_passenger',$request->arr_customer['phone'])
                 ->where('seat_id',$each)->first();
-            if(isEmpty($test_ticket)){
+            if(isset($test_ticket)){
                 session()->flash('error', 'Có vẻ như ghế đã được đặt');
                 return redirect()->route('index');
             }
@@ -436,6 +435,7 @@ class HomePageController extends Controller
             return redirect()->route('index');
         }
         $request->step = 5;
+//        dd($request,$bill);
         return view('applicant/book_ticket',[
             'request'=>$request,
             'bill'=>$bill
@@ -506,6 +506,8 @@ class HomePageController extends Controller
 
     public function bill(BillRequest $request)
     {
+
+//        dd($ticket->status);
         define('SECRET_KEY', env('RECAPTCHA_SECRET_KEY'));
         function getCaptcha($SecretKey){
             $Response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=".SECRET_KEY."&response={$SecretKey}");
@@ -514,10 +516,12 @@ class HomePageController extends Controller
         }
         $Return = getCaptcha($_POST['g-recaptcha-reponse']);
         if($Return->success == true && $Return->score > 0.5){
+        $code_bill = $request->code_bill;
         $bill = Bill::query()
+            ->select('bills.id')
             ->join('customers','customers.id','customer_id')
             ->where('phone',$request->phone)
-            ->where('code',$request->code_bill)->get();
+            ->where('code',$code_bill)->get();
         if($bill->isEmpty()){
             return redirect()->back()->with('errors','Không tồn tại mã code này');
         }
@@ -535,7 +539,7 @@ class HomePageController extends Controller
             ->join('seats','seat_id','seats.id')
             ->where('phone_passenger',$request->phone)
             ->where('bill_id',$bill[0]->id)->get();
-//        dd($ticket);
+//        dd($bill,$tickets);
         $arr_ticket = [];
         foreach ($tickets as $each){
             $tmp = [];
@@ -553,12 +557,14 @@ class HomePageController extends Controller
         $ticket->payment_method = PaymentMethodEnum::getKeyByValue($ticket->payment_method);
         $ticket->quantity = $count_seat;
 //        dd($ticket,$count_seat,$arr_ticket);
+//            dd($bill,$ticket);
         return view('applicant.bill',[
             'ticket' => $ticket,
-            'arr_ticket'=>$arr_ticket
+            'arr_ticket'=>$arr_ticket,
+            'code_bill'=>$code_bill,
         ]);
         }
-        return redirect()->route('applicant.check_ticket')->with('error','Có vẻ bạn là robot');
+        return redirect()->route('applicant.check_bill')->with('error','Có vẻ bạn là robot');
     }
 
     public function api_schedule(){

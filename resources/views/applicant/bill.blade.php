@@ -107,6 +107,30 @@
             font-weight: 700;
             color: #0060c4;
         }
+
+        .button_pay {
+            height: 47px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+            color: #000;
+            background-color: #fff;
+            border: none;
+            border-radius: 45px;
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease 0s;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .button_pay:hover {
+            background-color: #2EE59D;
+            box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+            color: #fff;
+            transform: translateY(-7px);
+        }
     </style>
 @endpush
 @section('content')
@@ -187,6 +211,14 @@
                                     tôi qua số điện thoại: <span class="hotline-bold">02623 815815</span></div>
                             </div>
                         </div>
+                        @if($ticket->status === 0)
+                        <div style="text-align: center;margin-top:15px">
+                            <form action="{{route('applicant.payment_methods')}}" method="get">
+                                <input type="hidden" name="code" value="{{$code_bill}}">
+                                <button class="button_pay">Thanh Toán Ngay</button>
+                            </form>
+                        </div>
+                        @endif
                     </div>
                     <div class="right-container">
                         <div class="ticket-box white-bg border-beauty">

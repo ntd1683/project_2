@@ -40,9 +40,11 @@ Route::get('/book-ticket-step-2/', [HomePageController::class, 'book_ticket_step
 Route::get('/phuong-thuc-thanh-toan', [HomePageController::class, 'payment_methods'])
     ->name('applicant.payment_methods');
 
-//Checkout Payment
+//Checkout Payment-VNPAY
 Route::post('/Checkout-VNPAY/', [CheckoutPaymentController::class, 'CheckoutVNPAY'])
     ->name('applicant.checkout_vnpay');
+Route::get('/Processing-Checkout-VNPAY/', [CheckoutPaymentController::class, 'ProcessingVNPAY'])
+    ->name('applicant.processing_checkout_vnpay');
 
 //api
 Route::get('/api-schedule', [HomePageController::class, 'api_schedule'])->name('api.schedule');
