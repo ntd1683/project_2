@@ -136,7 +136,7 @@
                                     <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
                                 </svg>
                             </span>
-                            <h3 style="display:inline-block;font-weight: bold;">Thanh toán thành công</h3>
+                            <h3 style="display:inline-block;font-weight: bold;">Đã thanh toán</h3>
                             @endif
                             @if($ticket->status === 0)
 {{--                            Chưa thanh toán--}}
@@ -210,25 +210,9 @@
                                 <div class="info-label">Tuyến đường</div>
                                 <div class="value">{{$ticket->route_name}} (TĐ)</div>
                                 <hr>
-                                <div class="info-label">Số lượng ghế</div>
-                                <div class="value">{{$ticket->quantity}}</div>
+                                <div class="info-label">Vị trí ghế ngồi</div>
+                                <div class="value">{{$ticket->name_seat}}</div>
                             </div>
-                        </div>
-                        <div class="trip-info white-bg border-beauty">
-                            <div class="trip-info-title">Thông tin giao dịch</div>
-                            <div class="payment-method">Hình thức</div>
-                            <div class="payment-method-content">Chuyển khoản "{{$ticket->payment_method}}"</div>
-                            <div class="payment-status">Trạng thái</div>
-                            <div class="payment-status-content">Đã thanh toán</div>
-                            <hr>
-                            <div class="ticket-fare">Tổng tiền :</div>
-                            <div class="group-fare-item">
-                                <div class="ticket-box-price">≈{{number_shorten($ticket->price/$ticket->quantity)}}&nbsp;₫</div>
-                                <div class="ticket-box-seat-num">Số lượng ghế: {{$ticket->quantity}}</div>
-                                <hr>
-                            </div>
-                            <div class="total-price-label">Tổng tiền</div>
-                            <div class="total-price-amount"><span>{{number_shorten($ticket->price)}}&nbsp;₫</span></div>
                         </div>
                     </div>
                 </div>

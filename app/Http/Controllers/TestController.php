@@ -19,21 +19,15 @@ use Yajra\DataTables\DataTables;
 
 class TestController extends Controller
 {
-
-    public function __construct()
-    {
-
-    }
-
     public function test()
     {
-        $tmp = "SOPXRJSXKVUQ5PZIY";
-        $originalFlag = 'J2TEAM_FD6KCHPHKEQOWZUZWQ8DCAFCE'; // censored
-        $input = "QOWZUZWQ8DCAFCEJ2TEAM_FD6KCHPHKEQOWZUZWQ8DCAFCE ";
-        if (substr($input, 15) === $originalFlag) {
-            // good
+        $result = Bill::query()
+            ->select('bills.*')
+            ->where('bills.code','=','B3QJ2Y0TYB')
+            ->first();
+        if($result==NULL) {
+            return 1;
         }
-        $result = substr($input, 15);
         return $result;
     }
     public function test1(request $request)

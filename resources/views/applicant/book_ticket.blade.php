@@ -318,7 +318,7 @@
     <!-- Ảnh bìa -->
     <section class="hero-wrap hero-wrap-2 js-fullheight"
              style="background-image:url({{asset('images/background_2.jpg')}})" data-stellar-background-ratio="0.5">
-        <div class="overlay"></div>
+{{--        <div class="overlay"></div>--}}
         <div class="container">
             <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-center">
                 <div class="col-md-9 ftco-animate pb-5 text-center">
@@ -694,7 +694,7 @@
             <input type="hidden" name="departure_time" value="{{$request->departure_time}}">
             <input type="hidden" name="price" value="{{$request->price}}">
             <input type="hidden" name="address_location" value="{{$request->address}}">
-            <input type="hidden" name="slot" value="{{$request->slot}}">
+            <input type="hidden" name="arr_seat" value="{{$request->arr_seat}}">
             <input type="hidden" name="bus" value="{{$request->bus}}">
         <section class="ftco-section" style="padding:0px !important;text-align:center">
             <br>
@@ -922,8 +922,8 @@
                                     </div>
                                     <div data-v-e65218d2="" class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-ms-12">
                                         <div data-v-e65218d2="" class="col-xs-12 field">
-                                            <div data-v-e65218d2="" class="col-xs-4 sub-tit">Số lượng ghế:</div>
-                                            <div data-v-e65218d2="" class="col-xs-8">{{$request->slot}}</div>
+                                            <div data-v-e65218d2="" class="col-xs-4 sub-tit">Số lượng ghế:{{$request->slot}} ghế</div>
+                                            <div data-v-e65218d2="" class="col-xs-8">{{$request->arr_name_seat}}</div>
                                         </div>
 {{--                                        <div data-v-e65218d2="" class="col-xs-12 field">--}}
 {{--                                            <div data-v-e65218d2="" class="col-xs-4 sub-tit">Số ghế:</div>--}}
@@ -941,130 +941,8 @@
                         <div data-v-60883350="" class="total-info"><p data-v-60883350="" class="footer-title">TỔNG
                                 TIỀN</p>
                             <p data-v-60883350="" class="footer-price">
-                                {{$request->price * $request->slot}} <sup data-v-60883350="">₫</sup></p></div>
+                                {{$request->total_price}} <sup data-v-60883350="">₫</sup></p></div>
                     </div> <!---->
-                </div>
-                <div data-v-636bcda4="">
-                    <div data-v-636bcda4="" class="title">CHỌN CÁCH THANH TOÁN</div>
-                    <div data-v-636bcda4="" class="payment-item-list">
-                        <div data-v-4fa16e21="" data-v-636bcda4="" class="payment-item-container">
-                            <button data-v-4fa16e21="" id="international_card" class="normal btn-payment" onclick="payment('international_card')">
-                                <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg"
-                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="23"
-                                     viewBox="0 0 22 23" class="check checked">
-                                    <defs data-v-4fa16e21="">
-                                        <circle data-v-4fa16e21="" id="huxf6b78oa" cx="11" cy="11" r="11"></circle>
-                                    </defs>
-                                    <g data-v-4fa16e21="" fill="none" fill-rule="evenodd">
-                                        <g data-v-4fa16e21=""
-                                           transform="translate(-518 -791) translate(252 741) translate(0 43) translate(266 8)">
-                                            <mask data-v-4fa16e21="" id="9unrvtawmb" fill="#fff">
-                                                <use data-v-4fa16e21="" xlink:href="#huxf6b78oa"></use>
-                                            </mask>
-                                            <use data-v-4fa16e21="" fill="#EF5222" fill-rule="nonzero"
-                                                 xlink:href="#huxf6b78oa"></use>
-                                            <path data-v-4fa16e21="" fill-rule="nonzero" stroke="#FFF"
-                                                  stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                  d="M6 11.125L9.058 14.25 15.375 8" mask="url(#9unrvtawmb)"></path>
-                                        </g>
-                                    </g>
-                                </svg>
-                                <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg" width="22" height="23"
-                                     viewBox="0 0 22 23" class="check not-check">
-                                    <g data-v-4fa16e21="" fill="none" fill-rule="evenodd" stroke-opacity=".63">
-                                        <g data-v-4fa16e21="" fill-rule="nonzero" stroke="#637280" stroke-width="1.2">
-                                            <g data-v-4fa16e21=""
-                                               transform="translate(-838 -791) translate(252 741) translate(320 43) translate(266 8)">
-                                                <circle data-v-4fa16e21="" cx="11" cy="11" r="10.4"></circle>
-                                            </g>
-                                        </g>
-                                    </g>
-                                </svg>
-                                <div data-v-4fa16e21="" class="icons"><img data-v-4fa16e21=""
-                                                                           src="{{asset('img/icon/jcb.99dcd7f.png')}}"
-                                                                           alt="Cybersource" class="icon"><img
-                                        data-v-4fa16e21="" src="{{asset('img/icon/master.f966244.png')}}" alt="Cybersource"
-                                        class="icon"><img data-v-4fa16e21="" src="{{asset('img/icon/visa.af41b0e.png')}}"
-                                                          alt="Cybersource" class="icon"></div>
-                                <p data-v-4fa16e21="" class="text">Thẻ Quốc tế Visa/Master/JCB</p></button>
-                        </div>
-                        <div data-v-4fa16e21="" data-v-636bcda4="" class="payment-item-container">
-                            <button data-v-4fa16e21="" id="atm" class="normal btn-payment" onclick="payment('atm')">
-                                <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg"
-                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="23"
-                                     viewBox="0 0 22 23" class="check checked">
-                                    <defs data-v-4fa16e21="">
-                                        <circle data-v-4fa16e21="" id="huxf6b78oa" cx="11" cy="11" r="11"></circle>
-                                    </defs>
-                                    <g data-v-4fa16e21="" fill="none" fill-rule="evenodd">
-                                        <g data-v-4fa16e21=""
-                                           transform="translate(-518 -791) translate(252 741) translate(0 43) translate(266 8)">
-                                            <mask data-v-4fa16e21="" id="9unrvtawmb" fill="#fff">
-                                                <use data-v-4fa16e21="" xlink:href="#huxf6b78oa"></use>
-                                            </mask>
-                                            <use data-v-4fa16e21="" fill="#EF5222" fill-rule="nonzero"
-                                                 xlink:href="#huxf6b78oa"></use>
-                                            <path data-v-4fa16e21="" fill-rule="nonzero" stroke="#FFF"
-                                                  stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                  d="M6 11.125L9.058 14.25 15.375 8" mask="url(#9unrvtawmb)"></path>
-                                        </g>
-                                    </g>
-                                </svg>
-                                <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg" width="22" height="23"
-                                     viewBox="0 0 22 23" class="check not-check">
-                                    <g data-v-4fa16e21="" fill="none" fill-rule="evenodd" stroke-opacity=".63">
-                                        <g data-v-4fa16e21="" fill-rule="nonzero" stroke="#637280" stroke-width="1.2">
-                                            <g data-v-4fa16e21=""
-                                               transform="translate(-838 -791) translate(252 741) translate(320 43) translate(266 8)">
-                                                <circle data-v-4fa16e21="" cx="11" cy="11" r="10.4"></circle>
-                                            </g>
-                                        </g>
-                                    </g>
-                                </svg>
-                                <div data-v-4fa16e21="" class="icons"><img data-v-4fa16e21=""
-                                                                           src="{{asset('img/icon/napas.e513efd.png')}}"
-                                                                           alt="Napas" class="icon"></div>
-                                <p data-v-4fa16e21="" class="text">Thẻ ATM Nội địa</p></button>
-                        </div>
-                        <div data-v-4fa16e21="" data-v-636bcda4="" class="payment-item-container">
-                            <button data-v-4fa16e21="" id="momo" class="normal btn-payment" onclick="payment('momo')">
-                                <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg"
-                                     xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="23"
-                                     viewBox="0 0 22 23" class="check checked">
-                                    <defs data-v-4fa16e21="">
-                                        <circle data-v-4fa16e21="" id="huxf6b78oa" cx="11" cy="11" r="11"></circle>
-                                    </defs>
-                                    <g data-v-4fa16e21="" fill="none" fill-rule="evenodd">
-                                        <g data-v-4fa16e21=""
-                                           transform="translate(-518 -791) translate(252 741) translate(0 43) translate(266 8)">
-                                            <mask data-v-4fa16e21="" id="9unrvtawmb" fill="#fff">
-                                                <use data-v-4fa16e21="" xlink:href="#huxf6b78oa"></use>
-                                            </mask>
-                                            <use data-v-4fa16e21="" fill="#EF5222" fill-rule="nonzero"
-                                                 xlink:href="#huxf6b78oa"></use>
-                                            <path data-v-4fa16e21="" fill-rule="nonzero" stroke="#FFF"
-                                                  stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                  d="M6 11.125L9.058 14.25 15.375 8" mask="url(#9unrvtawmb)"></path>
-                                        </g>
-                                    </g>
-                                </svg>
-                                <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg" width="22" height="23"
-                                     viewBox="0 0 22 23" class="check not-check">
-                                    <g data-v-4fa16e21="" fill="none" fill-rule="evenodd" stroke-opacity=".63">
-                                        <g data-v-4fa16e21="" fill-rule="nonzero" stroke="#637280" stroke-width="1.2">
-                                            <g data-v-4fa16e21=""
-                                               transform="translate(-838 -791) translate(252 741) translate(320 43) translate(266 8)">
-                                                <circle data-v-4fa16e21="" cx="11" cy="11" r="10.4"></circle>
-                                            </g>
-                                        </g>
-                                    </g>
-                                </svg>
-                                <div data-v-4fa16e21="" class="icons"><img data-v-4fa16e21=""
-                                                                           src="{{asset('img/icon/momo.fc16949.png')}}" alt="Momo"
-                                                                           class="icon"></div>
-                                <p data-v-4fa16e21="" class="text">Ví MoMo</p></button>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="booking-nav-buttons" data-v-3f93c73c="" data-v-45436248="">
@@ -1094,8 +972,9 @@
                             <input type="hidden" name="location_name" value="{{$request->address_location_name}}">
                             <input type="hidden" name="driver[name]" value="{{$request->driver_name}}">
                             <input type="hidden" name="driver[phone]" value="{{$request->driver_phone}}">
+                            <input type="hidden" name="arr_seat" value="{{$request->arr_seat}}">
 {{--                            <input type="hidden" name="location" value="{{$request->address_location}}">--}}
-                            <input type="hidden" name="payment_method" id="payment_method" value="">
+{{--                            <input type="hidden" name="payment_method" id="payment_method" value="">--}}
 {{--                            dùng tạm--}}
 {{--                            <input type="hidden" name="arr_bus['price']" value="{{$request->bus['price']}}">--}}
                             <input type="hidden" name="arr_bus[price]" value="{{$request->price * $request->slot}}">
@@ -1109,6 +988,504 @@
             </div>
         </div>
         <br>
+    @endif
+    @if($request->step == 5)
+            @push('css')
+                <link rel="stylesheet" href="{{asset('css/19cfcbc.css')}}">
+                <link rel="stylesheet" href="{{asset('css/7902561.css')}}">
+                <link rel="stylesheet" href="{{asset('css/70657ea.css')}}">
+                <link rel="stylesheet" href="{{asset('css/7c328b71.css')}}">
+                <style>
+                    body{
+                        font-family: "Roboto", Arial, sans-serif !important;
+                        font-size: 16px !important;
+                    }
+                    .digit {
+                        display: inline-block;
+                        font-size: 200px;
+                        color: rgba(0, 0, 0, 0.25);
+                        height: 180px;
+                        line-height: 1;
+                    }
+
+                    .time-part-wrapper {
+                        display: inline-block;
+                        width: inherit;
+                        margin-right: 50px;
+                        position: relative;
+                    }
+                    .time-part-wrapper:not(:last-child):after {
+                        content: ":";
+                        display: block;
+                        width: 30px;
+                        height: 230px;
+                        position: absolute;
+                        top: 0px;
+                        right: -30px;
+                        color: rgba(0, 0, 0, 0.25);
+                        font-size: 200px;
+                        line-height: 0.9;
+                    }
+
+                    .time-part {
+                        width: 140px;
+                        text-align: center;
+                        height: 180px;
+                        overflow: hidden;
+                        display: inline-block;
+                        margin-left: -5px;
+                        box-sizing: border-box;
+                    }
+                    .time-part .digit-wrapper {
+                        animation-timing-function: cubic-bezier(1, 0, 1, 0);
+                    }
+                    .time-part.minutes.tens .digit-wrapper {
+                        animation-name: minutes-tens;
+                        animation-duration: 3600s;
+                        animation-iteration-count: 1;
+                    }
+                    .time-part.minutes.ones .digit-wrapper {
+                        animation-name: minutes-ones;
+                        animation-duration: 600s;
+                        animation-iteration-count: 6;
+                    }
+                    .time-part.seconds.tens .digit-wrapper {
+                        animation-name: seconds-tens;
+                        animation-duration: 60s;
+                        animation-iteration-count: 60;
+                    }
+                    .time-part.seconds.ones .digit-wrapper {
+                        animation-name: seconds-ones;
+                        animation-duration: 10s;
+                        animation-iteration-count: 360;
+                    }
+                    .time-part.hundredths.tens .digit-wrapper {
+                        animation-name: hundredths-tens;
+                        animation-duration: 1s;
+                        animation-iteration-count: 3600;
+                    }
+                    .time-part.hundredths.ones .digit-wrapper {
+                        animation-name: hundredths-ones;
+                        animation-duration: 0.1s;
+                        animation-iteration-count: 36000;
+                    }
+
+                    @keyframes minutes-tens {
+                        0% {
+                            transform: translateY(-180px);
+                        }
+                        16.66667% {
+                            transform: translateY(-360px);
+                        }
+                        33.33333% {
+                            transform: translateY(-540px);
+                        }
+                        50% {
+                            transform: translateY(-720px);
+                        }
+                        66.66667% {
+                            transform: translateY(-900px);
+                        }
+                        83.33333% {
+                            transform: translateY(-1080px);
+                        }
+                    }
+                    @keyframes minutes-ones {
+                        0% {
+                            transform: translateY(-180px);
+                        }
+                        10% {
+                            transform: translateY(-360px);
+                        }
+                        20% {
+                            transform: translateY(-540px);
+                        }
+                        30% {
+                            transform: translateY(-720px);
+                        }
+                        40% {
+                            transform: translateY(-900px);
+                        }
+                        50% {
+                            transform: translateY(-1080px);
+                        }
+                        60% {
+                            transform: translateY(-1260px);
+                        }
+                        70% {
+                            transform: translateY(-1440px);
+                        }
+                        80% {
+                            transform: translateY(-1620px);
+                        }
+                        90% {
+                            transform: translateY(-1800px);
+                        }
+                    }
+                    @keyframes seconds-tens {
+                        0% {
+                            transform: translateY(-180px);
+                        }
+                        16.66667% {
+                            transform: translateY(-360px);
+                        }
+                        33.33333% {
+                            transform: translateY(-540px);
+                        }
+                        50% {
+                            transform: translateY(-720px);
+                        }
+                        66.66667% {
+                            transform: translateY(-900px);
+                        }
+                        83.33333% {
+                            transform: translateY(-1080px);
+                        }
+                    }
+                    @keyframes seconds-ones {
+                        0% {
+                            transform: translateY(-180px);
+                        }
+                        10% {
+                            transform: translateY(-360px);
+                        }
+                        20% {
+                            transform: translateY(-540px);
+                        }
+                        30% {
+                            transform: translateY(-720px);
+                        }
+                        40% {
+                            transform: translateY(-900px);
+                        }
+                        50% {
+                            transform: translateY(-1080px);
+                        }
+                        60% {
+                            transform: translateY(-1260px);
+                        }
+                        70% {
+                            transform: translateY(-1440px);
+                        }
+                        80% {
+                            transform: translateY(-1620px);
+                        }
+                        90% {
+                            transform: translateY(-1800px);
+                        }
+                    }
+                    @keyframes hundredths-tens {
+                        0% {
+                            transform: translateY(-180px);
+                        }
+                        10% {
+                            transform: translateY(-360px);
+                        }
+                        20% {
+                            transform: translateY(-540px);
+                        }
+                        30% {
+                            transform: translateY(-720px);
+                        }
+                        40% {
+                            transform: translateY(-900px);
+                        }
+                        50% {
+                            transform: translateY(-1080px);
+                        }
+                        60% {
+                            transform: translateY(-1260px);
+                        }
+                        70% {
+                            transform: translateY(-1440px);
+                        }
+                        80% {
+                            transform: translateY(-1620px);
+                        }
+                        90% {
+                            transform: translateY(-1800px);
+                        }
+                    }
+                    @keyframes hundredths-ones {
+                        0% {
+                            transform: translateY(-180px);
+                        }
+                        10% {
+                            transform: translateY(-360px);
+                        }
+                        20% {
+                            transform: translateY(-540px);
+                        }
+                        30% {
+                            transform: translateY(-720px);
+                        }
+                        40% {
+                            transform: translateY(-900px);
+                        }
+                        50% {
+                            transform: translateY(-1080px);
+                        }
+                        60% {
+                            transform: translateY(-1260px);
+                        }
+                        70% {
+                            transform: translateY(-1440px);
+                        }
+                        80% {
+                            transform: translateY(-1620px);
+                        }
+                        90% {
+                            transform: translateY(-1800px);
+                        }
+                    }
+                    body {
+                        background: #FFFF;
+                        margin: 0;
+                        font-family: "Aldrich";
+                    }
+
+                    .wrapper {
+                        margin: 100px auto;
+                        width: 1000px;
+                        position: relative;
+                    }
+                    .wrapper:before, .wrapper:after {
+                        content: "";
+                        display: block;
+                        position: absolute;
+                        width: 100%;
+                        left: 0;
+                        height: 20px;
+                        z-index: 10;
+                    }
+                    .wrapper:before {
+                        top: 0px;
+                    }
+                    .wrapper:after {
+                        bottom: 0px;
+                    }
+                </style>
+            @endpush
+            <div data-v-45436248="" class="child">
+                <div data-v-45436248="">
+                    <div data-v-60883350="" id="ticket-infomation-container" class="buy-info-container">
+                        <div data-v-60883350="" class="title-bar-bg"><p data-v-60883350="" class="title-txt">CHỌN PHƯƠNG THỨC THANH TOÁN</p></div>
+                        <div data-v-2d0d5948="" data-v-60883350="" class="customer-info-container">
+                            <div data-v-2d0d5948="" class="title-bar"><p data-v-2d0d5948="" class="title-txt" style="font-weight: bold !important;">THỜI GIAN HẾT HẠN</p></div>
+                            <div data-v-2d0d5948="" class="container mt-2">
+                                <div data-v-2d0d5948="" class="row" style="justify-content: space-between;">
+                                        <div class='time-part-wrapper'>
+                                            <div class='time-part minutes tens'>
+                                                <div class='digit-wrapper'>
+                                                    <span class='digit'>0</span>
+                                                    <span class='digit'>0</span>
+                                                </div>
+                                            </div>
+                                            <div class='time-part minutes ones'>
+                                                <div class='digit-wrapper'>
+                                                    <span class='digit'>0</span>
+                                                    <span class='digit'>9</span>
+                                                    <span class='digit'>8</span>
+                                                    <span class='digit'>7</span>
+                                                    <span class='digit'>6</span>
+                                                    <span class='digit'>5</span>
+                                                    <span class='digit'>4</span>
+                                                    <span class='digit'>3</span>
+                                                    <span class='digit'>2</span>
+                                                    <span class='digit'>1</span>
+                                                    <span class='digit'>0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='time-part-wrapper'>
+                                            <div class='time-part seconds tens'>
+                                                <div class='digit-wrapper'>
+                                                    <span class='digit'>0</span>
+                                                    <span class='digit'>6</span>
+                                                    <span class='digit'>5</span>
+                                                    <span class='digit'>4</span>
+                                                    <span class='digit'>3</span>
+                                                    <span class='digit'>2</span>
+                                                    <span class='digit'>1</span>
+                                                    <span class='digit'>0</span>
+                                                </div>
+                                            </div>
+                                            <div class='time-part seconds ones'>
+                                                <div class='digit-wrapper'>
+                                                    <span class='digit'>0</span>
+                                                    <span class='digit'>9</span>
+                                                    <span class='digit'>8</span>
+                                                    <span class='digit'>7</span>
+                                                    <span class='digit'>6</span>
+                                                    <span class='digit'>5</span>
+                                                    <span class='digit'>4</span>
+                                                    <span class='digit'>3</span>
+                                                    <span class='digit'>2</span>
+                                                    <span class='digit'>1</span>
+                                                    <span class='digit'>0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-v-60883350="" class="footer-bar">
+                            <div data-v-60883350="" class="total-info"><p data-v-60883350="" class="footer-title">TỔNG
+                                    TIỀN</p>
+                                <p data-v-60883350="" class="footer-price">
+                                    {{$bill->price}} <sup data-v-60883350="">₫</sup></p></div>
+                        </div> <!---->
+                    </div>
+                    <div data-v-636bcda4="">
+                        <div data-v-636bcda4="" class="title">CHỌN CÁCH THANH TOÁN</div>
+                        <div data-v-636bcda4="" class="payment-item-list">
+                            <div data-v-4fa16e21="" data-v-636bcda4="" class="payment-item-container">
+                                <button data-v-4fa16e21="" id="international_card" class="normal btn-payment" onclick="payment('international_card')">
+                                    <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg"
+                                         xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="23"
+                                         viewBox="0 0 22 23" class="check checked">
+                                        <defs data-v-4fa16e21="">
+                                            <circle data-v-4fa16e21="" id="huxf6b78oa" cx="11" cy="11" r="11"></circle>
+                                        </defs>
+                                        <g data-v-4fa16e21="" fill="none" fill-rule="evenodd">
+                                            <g data-v-4fa16e21=""
+                                               transform="translate(-518 -791) translate(252 741) translate(0 43) translate(266 8)">
+                                                <mask data-v-4fa16e21="" id="9unrvtawmb" fill="#fff">
+                                                    <use data-v-4fa16e21="" xlink:href="#huxf6b78oa"></use>
+                                                </mask>
+                                                <use data-v-4fa16e21="" fill="#EF5222" fill-rule="nonzero"
+                                                     xlink:href="#huxf6b78oa"></use>
+                                                <path data-v-4fa16e21="" fill-rule="nonzero" stroke="#FFF"
+                                                      stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                      d="M6 11.125L9.058 14.25 15.375 8" mask="url(#9unrvtawmb)"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg" width="22" height="23"
+                                         viewBox="0 0 22 23" class="check not-check">
+                                        <g data-v-4fa16e21="" fill="none" fill-rule="evenodd" stroke-opacity=".63">
+                                            <g data-v-4fa16e21="" fill-rule="nonzero" stroke="#637280" stroke-width="1.2">
+                                                <g data-v-4fa16e21=""
+                                                   transform="translate(-838 -791) translate(252 741) translate(320 43) translate(266 8)">
+                                                    <circle data-v-4fa16e21="" cx="11" cy="11" r="10.4"></circle>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    <div data-v-4fa16e21="" class="icons"><img data-v-4fa16e21=""
+                                                                               src="{{asset('img/icon/jcb.99dcd7f.png')}}"
+                                                                               alt="Cybersource" class="icon"><img
+                                            data-v-4fa16e21="" src="{{asset('img/icon/master.f966244.png')}}" alt="Cybersource"
+                                            class="icon"><img data-v-4fa16e21="" src="{{asset('img/icon/visa.af41b0e.png')}}"
+                                                              alt="Cybersource" class="icon"></div>
+                                    <p data-v-4fa16e21="" class="text">Thẻ Quốc tế Visa/Master/JCB</p></button>
+                            </div>
+                            <div data-v-4fa16e21="" data-v-636bcda4="" class="payment-item-container">
+                                <button data-v-4fa16e21="" id="vnpay" class="normal btn-payment" onclick="payment('vnpay')">
+                                    <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg"
+                                         xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="23"
+                                         viewBox="0 0 22 23" class="check checked">
+                                        <defs data-v-4fa16e21="">
+                                            <circle data-v-4fa16e21="" id="huxf6b78oa" cx="11" cy="11" r="11"></circle>
+                                        </defs>
+                                        <g data-v-4fa16e21="" fill="none" fill-rule="evenodd">
+                                            <g data-v-4fa16e21=""
+                                               transform="translate(-518 -791) translate(252 741) translate(0 43) translate(266 8)">
+                                                <mask data-v-4fa16e21="" id="9unrvtawmb" fill="#fff">
+                                                    <use data-v-4fa16e21="" xlink:href="#huxf6b78oa"></use>
+                                                </mask>
+                                                <use data-v-4fa16e21="" fill="#EF5222" fill-rule="nonzero"
+                                                     xlink:href="#huxf6b78oa"></use>
+                                                <path data-v-4fa16e21="" fill-rule="nonzero" stroke="#FFF"
+                                                      stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                      d="M6 11.125L9.058 14.25 15.375 8" mask="url(#9unrvtawmb)"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg" width="22" height="23"
+                                         viewBox="0 0 22 23" class="check not-check">
+                                        <g data-v-4fa16e21="" fill="none" fill-rule="evenodd" stroke-opacity=".63">
+                                            <g data-v-4fa16e21="" fill-rule="nonzero" stroke="#637280" stroke-width="1.2">
+                                                <g data-v-4fa16e21=""
+                                                   transform="translate(-838 -791) translate(252 741) translate(320 43) translate(266 8)">
+                                                    <circle data-v-4fa16e21="" cx="11" cy="11" r="10.4"></circle>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    <div data-v-4fa16e21="" class="icons"><img data-v-4fa16e21=""
+                                                                               src="{{asset('img/icon/vnpay.png')}}"
+                                                                               alt="Napas" class="icon"></div>
+                                    <p data-v-4fa16e21="" class="text">VNPAY</p></button>
+                            </div>
+                            <div data-v-4fa16e21="" data-v-636bcda4="" class="payment-item-container">
+                                <button data-v-4fa16e21="" id="momo" class="normal btn-payment" onclick="payment('momo')">
+                                    <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg"
+                                         xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="23"
+                                         viewBox="0 0 22 23" class="check checked">
+                                        <defs data-v-4fa16e21="">
+                                            <circle data-v-4fa16e21="" id="huxf6b78oa" cx="11" cy="11" r="11"></circle>
+                                        </defs>
+                                        <g data-v-4fa16e21="" fill="none" fill-rule="evenodd">
+                                            <g data-v-4fa16e21=""
+                                               transform="translate(-518 -791) translate(252 741) translate(0 43) translate(266 8)">
+                                                <mask data-v-4fa16e21="" id="9unrvtawmb" fill="#fff">
+                                                    <use data-v-4fa16e21="" xlink:href="#huxf6b78oa"></use>
+                                                </mask>
+                                                <use data-v-4fa16e21="" fill="#EF5222" fill-rule="nonzero"
+                                                     xlink:href="#huxf6b78oa"></use>
+                                                <path data-v-4fa16e21="" fill-rule="nonzero" stroke="#FFF"
+                                                      stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                      d="M6 11.125L9.058 14.25 15.375 8" mask="url(#9unrvtawmb)"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    <svg data-v-4fa16e21="" xmlns="http://www.w3.org/2000/svg" width="22" height="23"
+                                         viewBox="0 0 22 23" class="check not-check">
+                                        <g data-v-4fa16e21="" fill="none" fill-rule="evenodd" stroke-opacity=".63">
+                                            <g data-v-4fa16e21="" fill-rule="nonzero" stroke="#637280" stroke-width="1.2">
+                                                <g data-v-4fa16e21=""
+                                                   transform="translate(-838 -791) translate(252 741) translate(320 43) translate(266 8)">
+                                                    <circle data-v-4fa16e21="" cx="11" cy="11" r="10.4"></circle>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    <div data-v-4fa16e21="" class="icons"><img data-v-4fa16e21=""
+                                                                               src="{{asset('img/icon/momo.fc16949.png')}}" alt="Momo"
+                                                                               class="icon"></div>
+                                    <p data-v-4fa16e21="" class="text">Ví MoMo</p></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="booking-nav-buttons" data-v-3f93c73c="" data-v-45436248="">
+                        <div class="left-btns" data-v-3f93c73c="">
+                            <a href="{{ url()->previous() }}" class="btn btn-primary btn-block" style="display: block;width: 100%;">
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAASKADAAQAAAABAAAASAAAAACQMUbvAAACSklEQVR4Ae3aT07CQBQGcKrAyh22cAiDngGix/BwHMOoW9eohygV1iRAqO/FEppaoJH58435utDpFN7M/CxD5zmtFg8KUIACFKAABShAAQpQgAIUoAAFKPCvBKKQRjMYDOLVavWofe52u5M0Tb9s9z8YoCRJbjebzVOe54miRFGUCtLQNtKl7b+AifiKs16vXyRWXIp3td1uZ8vl8q1UZ7x4YTyi4YAlnJ7h0I3CQQMdw5GPWKbzUKNRnvEiWKBjODLeebvdvrc9/6gr5CR9CqfT6YyzLHs/48Zo/FY4ICQcuDsIDQcKCBEHBggVBwIIGcc7EDqOV6AQcLwBhYKjQM4Xq3Ec38mqXBeedWurucuHQAU4dTh9UCxwnqVTQeAonjOgEHGcAYWK4wSo3+8nkib9lMbKyS5tWw+4OeenW/uf7X3RTkkygZpDrsWR+pGsyj/stGwmqot8UH6gq5F8Y7lo/0Dzzaqtd1CzfpL9m9V0p6d5Zn0mqrkGU2UdSLN+kv17kBHPa0YNj+Tsa17ulGHxn4nrGqhF8YA4rbnmtcoZkI4yRCSnQCEiOQcKDckLUEhI3oBCQfIKFAKSdyB0JAggZCQYIFQkKCBEJDggNCRIoBLSq5Tr8tfO1m6wQKeQig1UN7b3CFlPd+hA/3roHiBZ5Y/k/YtqDN3MudvxWr1m8hwaSAdaII2l+AvJJMShWPBA2nFBmmq+SD9Wu4FIWbcBT3bntn5Dz0HVQfvYSF7tA88pQAEKUIACFKAABShAAQpQgAIUoEDgAt/KjWWzclDJlgAAAABJRU5ErkJggg==" alt="back" width="24" height="24" class="icon" data-v-3f93c73c="">
+                                Quay lại
+                            </a>
+                        </div>
+                        <div data-v-3f93c73c="" class="right-btns">
+                            <form action="{{route('applicant.checkout_vnpay')}}" method="post" id="form_payment" style="display:flex;width:100%;">
+                                @csrf
+                                {{--                            <input type="hidden" name="location" value="{{$request->address_location}}">--}}
+                                <input type="hidden" name="payment_method" id="payment_method" value="">
+                                <input type="hidden" name="code_bill" id="code_bill" value="{{$bill->code}}">
+                                {{--                            dùng tạm--}}
+                                {{--                            <input type="hidden" name="arr_bus['price']" value="{{$request->bus['price']}}">--}}
+                                <input type="hidden" name="total_price" value="{{$bill->price}}">
+                                <input type="hidden" name="redirect" value="true">
+                                <button data-v-3f93c73c="" class="btn btn-success" type="submit" >
+                                    Tiếp tục
+                                    <img data-v-3f93c73c="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAASKADAAQAAAABAAAASAAAAACQMUbvAAABnklEQVR4Ae3a4W3CMBCGYdIVUBkDmKGDdIkyUffoEizRUtoZ0u8QkSrrcjE0DTh+LUWQu2AnTy4/cLxY0BBAAAEEEEAAAQQQQAABBBBAAIFZCTRTXE3bto8a5/k81mvTNMcpxi1iDMPR9q6tawd92RRx8lOcpDBeOplfn1+lID1MgeSMsVTsrRQk5/zHCwnBHjF7rLxWTCWNJ+L0JJm1NsPwGkhmJhlDOnpCioEEkvNoeSEqyVNJYiAlIN4uSJ5KEgMpAfF2QfJUkhhICYi3C5KnksQykLbJT+rbBSnjnoMEUoZAxiEDlfSp/Cqjm3kfMoC0+++rv9WM4iXXZS8W+l4utJd0NLtjVT0bbX0TbR/K2duSOtsAjk28reuU0VWDE9x6cMAJBIIUlQNOIBCkqBxwAoEgReWAEwgEKSoHnEAgSFE51+PYv/Wq/3gOLaCqF8eKStXhrVFU+DTPc/c4t5pR/Jbdk5YD74Mns46UKsVbBnz3ldPdnb653i4/yqchqSMWko+iSScIIIAAAggggAACCCCAAAIIIIDAnwR+AARz1rJJfntoAAAAAElFTkSuQmCC" alt="continue" width="24" height="24" class="icon">
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
     @endif
     @push('js')
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -1145,8 +1522,8 @@
 
                 let seat_map_b;
 
+                @if($request->step == 5)
                 let check_payment_method = false;
-                @if($request->step == 4)
                 function payment(key){
                     let class_btn = document.getElementsByClassName('btn-payment');
                     let length_btn = class_btn.length;
@@ -1478,6 +1855,7 @@
                     }
                 });
 
+                @if($request->step == 5)
                 $("#form_payment").validate({
                     rules: {
                         payment_method :{
@@ -1497,6 +1875,7 @@
                         }
                     }
                 });
+                @endif
             });
         </script>
     @endpush

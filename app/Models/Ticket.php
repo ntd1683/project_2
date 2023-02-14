@@ -16,6 +16,9 @@ class Ticket extends Model
         "phone_passenger",
         "email_passenger",
         "address_passenger_id",
-        "user_id"
+        "user_id",
+        "bus_id",
+        "bill_id",
+        "seat_id"
     ];
 }
