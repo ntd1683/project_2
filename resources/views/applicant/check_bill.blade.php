@@ -1,5 +1,6 @@
 @extends('layout.master')
 @push('css')
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <link rel="stylesheet" href="{{asset('plugins/bootstrap/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/jquery.toast.min.css')}}">
     <style>

@@ -26,7 +26,7 @@ class BillRequest extends FormRequest
         return [
             'phone'=>[
                 'required',
-                'exists:App\Models\Ticket,phone_passenger'
+                'exists:App\Models\Customer,phone'
             ],
             'code_bill'=>[
                 'required',
