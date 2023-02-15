@@ -41,10 +41,16 @@ Route::get('/phuong-thuc-thanh-toan', [HomePageController::class, 'payment_metho
     ->name('applicant.payment_methods');
 
 //Checkout Payment-VNPAY
-Route::post('/Checkout-VNPAY/', [CheckoutPaymentController::class, 'CheckoutVNPAY'])
+Route::post('/Checkout-VNPAY/', [CheckoutPaymentController::class, 'checkoutVNPAY'])
     ->name('applicant.checkout_vnpay');
-Route::get('/Processing-Checkout-VNPAY/', [CheckoutPaymentController::class, 'ProcessingVNPAY'])
+Route::get('/Processing-Checkout-VNPAY/', [CheckoutPaymentController::class, 'processingVNPAY'])
     ->name('applicant.processing_checkout_vnpay');
+
+//Checkout Payment-Momo
+Route::post('/Checkout-Momo/', [CheckoutPaymentController::class, 'checkoutMOMO'])
+    ->name('applicant.checkout_momo');
+Route::get('/Processing-Checkout-MOMO/', [CheckoutPaymentController::class, 'processingMOMO'])
+    ->name('applicant.processing_checkout_momo');
 
 //api
 Route::get('/api-schedule', [HomePageController::class, 'api_schedule'])->name('api.schedule');
