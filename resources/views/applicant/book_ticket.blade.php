@@ -1467,15 +1467,13 @@
                             </a>
                         </div>
                         <div data-v-3f93c73c="" class="right-btns">
-                            <form action="{{route('applicant.checkout_vnpay')}}" method="post" id="form_payment" style="display:flex;width:100%;">
+                            <form action="{{route('index')}}" method="post" id="form_payment" style="display:flex;width:100%;">
                                 @csrf
-                                {{--                            <input type="hidden" name="location" value="{{$request->address_location}}">--}}
                                 <input type="hidden" name="payment_method" id="payment_method" value="">
                                 <input type="hidden" name="code_bill" id="code_bill" value="{{$bill->code}}">
-                                {{--                            dùng tạm--}}
-                                {{--                            <input type="hidden" name="arr_bus['price']" value="{{$request->bus['price']}}">--}}
                                 <input type="hidden" name="total_price" value="{{$bill->price}}">
                                 <input type="hidden" name="redirect" value="true">
+                                <input type="hidden" name="payUrl" value="true">
                                 <button data-v-3f93c73c="" class="btn btn-success" type="submit" >
                                     Tiếp tục
                                     <img data-v-3f93c73c="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAASKADAAQAAAABAAAASAAAAACQMUbvAAABnklEQVR4Ae3a4W3CMBCGYdIVUBkDmKGDdIkyUffoEizRUtoZ0u8QkSrrcjE0DTh+LUWQu2AnTy4/cLxY0BBAAAEEEEAAAQQQQAABBBBAAIFZCTRTXE3bto8a5/k81mvTNMcpxi1iDMPR9q6tawd92RRx8lOcpDBeOplfn1+lID1MgeSMsVTsrRQk5/zHCwnBHjF7rLxWTCWNJ+L0JJm1NsPwGkhmJhlDOnpCioEEkvNoeSEqyVNJYiAlIN4uSJ5KEgMpAfF2QfJUkhhICYi3C5KnksQykLbJT+rbBSnjnoMEUoZAxiEDlfSp/Cqjm3kfMoC0+++rv9WM4iXXZS8W+l4utJd0NLtjVT0bbX0TbR/K2duSOtsAjk28reuU0VWDE9x6cMAJBIIUlQNOIBCkqBxwAoEgReWAEwgEKSoHnEAgSFE51+PYv/Wq/3gOLaCqF8eKStXhrVFU+DTPc/c4t5pR/Jbdk5YD74Mns46UKsVbBnz3ldPdnb653i4/yqchqSMWko+iSScIIIAAAggggAACCCCAAAIIIIDAnwR+AARz1rJJfntoAAAAAElFTkSuQmCC" alt="continue" width="24" height="24" class="icon">
@@ -1524,6 +1522,7 @@
 
                 @if($request->step == 5)
                 let check_payment_method = false;
+                let form_payment = document.getElementById('form_payment');
                 function payment(key){
                     let class_btn = document.getElementsByClassName('btn-payment');
                     let length_btn = class_btn.length;
@@ -1535,6 +1534,17 @@
                     let payment_method = document.getElementById('payment_method');
                     payment_method.value = key;
                     check_payment_method = true;
+                    let url = '{{route('index')}}';
+                    switch(key){
+                        case 'vnpay' :
+                            key = 'VNPAY';
+                            break;
+                        case 'momo' :
+                            key = 'Momo';
+                            break;
+                    }
+                    let action = url + '/Checkout-'+key;
+                    form_payment.setAttribute('action',action);
                 }
                 @endif
 

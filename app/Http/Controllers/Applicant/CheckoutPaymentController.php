@@ -8,7 +8,160 @@ use Illuminate\Http\Request;
 
 class CheckoutPaymentController extends Controller
 {
-    public function CheckoutVNPAY(Request $request)
+    function execPostRequest($url, $data)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data))
+        );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        //execute post
+        $result = curl_exec($ch);
+        //close connection
+        curl_close($ch);
+        return $result;
+    }
+
+    public function checkoutMOMO(Request $request){
+        $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+
+
+        $partnerCode = 'MOMOBKUN20180529';
+        $accessKey = 'klm05TvNBzhg7h7j';
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+        $orderInfo = "Thanh toán qua MoMo";
+        $amount = $request->total_price;
+        $orderId = $request->code_bill;
+        $redirectUrl = route('applicant.processing_checkout_momo');
+        $ipnUrl = route('applicant.processing_checkout_momo');
+        $extraData = "";
+
+            $requestId = time() . "";
+            $requestType = "captureWallet";
+//            $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
+            //before sign HMAC SHA256 signature
+            $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+            $signature = hash_hmac("sha256", $rawHash, $secretKey);
+            $data = array('partnerCode' => $partnerCode,
+                          'partnerName' => "Nha " . config('app.name'),
+                          "storeId" => "Thanh Toan Ve Xe",
+                          'requestId' => $requestId,
+                          'amount' => $amount,
+                          'orderId' => $orderId,
+                          'orderInfo' => $orderInfo,
+                          'redirectUrl' => $redirectUrl,
+                          'ipnUrl' => $ipnUrl,
+                          'lang' => 'vi',
+                          'extraData' => $extraData,
+                          'requestType' => $requestType,
+                          'signature' => $signature);
+            $result = $this->execPostRequest($endpoint, json_encode($data));
+            $jsonResult = json_decode($result, true);  // decode json
+//        dd($jsonResult);
+            if($jsonResult['resultCode'] == '0'){
+                return redirect()->to($jsonResult['payUrl']);
+            }
+
+            return redirect()->route('index')->with('error',$jsonResult['message']);
+
+            //Just a example, please check more in there
+    }
+
+    public function processingMOMO(Request $request){
+            $partnerCode = 'MOMOBKUN20180529';
+            $accessKey = 'klm05TvNBzhg7h7j';
+            $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+
+            $response = array();
+            try {
+                $partnerCode = $_GET["partnerCode"];
+                $orderId = $_GET["orderId"];
+                $requestId = $_GET["requestId"];
+                $amount = $_GET["amount"];
+                $orderInfo = $_GET["orderInfo"];
+                $orderType = $_GET["orderType"];
+                $transId = $_GET["transId"];
+                $resultCode = $_GET["resultCode"];
+                $message = $_GET["message"];
+                $payType = $_GET["payType"];
+                $responseTime = $_GET["responseTime"];
+                $extraData = $_GET["extraData"];
+                $m2signature = $_GET["signature"]; //MoMo signature
+
+                //Checksum
+                $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&message=" . $message . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo .
+                    "&orderType=" . $orderType . "&partnerCode=" . $partnerCode . "&payType=" . $payType . "&requestId=" . $requestId . "&responseTime=" . $responseTime .
+                    "&resultCode=" . $resultCode . "&transId=" . $transId;
+
+                $partnerSignature = hash_hmac("sha256", $rawHash, 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa');
+
+                if ($m2signature == $partnerSignature) {
+                    if ($resultCode == '0') {
+                        $order = Bill::query()
+                            ->select('bills.*')
+                            ->where('bills.code','=',$orderId)
+                            ->first();
+                        if ($order != NULL) {
+                            if($order["price"] == $amount) //Kiểm tra số tiền thanh toán của giao dịch: giả sử số tiền kiểm tra là đúng. //$order["Amount"] == $vnp_Amount
+                            {
+                                if ($order["status"] !== NULL && $order["status"] === 0) {
+                                        $arr['payment_method'] = 2;
+                                        $arr['status'] = 1;
+
+                                        $object = $order;
+                                        $object -> fill($arr);
+                                        $object->save();
+                                    $notify = 'Thanh toán thành công';
+                                } else {
+                                    $notify = 'Đơn Hàng Đã Được Thanh Toán';
+                                }
+                            }
+                            else {
+                                $notify = 'Bạn Thanh Toán Không Khớp Số Tiền';
+                            }
+                        }else{
+                            $notify = 'Không tìm thấy đơn';
+                        }
+                    } else {
+                        $notify =$message;
+                    }
+                } else {
+                    $notify = 'This transaction could be hacked, please check your signature and returned signature';
+                }
+
+            } catch (\Exception $e) {
+
+                $notify = $e;
+                echo $response['message'] = $e;
+            }
+
+            $debugger = array();
+            $debugger['rawData'] = $rawHash;
+            $debugger['momoSignature'] = $m2signature;
+            $debugger['partnerSignature'] = $partnerSignature;
+
+            if ($m2signature == $partnerSignature) {
+                $notify = "Nhận kết quả thanh toán thành công";
+                $response['message'] = "Received payment result success";
+            } else {
+                $notify = "LỖI! tổng kiểm tra thất bại";
+                $response['message'] = "ERROR! Fail checksum";
+            }
+            $response['debugger'] = $debugger;
+            echo json_encode($response);
+
+            if($resultCode === '0'){
+                return redirect()->route('index')->with('success',$notify);
+            }
+            return redirect()->route('index')->with('error',$notify);
+    }
+
+    public function checkoutVNPAY(Request $request)
     {
         $redirect = $request->redirect;
 
@@ -78,7 +231,7 @@ class CheckoutPaymentController extends Controller
         }
     }
 
-    public function ProcessingVNPAY(Request $request){
+    public function processingVNPAY(Request $request){
         /* Payment Notify
          * IPN URL: Ghi nhận kết quả thanh toán từ VNPAY
          * Các bước thực hiện:
