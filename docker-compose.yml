@@ -1,0 +1,45 @@
+version: '3.8'
+networks:
+  app-network:
+services:
+  nginx:
+    image: 'nginx:stable-alpine'
+    container_name: 'nginx_back_${APP_NAME}'
+    ports:
+      - '80:80'
+    volumes:
+      - '.:/var/www/html'
+      - './nginx.conf:/etc/nginx/conf.d/default.conf'
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - app-network
+  mysql:
+    image: 'mysql:5.7.19'
+    container_name: 'mysql_${APP_NAME}'
+    restart: unless-stopped
+    tty: true
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      SERVICE_TAGS: dev
+      SEVICE_NAME: mysql
+    networks:
+      - app-network
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: 'php_${APP_NAME}'
+    volumes:
+      - '.:/var/www/html'
+    ports:
+      - '9000:9000'
+    networks:
+      - app-network
+      
